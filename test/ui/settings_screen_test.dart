@@ -14,6 +14,7 @@ import 'package:metra/src/storage/library_store.dart';
 import 'package:metra/src/ui/about.dart';
 import 'package:metra/src/ui/metronome_screen.dart';
 import 'package:metra/src/ui/settings_screen.dart';
+import 'package:metra/src/ui/theme.dart';
 import 'package:metra/src/ui/value_stepper.dart';
 
 import '../audio/fake_click_output.dart';
@@ -154,6 +155,7 @@ void main() {
       'About Metra',
       'Why this app exists',
       'Privacy policy',
+      'Open-source licenses',
     ]) {
       expect(find.text(text), findsOneWidget, reason: text);
     }
@@ -172,7 +174,15 @@ void main() {
     );
     expect(
       top(SettingsScreen.privacyKey),
+      lessThan(top(SettingsScreen.licensesKey)),
+    );
+    expect(
+      top(SettingsScreen.licensesKey),
       lessThan(top(SettingsScreen.versionKey)),
+    );
+    expect(
+      tester.getSize(find.byKey(SettingsScreen.licensesKey)).height,
+      greaterThanOrEqualTo(56),
     );
     expect(
       tester.getSize(find.byKey(SettingsScreen.aboutKey)).height,
@@ -235,6 +245,57 @@ void main() {
     await tester.tap(find.byTooltip('Back'));
     await tester.pumpAndSettle();
     expectMain();
+  });
+
+  testWidgets("Open-source licenses: Flutter's page in Metra's look, with "
+      'the native libraries and fonts; Back to Settings', (tester) async {
+    registerBundledLicenses();
+    await openSettingsScreen(tester);
+    await tapVisible(tester, find.byKey(SettingsScreen.licensesKey));
+    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+    await tester.pumpAndSettle();
+    expect(find.byType(LicensePage), findsOneWidget);
+    expect(find.text('Open-source licenses'), findsOneWidget);
+    expect(find.text('Metra'), findsOneWidget);
+    expect(find.text('1.2.3 (7)'), findsOneWidget);
+    expect(find.byIcon(Icons.chevron_left), findsOneWidget);
+    final colors = testTheme.extension<MetraColors>()!;
+    final bar = tester.widget<AppBar>(find.byType(AppBar));
+    expect(
+      Theme.of(tester.element(find.byType(AppBar))).cardColor,
+      colors.background,
+    );
+    expect(bar.title, isA<Text>());
+    // Licenses load from the bundle off the test clock.
+    for (var i = 0; i < 20 && find.text('libogg').evaluate().isEmpty; i++) {
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      await tester.pump();
+    }
+    for (final name in ['SoLoud', 'libogg', 'Opus', 'Saira']) {
+      await tester.scrollUntilVisible(find.text(name), 200);
+      expect(find.text(name), findsOneWidget, reason: name);
+    }
+    await tester.tap(find.byTooltip('Back'));
+    await tester.pumpAndSettle();
+    expect(find.byType(LicensePage), findsNothing);
+    expect(find.byType(SettingsScreen), findsOneWidget);
+  });
+
+  test('every bundled license text is in the app\'s assets', () {
+    final assets = File('pubspec.yaml').readAsStringSync();
+    for (final (name, asset) in bundledLicenses) {
+      expect(File(asset).readAsStringSync(), isNotEmpty, reason: name);
+      expect(
+        assets.contains('- $asset') ||
+            assets.contains(
+              '- ${asset.substring(0, asset.lastIndexOf('/') + 1)}',
+            ),
+        isTrue,
+        reason: '$asset listed in pubspec.yaml',
+      );
+    }
   });
 
   test(

@@ -73,6 +73,10 @@ flutter:
   assets:
     - assets/clicks/
     - assets/whats_new.md
+    # Licenses Flutter doesn't collect (ui/about.dart, bundledLicenses).
+    - assets/licenses/
+    - assets/fonts/OFL-Saira.txt
+    - assets/fonts/OFL-SairaExtraCondensed.txt
 
   # Bundled, never fetched at runtime. See assets/fonts/README.md.
   fonts:

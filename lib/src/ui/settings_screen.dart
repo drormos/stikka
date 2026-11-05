@@ -55,6 +55,7 @@ class SettingsScreen extends StatelessWidget {
   static const allUpdatesRowKey = Key('settings-all-updates-row');
   static const aboutKey = Key('settings-about');
   static const privacyKey = Key('settings-privacy');
+  static const licensesKey = Key('settings-licenses');
   static const versionKey = Key('settings-version');
 
   static const _themes = {
@@ -206,8 +207,8 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  /// The last section: Send feedback, All updates, About Metra, then the
-  /// version line (long-press copies it).
+  /// The last section: Send feedback, All updates, About Metra, Privacy
+  /// policy, Open-source licenses, then the version line (long-press copies it).
   Widget _about(BuildContext context) {
     final colors = context.colors;
     Widget row(Key key, String title, VoidCallback onTap, {String? detail}) =>
@@ -269,6 +270,7 @@ class SettingsScreen extends StatelessWidget {
         ),
         // Google Play requires the policy to be linked in the app too.
         row(privacyKey, 'Privacy policy', () => openPrivacyPolicy(context)),
+        row(licensesKey, 'Open-source licenses', () => openLicenses(context)),
         const SizedBox(height: 6),
         const VersionLine(key: versionKey),
       ],

@@ -4,6 +4,9 @@ All notable changes to Metra. The format follows [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+### Added
+- Settings › About › Open-source licenses: every library Metra is built with and its license, including the audio engine's native parts (SoLoud, the Ogg, Vorbis, Opus and FLAC codecs, pffft, Signalsmith) and the Saira fonts.
+
 ## [1.9.0] - 2026-11-03
 
 ### Added

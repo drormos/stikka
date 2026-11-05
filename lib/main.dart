@@ -19,6 +19,7 @@ import 'src/model/library.dart';
 import 'src/model/whats_new.dart';
 import 'src/platform/android_bridge.dart';
 import 'src/storage/library_store.dart';
+import 'src/ui/about.dart';
 import 'src/ui/haptics.dart';
 import 'src/ui/media_cover.dart';
 import 'src/ui/metronome_screen.dart';
@@ -27,6 +28,7 @@ import 'src/ui/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  registerBundledLicenses();
   MetronomeController? controller;
   LibraryController? library;
   Object? engineError;

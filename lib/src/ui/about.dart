@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -12,7 +13,7 @@ import 'theme.dart';
 import '../model/whats_new.dart';
 
 /// Settings → About (ui-spec.md "Settings"): Send feedback, All updates,
-/// About Metra, and the version line.
+/// About Metra, Privacy policy, Open-source licenses, and the version line.
 
 const feedbackEmail = 'metra.application@gmail.com';
 
@@ -250,4 +251,101 @@ class AllUpdatesScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Licenses Flutter doesn't collect from pub: the native libraries
+/// flutter_soloud builds into the app (texts in assets/licenses/) and the
+/// bundled fonts.
+const bundledLicenses = [
+  ('SoLoud', 'assets/licenses/soloud.txt'),
+  ('pffft', 'assets/licenses/pffft.txt'),
+  ('Signalsmith Stretch', 'assets/licenses/signalsmith-stretch.txt'),
+  ('Signalsmith Linear', 'assets/licenses/signalsmith-linear.txt'),
+  ('libogg', 'assets/licenses/libogg.txt'),
+  ('libvorbis', 'assets/licenses/libvorbis.txt'),
+  ('Opus', 'assets/licenses/opus.txt'),
+  ('libFLAC', 'assets/licenses/libflac.txt'),
+  ('Saira', 'assets/fonts/OFL-Saira.txt'),
+  ('Saira Extra Condensed', 'assets/fonts/OFL-SairaExtraCondensed.txt'),
+];
+
+/// Adds [bundledLicenses] to the licenses page; once, from main().
+void registerBundledLicenses() => LicenseRegistry.addLicense(() async* {
+  for (final (name, asset) in bundledLicenses) {
+    yield LicenseEntryWithLineBreaks([
+      name,
+    ], await rootBundle.loadString(asset));
+  }
+});
+
+/// "Open-source licenses": Flutter's own licenses page, made to look like
+/// Settings through the theme only (ui-spec.md "Settings" › About).
+Future<void> openLicenses(BuildContext context) async {
+  final app = await appVersion();
+  if (!context.mounted) return;
+  await Navigator.push(
+    context,
+    MaterialPageRoute<void>(
+      builder: (context) {
+        final theme = Theme.of(context);
+        final colors = context.colors;
+        return Localizations.override(
+          context: context,
+          delegates: const [_LicensesTitle.delegate],
+          child: Theme(
+            data: theme.copyWith(
+              cardColor: colors.background,
+              highlightColor: colors.surface,
+              // BackBar's ‹, title and divider.
+              actionIconTheme: ActionIconThemeData(
+                backButtonIconBuilder: (_) =>
+                    const Icon(Icons.chevron_left, size: 28),
+              ),
+              appBarTheme: theme.appBarTheme.copyWith(
+                // BackBar's height, and the title right after the ‹.
+                toolbarHeight: 64,
+                titleSpacing: 0,
+                titleTextStyle: TextStyle(
+                  fontFamily: MetraFonts.body,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                  color: colors.text,
+                ),
+                shape: Border(bottom: BorderSide(color: colors.divider)),
+              ),
+            ),
+            child: LicensePage(
+              applicationName: 'Metra',
+              applicationVersion: '${app.version} (${app.buildNumber})',
+            ),
+          ),
+        );
+      },
+    ),
+  );
+}
+
+/// The licenses page's title; every other string stays Flutter's.
+class _LicensesTitle extends DefaultMaterialLocalizations {
+  const _LicensesTitle();
+
+  static const delegate = _LicensesTitleDelegate();
+
+  @override
+  String get licensesPageTitle => 'Open-source licenses';
+}
+
+class _LicensesTitleDelegate
+    extends LocalizationsDelegate<MaterialLocalizations> {
+  const _LicensesTitleDelegate();
+
+  @override
+  bool isSupported(Locale locale) => true;
+
+  @override
+  Future<MaterialLocalizations> load(Locale locale) =>
+      SynchronousFuture(const _LicensesTitle());
+
+  @override
+  bool shouldReload(_LicensesTitleDelegate old) => false;
 }
