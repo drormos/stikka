@@ -56,14 +56,12 @@ No ads, no account, no tracking. Stikka has no internet access: your songs stay 
 
 Made by a drummer who wanted a metronome that just works, in the practice room and on stage.
 
-## Release notes (224 / 500)
+## Release notes (123 / 500)
 
 The What's new lines of the release (`assets/whats_new.md`), as printed by `tool/release.sh`:
 
-- New: a tuner for guitar and bass. Tap the tuning fork at the top.
-- The click is louder at full volume.
-- The time signature button is now a small square that never changes size.
-- Tap anywhere outside a panel to close it.
+- Metra is now called Stikka. Same app, and all your songs are here.
+- Settings › About now lists the open-source licenses.
 
 ## Graphics
 - App icon (512×512): `store/icon-512.png` (from `tool/icon/app-icon.png`)

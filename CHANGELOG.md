@@ -1,11 +1,18 @@
 # Changelog
 
-All notable changes to Metra. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow the app's `version:` in `pubspec.yaml` (`X.Y.Z+build`). The top released version's What's new lines live in `assets/whats_new.md` (they are also the Play Store notes); see [RELEASING.md](RELEASING.md).
+All notable changes to Stikka (called Metra until 1.10.0). The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow the app's `version:` in `pubspec.yaml` (`X.Y.Z+build`). The top released version's What's new lines live in `assets/whats_new.md` (they are also the Play Store notes); see [RELEASING.md](RELEASING.md).
 
 ## [Unreleased]
 
+## [1.10.0] - 2026-11-09
+
+### Changed
+- Metra is now called Stikka: the launcher, share menu, Quick Settings tile, notification, Settings, About, licenses page, exports, store listing and privacy policy. The app ID stays the same, so it updates in place and every song, set and setting is kept.
+- Exports now start with `stikka1:` and end with "Shared from Stikka". Import finds the data by its content, so exports from Metra 1.9.0 and older (`metra1:`) still import. Metra 1.9.0 and older can't read the new exports: update first.
+- Feedback goes to stikka.app@gmail.com.
+
 ### Added
-- Settings › About › Open-source licenses: every library Metra is built with and its license, including the audio engine's native parts (SoLoud, the Ogg, Vorbis, Opus and FLAC codecs, pffft, Signalsmith) and the Saira fonts.
+- Settings › About › Open-source licenses: every library Stikka is built with and its license, including the audio engine's native parts (SoLoud, the Ogg, Vorbis, Opus and FLAC codecs, pffft, Signalsmith) and the Saira fonts.
 
 ## [1.9.0] - 2026-11-03
 

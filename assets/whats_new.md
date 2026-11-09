@@ -2,6 +2,10 @@
 
 Newest first. The top version's lines are also the Play Store release notes.
 
+## 1.10.0 · Nov 2026
+- Metra is now called Stikka. Same app, and all your songs are here.
+- Settings › About now lists the open-source licenses.
+
 ## 1.9.0 · Nov 2026
 - New: a tuner for guitar and bass. Tap the tuning fork at the top.
 - The click is louder at full volume.

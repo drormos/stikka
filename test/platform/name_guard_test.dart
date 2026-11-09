@@ -32,9 +32,9 @@ void main() {
       final hits = [
         ..._hits('android/app/src/main/AndroidManifest.xml'),
         ..._hits('android/app/build.gradle.kts'),
-        // The rename line says what the app used to be called.
+        // The rename line (also the Play notes) says what the app used to be called.
         ..._hits('assets/whats_new.md', skip: (l) => l.contains('now called')),
-        ..._hits('store/listing.md'),
+        ..._hits('store/listing.md', skip: (l) => l.contains('now called')),
       ];
       expect(hits, isEmpty);
     },
