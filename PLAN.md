@@ -4,8 +4,8 @@
 A sample-accurate metronome for Android (and macOS / iOS), built with Flutter and `flutter_soloud`. Click timing comes from the C++ engine clock, so playback doesn't drift. Map of the code: [ARCHITECTURE.md](ARCHITECTURE.md). How it was built, phase by phase, with every decision: [docs/history.md](docs/history.md).
 
 ## Status (2026-11-09)
-- Release ready: 1.10.0 (build 110): the rename to Stikka (handoff 06) and Settings › About › Open-source licenses (handoff 05). Expedited at Dror's request: no drift run (no scheduler, click output or store change since 1.9.0) and no second emulator upgrade check (the emulator's system server kept crashing in 06; the debug app on the phone upgraded from 1.9.0 with its library byte-identical).
-- Next: upload 1.10.0 (build 110) with the Play listing rename (name, descriptions, feature graphic, privacy URL). Tagged v1.9.0 (2bfe443) and v1.8.0 (46f1473).
+- Release ready: 1.11.0 (build 111): Settings › Color (handoffs 08, 09; saved format 11). No drift run (no scheduler, click output or store change since 1.10.0); long fuzz runs passed (5000 scheduler sessions, 4000 damaged files). The debug app on the phone upgraded from format 10 and kept Red.
+- Next: upload 1.11.0 (build 111). 1.10.0 (build 110) and the Play listing rename, if not done yet. Tagged v1.9.0 (2bfe443) and v1.8.0 (46f1473).
 
 ## Working rules
 - One step per commit; stage specific paths (never `git add -A`: the designer edits `docs/design/` in parallel and those drafts aren't ours to commit).

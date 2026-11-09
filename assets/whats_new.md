@@ -2,6 +2,11 @@
 
 Newest first. The top version's lines are also the Play Store release notes.
 
+## 1.11.0 · Nov 2026
+- New: pick your color in Settings › Color: red, orange, yellow, green, blue or purple.
+- Your color shows in the beat lights, the tempo needle, the lock-screen card and, in the dark theme, the Start button.
+- Delete stays red in every color.
+
 ## 1.10.0 · Nov 2026
 - Metra is now called Stikka. Same app, and all your songs are here.
 - Settings › About now lists the open-source licenses.

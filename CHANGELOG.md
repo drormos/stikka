@@ -4,6 +4,8 @@ All notable changes to Stikka (called Metra until 1.10.0). The format follows [K
 
 ## [Unreleased]
 
+## [1.11.0] - 2026-11-09
+
 ### Added
 - Settings › Color: pick the app's accent color (Red, Orange, Yellow, Green, Blue or Purple). It changes the beat lights, the tempo needle, accent text, the Start button in the dark theme and the lock-screen cover. Delete and other destructive actions stay red. Red is the default, and an update keeps Red.
 
