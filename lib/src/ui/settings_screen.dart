@@ -364,10 +364,10 @@ class SettingsScreen extends StatelessWidget {
                             ring: color == chosen ? colors.text : null,
                           ),
                           child: color == chosen
-                              ? const Icon(
+                              ? Icon(
                                   Icons.check,
                                   size: 22,
-                                  color: SwatchColors.check,
+                                  color: SwatchColors.check(brightness),
                                 )
                               : null,
                         ),

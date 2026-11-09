@@ -51,6 +51,7 @@ void main() {
     WidgetTester tester, {
     Size size = const Size(400, 900),
     bool open = true,
+    ThemeData? theme,
   }) async {
     tester.view
       ..physicalSize = size
@@ -77,7 +78,7 @@ void main() {
       ..addSetlist('Rehearsal');
     await tester.pumpWidget(
       MaterialApp(
-        theme: testTheme,
+        theme: theme ?? testTheme,
         home: MetronomeScreen(controller: metronome, library: library),
       ),
     );
@@ -369,6 +370,36 @@ void main() {
     );
     expect(find.bySemanticsLabel('Color, Red, 1 of 6'), findsOneWidget);
   });
+
+  for (final (theme, brightness, check) in [
+    ('Stage Black', Brightness.dark, 0xFF000000),
+    ('Daylight', Brightness.light, 0xFFFFFFFF),
+  ]) {
+    testWidgets(
+      '$theme: the check is ${check == 0xFF000000 ? 'black' : 'white'} '
+      'in every color',
+      (tester) async {
+        await openSettingsScreen(
+          tester,
+          theme: stikkaTheme(
+            StikkaColors.of(brightness, AccentColor.red),
+            brightness,
+          ),
+        );
+        for (final color in AccentColor.values) {
+          await tester.tap(find.byKey(SettingsScreen.colorKey(color)));
+          await tester.pumpAndSettle();
+          final icon = tester.widget<Icon>(
+            find.descendant(
+              of: find.byKey(SettingsScreen.colorKey(color)),
+              matching: find.byIcon(Icons.check),
+            ),
+          );
+          expect(icon.color!.toARGB32(), check, reason: color.label);
+        }
+      },
+    );
+  }
 
   testWidgets('volume sliders; Reset restores only the volumes', (
     tester,

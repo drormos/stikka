@@ -376,10 +376,13 @@ abstract final class CoverColors {
       StikkaColors.of(Brightness.dark, color).accent;
 }
 
-/// Settings › Color: the check on the chosen swatch is black in every
-/// color and theme (ui-spec.md "Settings" › "Color").
+/// Settings › Color: the check on the chosen swatch (ui-spec.md
+/// "Settings" › "Color"), black in Stage Black and white in Daylight,
+/// whose colors are darker; in every color.
 abstract final class SwatchColors {
-  static const check = Color(0xFF000000);
+  static Color check(Brightness brightness) => brightness == Brightness.dark
+      ? const Color(0xFF000000)
+      : const Color(0xFFFFFFFF);
 }
 
 /// The motion tokens (ui-spec.md "Motion"): one set of values, used for
