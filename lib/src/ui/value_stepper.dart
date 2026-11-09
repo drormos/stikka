@@ -163,7 +163,7 @@ class _ValueStepperState extends State<ValueStepper> {
               maxLines: null,
               textAlignVertical: TextAlignVertical.center,
               style: TextStyle(
-                fontFamily: MetraFonts.condensed,
+                fontFamily: StikkaFonts.condensed,
                 fontSize: widget.fontSize,
                 fontWeight: FontWeight.w700,
                 height: 1,

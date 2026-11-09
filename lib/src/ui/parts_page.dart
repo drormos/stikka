@@ -170,7 +170,7 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
       return;
     }
     final bars = parts[at.part].bars;
-    final into = MetraMotion.reduced(context) ? 0.0 : at.fraction;
+    final into = StikkaMotion.reduced(context) ? 0.0 : at.fraction;
     _progress.value = ((at.bar + into) / bars).clamp(0.0, 1.0);
   }
 
@@ -257,11 +257,11 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
     _scrollTarget = max(0, start - above);
     void follow() {
       if (!_scroll.hasClients) return;
-      final t = MetraMotion.cardCurve.transform(_anchor.value);
+      final t = StikkaMotion.cardCurve.transform(_anchor.value);
       _scroll.position.jumpTo(start + (_scrollTarget - start) * t);
     }
 
-    final duration = MetraMotion.of(context, MetraMotion.cardExpand);
+    final duration = StikkaMotion.of(context, StikkaMotion.cardExpand);
     _anchor
       ..stop()
       ..duration = duration
@@ -531,7 +531,7 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
                         textKey: PartsPage.titleKey,
                         minFontSize: 22,
                         style: const TextStyle(
-                          fontFamily: MetraFonts.condensed,
+                          fontFamily: StikkaFonts.condensed,
                           fontSize: 28,
                           fontWeight: FontWeight.w700,
                         ),
@@ -546,7 +546,7 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
             // either way, so the title never moves.
             AnimatedOpacity(
               opacity: changed ? 1 : 0,
-              duration: MetraMotion.of(context, MetraMotion.controlsFade),
+              duration: StikkaMotion.of(context, StikkaMotion.controlsFade),
               child: IgnorePointer(
                 ignoring: !changed,
                 child: ExcludeSemantics(
@@ -651,7 +651,7 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
                   textKey: PartsPage.titleKey,
                   minFontSize: 22,
                   style: const TextStyle(
-                    fontFamily: MetraFonts.condensed,
+                    fontFamily: StikkaFonts.condensed,
                     fontSize: 28,
                     fontWeight: FontWeight.w700,
                   ),
@@ -703,7 +703,7 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
     final colors = context.colors;
     final flexes = [for (final p in parts) p.bars];
     final sum = flexes.fold(0, (a, b) => a + b);
-    final resize = MetraMotion.of(context, MetraMotion.cardExpand);
+    final resize = StikkaMotion.of(context, StikkaMotion.cardExpand);
     return LayoutBuilder(
       builder: (context, box) {
         final room = box.maxWidth - 3 * (parts.length - 1);
@@ -723,7 +723,7 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
                     // Lengths change smoothly (~180ms).
                     AnimatedContainer(
                       duration: resize,
-                      curve: MetraMotion.cardCurve,
+                      curve: StikkaMotion.cardCurve,
                       width: room * flexes[i] / sum,
                       child: Semantics(
                         button: true,
@@ -768,7 +768,7 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
 
   Widget _block(
     BuildContext context,
-    MetraColors colors,
+    StikkaColors colors,
     SongPart part, {
     required bool selected,
     required bool loops,
@@ -776,7 +776,7 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
     final fill = selected ? colors.text : colors.tickResting;
     // The highlight cross-fades.
     return AnimatedContainer(
-      duration: MetraMotion.of(context, MetraMotion.cardExpand),
+      duration: StikkaMotion.of(context, StikkaMotion.cardExpand),
       height: 28,
       alignment: Alignment.center,
       decoration: BoxDecoration(
@@ -1012,7 +1012,7 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
 
   /// Steady: a full-width 40px dashed "Gradual tempo change" that gives
   /// the part an end tempo.
-  Widget _gradualButton(MetraColors colors, VoidCallback onTap) => InkWell(
+  Widget _gradualButton(StikkaColors colors, VoidCallback onTap) => InkWell(
     key: PartsPage.gradualKey,
     borderRadius: BorderRadius.circular(4),
     onTap: () {
@@ -1049,7 +1049,7 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
   );
 
   /// "Ends at"'s ✕: back to one tempo. A 40px square outlined white.
-  Widget _steadyButton(MetraColors colors, VoidCallback onTap) => Semantics(
+  Widget _steadyButton(StikkaColors colors, VoidCallback onTap) => Semantics(
     label: 'One tempo',
     button: true,
     excludeSemantics: true,
@@ -1195,7 +1195,7 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
                     Text(
                       part.pattern.timeSignature,
                       style: const TextStyle(
-                        fontFamily: MetraFonts.condensed,
+                        fontFamily: StikkaFonts.condensed,
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
                       ),
@@ -1255,11 +1255,11 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
     animation: animation,
     builder: (context, child) {
       final colors = context.colors;
-      final reduced = MetraMotion.reduced(context);
+      final reduced = StikkaMotion.reduced(context);
       final t = reduced
           ? 1.0
           : Curves.easeOut.transform(
-              (animation.value * 250 / MetraMotion.lift.inMilliseconds).clamp(
+              (animation.value * 250 / StikkaMotion.lift.inMilliseconds).clamp(
                 0.0,
                 1.0,
               ),
@@ -1289,9 +1289,9 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
   );
 
   /// "128", or "128 → 140" with a vector arrow.
-  Widget _tempo(MetraColors colors, SongPart part) {
+  Widget _tempo(StikkaColors colors, SongPart part) {
     const style = TextStyle(
-      fontFamily: MetraFonts.condensed,
+      fontFamily: StikkaFonts.condensed,
       fontSize: 24,
       fontWeight: FontWeight.w700,
     );
@@ -1313,7 +1313,7 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
   /// The part's beats: tap cycles accent → regular → muted, as on the main
   /// screen.
   Widget _accents(
-    MetraColors colors,
+    StikkaColors colors,
     MetronomePattern pattern,
     ValueChanged<int> onTap,
   ) => Row(
@@ -1383,7 +1383,7 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
 
   /// The look of a dropdown on this page (the part's Name, "When the song
   /// ends"): [text] and ⌄ in a 40px outline, in a 48dp row.
-  Widget _menuBox(MetraColors colors, String text) => Container(
+  Widget _menuBox(StikkaColors colors, String text) => Container(
     constraints: const BoxConstraints(minWidth: 150, minHeight: 48),
     alignment: Alignment.center,
     child: Container(
@@ -1837,8 +1837,8 @@ class _Arrive extends StatelessWidget {
   @override
   Widget build(BuildContext context) => TweenAnimationBuilder<double>(
     tween: Tween(begin: arriving ? 0 : 1, end: 1),
-    duration: MetraMotion.of(context, MetraMotion.arrive),
-    curve: MetraMotion.arriveCurve,
+    duration: StikkaMotion.of(context, StikkaMotion.arrive),
+    curve: StikkaMotion.arriveCurve,
     builder: (context, t, child) => t == 1
         ? child!
         : ClipRect(
@@ -1860,12 +1860,12 @@ class _FadeIn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final total = MetraMotion.cardFadeDelay + MetraMotion.cardFade;
+    final total = StikkaMotion.cardFadeDelay + StikkaMotion.cardFade;
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
-      duration: MetraMotion.of(context, total),
+      duration: StikkaMotion.of(context, total),
       curve: Interval(
-        MetraMotion.cardFadeDelay.inMicroseconds / total.inMicroseconds,
+        StikkaMotion.cardFadeDelay.inMicroseconds / total.inMicroseconds,
         1,
         curve: Curves.easeOut,
       ),
@@ -1884,11 +1884,11 @@ class _Expand extends StatelessWidget {
   final bool instant;
 
   @override
-  Widget build(BuildContext context) => instant || MetraMotion.reduced(context)
+  Widget build(BuildContext context) => instant || StikkaMotion.reduced(context)
       ? child
       : AnimatedSize(
-          duration: MetraMotion.cardExpand,
-          curve: MetraMotion.cardCurve,
+          duration: StikkaMotion.cardExpand,
+          curve: StikkaMotion.cardCurve,
           alignment: Alignment.topCenter,
           child: child,
         );

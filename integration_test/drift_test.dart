@@ -11,11 +11,11 @@ import 'dart:typed_data';
 import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:metra/src/audio/soloud_click_output.dart';
-import 'package:metra/src/controller/metronome_controller.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/model/on_start.dart';
-import 'package:metra/src/model/song_part.dart';
+import 'package:stikka/src/audio/soloud_click_output.dart';
+import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/model/on_start.dart';
+import 'package:stikka/src/model/song_part.dart';
 
 const _seconds = int.fromEnvironment('DRIFT_SECONDS', defaultValue: 20);
 // tool/drift_parallel.sh: each copy says it's built, then waits for "go",

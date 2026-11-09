@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/timing/engine_clock_smoother.dart';
+import 'package:stikka/src/timing/engine_clock_smoother.dart';
 
 const _ms = Duration(milliseconds: 1);
 

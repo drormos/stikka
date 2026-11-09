@@ -10,20 +10,20 @@ import 'theme.dart';
 
 /// How lit a beat light is [since] its click (negative: before it), for a
 /// light whose next click is [interval] later (ui-spec.md "Beat lights: a
-/// short pulse, not a flash"): up over [MetraMotion.lightRise] from
-/// [MetraMotion.lightLead] before the click (full on the sound), lit for
+/// short pulse, not a flash"): up over [StikkaMotion.lightRise] from
+/// [StikkaMotion.lightLead] before the click (full on the sound), lit for
 /// 35% of the interval, down over 35% (ease-in-out), each part at most
-/// [MetraMotion.lightCap]; then at rest. [reduced] ("Remove animations"):
+/// [StikkaMotion.lightCap]; then at rest. [reduced] ("Remove animations"):
 /// fully on from the click for the same time, then off.
 double beatPulse(Duration since, Duration? interval, {required bool reduced}) {
   final share = interval == null
-      ? MetraMotion.lightCap
-      : interval * MetraMotion.lightShare;
-  final part = share < MetraMotion.lightCap ? share : MetraMotion.lightCap;
-  final rise = MetraMotion.lightRise;
-  final litEnd = rise - MetraMotion.lightLead + part;
+      ? StikkaMotion.lightCap
+      : interval * StikkaMotion.lightShare;
+  final part = share < StikkaMotion.lightCap ? share : StikkaMotion.lightCap;
+  final rise = StikkaMotion.lightRise;
+  final litEnd = rise - StikkaMotion.lightLead + part;
   if (reduced) return since >= Duration.zero && since < litEnd ? 1 : 0;
-  final t = since + MetraMotion.lightLead; // from the start of the rise
+  final t = since + StikkaMotion.lightLead; // from the start of the rise
   if (t.isNegative) return 0;
   double of(Duration a, Duration b) => a.inMicroseconds / b.inMicroseconds;
   // A strong ease-out: ~90% on the sound itself.
@@ -121,9 +121,9 @@ class _BeatIndicatorState extends State<BeatIndicator>
     final blocks = <int, double>{};
     final ticks = <int, double>{};
     if (now != null) {
-      final reduced = MetraMotion.reduced(context);
+      final reduced = StikkaMotion.reduced(context);
       // The step sounding now, and the next one if its light is rising.
-      final next = _controller.stepAt(now + MetraMotion.lightLead);
+      final next = _controller.stepAt(now + StikkaMotion.lightLead);
       for (final s in {?step, ?next}) {
         final perBeat = s.pattern.stepsPerBeat;
         final interval = _controller.stepInterval(s);
@@ -308,7 +308,7 @@ class _BeatIndicatorState extends State<BeatIndicator>
           // Inside a fixed 36px block.
           textScaler: TextScaler.noScaling,
           style: TextStyle(
-            fontFamily: MetraFonts.condensed,
+            fontFamily: StikkaFonts.condensed,
             fontSize: 24,
             fontWeight: FontWeight.w700,
             height: 1,

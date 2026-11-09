@@ -86,7 +86,7 @@ Future<void> main() async {
   // Edge to edge: the screens keep clear of the bars with SafeArea.
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   runApp(
-    MetraApp(
+    StikkaApp(
       controller: controller,
       library: library,
       libraryProblem: libraryProblem,
@@ -169,8 +169,8 @@ Future<MetronomeAudioHandler?> _initAndroidBackground(
   }
 }
 
-class MetraApp extends StatelessWidget {
-  const MetraApp({
+class StikkaApp extends StatelessWidget {
+  const StikkaApp({
     super.key,
     this.controller,
     this.library,
@@ -188,8 +188,8 @@ class MetraApp extends StatelessWidget {
   /// Starts the app over after an engine failure.
   final VoidCallback? onRetry;
 
-  static final _dark = metraTheme(MetraColors.stageBlack, Brightness.dark);
-  static final _light = metraTheme(MetraColors.daylight, Brightness.light);
+  static final _dark = stikkaTheme(StikkaColors.stageBlack, Brightness.dark);
+  static final _light = stikkaTheme(StikkaColors.daylight, Brightness.light);
 
   @override
   Widget build(BuildContext context) {

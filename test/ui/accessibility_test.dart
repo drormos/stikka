@@ -2,15 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/main.dart';
-import 'package:metra/src/controller/library_controller.dart';
-import 'package:metra/src/controller/metronome_controller.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/storage/library_store.dart';
-import 'package:metra/src/ui/metronome_screen.dart';
-import 'package:metra/src/ui/quick_pick.dart';
-import 'package:metra/src/ui/setlist_group.dart';
-import 'package:metra/src/ui/parts_page.dart';
+import 'package:stikka/main.dart';
+import 'package:stikka/src/controller/library_controller.dart';
+import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/storage/library_store.dart';
+import 'package:stikka/src/ui/metronome_screen.dart';
+import 'package:stikka/src/ui/quick_pick.dart';
+import 'package:stikka/src/ui/setlist_group.dart';
+import 'package:stikka/src/ui/parts_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../audio/fake_click_output.dart';
@@ -142,7 +142,7 @@ void main() {
     addTearDown(tester.platformDispatcher.clearLocaleTestValue);
     final controller = MetronomeController(FakeClickOutput());
     addTearDown(controller.dispose);
-    await tester.pumpWidget(MetraApp(controller: controller));
+    await tester.pumpWidget(StikkaApp(controller: controller));
     expect(
       Directionality.of(tester.element(find.byType(MetronomeScreen))),
       TextDirection.ltr,

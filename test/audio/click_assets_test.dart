@@ -2,8 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/model/click_sound.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
+import 'package:stikka/src/model/click_sound.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
 
 /// Click samples must start sounding on their first sample (CLAUDE.md
 /// SAMPLE RULES), otherwise every click lands late by the silence length.

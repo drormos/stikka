@@ -3,11 +3,11 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 /// Design tokens from `docs/design/ui-spec.md`. Every widget color comes
-/// from here (via [MetraColorsContext.colors] or the [ThemeData] built by
-/// [metraTheme]); widgets hardcode none.
+/// from here (via [StikkaColorsContext.colors] or the [ThemeData] built by
+/// [stikkaTheme]); widgets hardcode none.
 @immutable
-class MetraColors extends ThemeExtension<MetraColors> {
-  const MetraColors({
+class StikkaColors extends ThemeExtension<StikkaColors> {
+  const StikkaColors({
     required this.background,
     required this.sheet,
     required this.dim,
@@ -40,7 +40,7 @@ class MetraColors extends ThemeExtension<MetraColors> {
   });
 
   /// Dark theme.
-  static const stageBlack = MetraColors(
+  static const stageBlack = StikkaColors(
     background: Color(0xFF000000),
     sheet: Color(0xFF111111),
     dim: Color(0x99000000),
@@ -73,7 +73,7 @@ class MetraColors extends ThemeExtension<MetraColors> {
   );
 
   /// Light theme. Picked after the dark one; to be checked on a real screen.
-  static const daylight = MetraColors(
+  static const daylight = StikkaColors(
     background: Color(0xFFF3F1EC),
     sheet: Color(0xFFECE9E2),
     dim: Color(0x59000000),
@@ -171,16 +171,16 @@ class MetraColors extends ThemeExtension<MetraColors> {
   final Color onPrimary;
 
   @override
-  MetraColors copyWith() => this;
+  StikkaColors copyWith() => this;
 
   // Theme switches snap; no color animation between the two palettes.
   @override
-  MetraColors lerp(MetraColors? other, double t) =>
+  StikkaColors lerp(StikkaColors? other, double t) =>
       t < 0.5 || other == null ? this : other;
 }
 
-extension MetraColorsContext on BuildContext {
-  MetraColors get colors => Theme.of(this).extension<MetraColors>()!;
+extension StikkaColorsContext on BuildContext {
+  StikkaColors get colors => Theme.of(this).extension<StikkaColors>()!;
 }
 
 /// Saira 500/600 for body text; Saira Extra Condensed 600/700 for the BPM
@@ -200,7 +200,7 @@ abstract final class CoverColors {
 /// The motion tokens (ui-spec.md "Motion"): one set of values, used for
 /// every change on screen instead of ad-hoc durations. Nothing waits for
 /// them, and with "Remove animations" on they're all instant ([of]).
-abstract final class MetraMotion {
+abstract final class StikkaMotion {
   /// Text that changes in place (ui-spec.md "Text that changes in
   /// place"): the changed part appears at once at [brightenFrom] and rises
   /// to full over [brighten]; a change within [brightenSkip] of the one
@@ -273,22 +273,22 @@ abstract final class MetraMotion {
       reduced(context) ? Duration.zero : duration;
 }
 
-abstract final class MetraFonts {
+abstract final class StikkaFonts {
   static const body = 'Saira';
   static const condensed = 'SairaExtraCondensed';
 }
 
-ThemeData metraTheme(MetraColors c, Brightness brightness) {
+ThemeData stikkaTheme(StikkaColors c, Brightness brightness) {
   const shape = RoundedRectangleBorder(
     borderRadius: BorderRadius.all(Radius.circular(4)),
   );
   const label = TextStyle(
-    fontFamily: MetraFonts.body,
+    fontFamily: StikkaFonts.body,
     fontWeight: FontWeight.w600,
   );
   return ThemeData(
     brightness: brightness,
-    fontFamily: MetraFonts.body,
+    fontFamily: StikkaFonts.body,
     scaffoldBackgroundColor: c.background,
     // Settings' volume sliders (settings.reference.html): a 4px rail in
     // the border color, the filled part and a 24px thumb in the text color.

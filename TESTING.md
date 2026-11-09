@@ -14,7 +14,7 @@
 - **`find.ancestor(...).first`** is the nearest ancestor. A panel's layout box (outside its transforms) is the `Opacity` above it in `PanelMotion`.
 - **Kept-mounted widgets still match finders:** the tempo line stays in the tree (invisible) under the count-in and progress line, so `findsNothing` on it is wrong; assert on the visible label instead.
 - **Baselines:** `RenderParagraph.getDistanceToBaseline` asserts outside layout. Lay out a `TextPainter` with the paragraph's `text`, `strutStyle` and `textHeightBehavior` and use `computeDistanceToActualBaseline`.
-- **Real fonts aren't loaded in tests** (glyphs are test boxes). For optical checks load the asset: `FontLoader(MetraFonts.condensed)..addFont(rootBundle.load('assets/fonts/SairaExtraCondensed-Bold.ttf'))` inside `tester.runAsync`.
+- **Real fonts aren't loaded in tests** (glyphs are test boxes). For optical checks load the asset: `FontLoader(StikkaFonts.condensed)..addFont(rootBundle.load('assets/fonts/SairaExtraCondensed-Bold.ttf'))` inside `tester.runAsync`.
 - **Default test screen is 800×600:** a top panel reaches 16 px above the bottom, so a "tap outside" at y 580 hits the panel. Tap in the 12 px side margin, or set `tester.view.physicalSize` (and `devicePixelRatio = 1`, with `addTearDown(tester.view.reset)`). For insets set both `padding` and `viewPadding` (the code reads `viewPadding`).
 - **Keys repeat across controls:** `segment-4` exists in two segmented controls; scope with `find.descendant(of: find.byKey(...))`.
 - **Repeat buttons (hold to repeat):** the timer fires inside one long `pump`, but the button's callback only sees the new value after a rebuild. Pump in 16 ms frames when counting steps.

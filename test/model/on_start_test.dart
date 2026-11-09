@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/model/on_start.dart';
+import 'package:stikka/src/model/on_start.dart';
 
 void main() {
   group('speed up', () {

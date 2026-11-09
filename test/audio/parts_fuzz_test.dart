@@ -1,12 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/audio/click_output.dart';
-import 'package:metra/src/audio/click_scheduler.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/model/on_start.dart';
-import 'package:metra/src/model/song_part.dart';
-import 'package:metra/src/model/song_plan.dart';
+import 'package:stikka/src/audio/click_output.dart';
+import 'package:stikka/src/audio/click_scheduler.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/model/on_start.dart';
+import 'package:stikka/src/model/song_part.dart';
+import 'package:stikka/src/model/song_plan.dart';
 
 import 'fake_click_output.dart';
 

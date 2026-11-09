@@ -71,7 +71,7 @@ class PanelMotionState extends State<PanelMotion>
   // Closing by a tap outside: the plain leave motion.
   bool _plain = false;
 
-  bool get _reduced => MetraMotion.reduced(context);
+  bool get _reduced => StikkaMotion.reduced(context);
   double get _sign => widget.edge == PanelEdge.top ? -1 : 1;
 
   @override
@@ -279,7 +279,7 @@ class PanelMotionState extends State<PanelMotion>
         ? 1.0
         : (PanelMotion.openScale + (1 - PanelMotion.openScale) * shown) *
               (1 - (1 - PanelMotion.backScale) * back);
-    final leave = _plain ? MetraMotion.arriveRise * (1 - shown) : 0.0;
+    final leave = _plain ? StikkaMotion.arriveRise * (1 - shown) : 0.0;
     final rect = _boxRect;
     // About the button: as a fraction of the panel (the first frame, at
     // opacity 0, uses its centre).

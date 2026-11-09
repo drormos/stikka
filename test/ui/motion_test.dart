@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/ui/fit_text.dart';
-import 'package:metra/src/ui/motion.dart';
-import 'package:metra/src/ui/theme.dart';
+import 'package:stikka/src/ui/fit_text.dart';
+import 'package:stikka/src/ui/motion.dart';
+import 'package:stikka/src/ui/theme.dart';
 
 void main() {
   const key = Key('name');
@@ -45,10 +45,10 @@ void main() {
     final [(same, full), (fresh, dim)] = spans(tester);
     expect((same, full), ('Dead Weight', 1.0));
     expect(fresh, ' 2');
-    expect(dim, closeTo(MetraMotion.brightenFrom, 0.01));
-    await tester.pump(MetraMotion.brighten ~/ 2);
+    expect(dim, closeTo(StikkaMotion.brightenFrom, 0.01));
+    await tester.pump(StikkaMotion.brighten ~/ 2);
     expect(spans(tester).last.$2, inExclusiveRange(0.6, 1));
-    await tester.pump(MetraMotion.brighten);
+    await tester.pump(StikkaMotion.brighten);
     expect(tester.widget<Text>(find.byKey(key)).data, 'Dead Weight 2');
   });
 
@@ -65,7 +65,7 @@ void main() {
     final [(same, _), (fresh, dim)] = spans(tester);
     expect(same, isEmpty);
     expect(fresh, 'A much longer name to shrink');
-    expect(dim, closeTo(MetraMotion.brightenFrom, 0.01));
+    expect(dim, closeTo(StikkaMotion.brightenFrom, 0.01));
   });
 
   testWidgets('a change within 250 ms of the last shows at full; a rebuild '
@@ -84,9 +84,9 @@ void main() {
   testWidgets('instant while the tempo is held or dragged, and with '
       '"Remove animations"', (tester) async {
     await tester.pumpWidget(host('One'));
-    MetraMotion.tempoMoving.value++;
+    StikkaMotion.tempoMoving.value++;
     await tester.pumpWidget(host('Two'));
-    MetraMotion.tempoMoving.value--;
+    StikkaMotion.tempoMoving.value--;
     expect(tester.widget<Text>(find.byKey(key)).data, 'Two');
     await tester.pump(const Duration(milliseconds: 400));
     tester.platformDispatcher.accessibilityFeaturesTestValue =
@@ -109,9 +109,9 @@ void main() {
     expect(find.text('Allegro'), findsNothing, reason: 'gone at once');
     expect(
       tester.widget<Opacity>(find.byType(Opacity)).opacity,
-      closeTo(MetraMotion.brightenFrom, 0.01),
+      closeTo(StikkaMotion.brightenFrom, 0.01),
     );
-    await tester.pump(MetraMotion.brighten * 2);
+    await tester.pump(StikkaMotion.brighten * 2);
     expect(find.byType(Opacity), findsNothing);
   });
 }

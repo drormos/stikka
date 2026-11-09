@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/ui/beat_indicator.dart';
+import 'package:stikka/src/ui/beat_indicator.dart';
 
 void main() {
   Duration ms(num v) => Duration(microseconds: (v * 1000).round());

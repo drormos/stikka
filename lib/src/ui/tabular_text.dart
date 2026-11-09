@@ -96,7 +96,7 @@ class _TabularTextState extends State<TabularText> {
 
 /// One digit in its slot (ui-spec.md "BPM: snap in, soft brighten"): when
 /// it changes, the old one is gone at once and the new one appears in the
-/// same frame at [MetraMotion.brightenFrom], rising to full. Never two
+/// same frame at [StikkaMotion.brightenFrom], rising to full. Never two
 /// shapes, never an empty slot, no movement.
 class _BrightenDigit extends StatefulWidget {
   const _BrightenDigit(
@@ -149,9 +149,9 @@ class _BrightenDigitState extends State<_BrightenDigit>
       builder: (context, child) {
         final t = _brighten.value;
         if (t >= 1) return child!;
-        const from = MetraMotion.brightenFrom;
+        const from = StikkaMotion.brightenFrom;
         return Opacity(
-          opacity: from + (1 - from) * MetraMotion.brightenCurve.transform(t),
+          opacity: from + (1 - from) * StikkaMotion.brightenCurve.transform(t),
           child: child,
         );
       },

@@ -3,28 +3,28 @@ import 'dart:io';
 import 'package:flutter/gestures.dart' show kLongPressTimeout;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/controller/library_controller.dart';
-import 'package:metra/src/controller/metronome_controller.dart';
-import 'package:metra/src/model/library.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/storage/library_store.dart';
-import 'package:metra/src/ui/count_in.dart';
-import 'package:metra/src/ui/editor_scaffold.dart' show deleteConfirmKey;
-import 'package:metra/src/ui/metronome_screen.dart';
-import 'package:metra/src/ui/on_start_sheet.dart';
-import 'package:metra/src/ui/parts_page.dart';
-import 'package:metra/src/ui/song_map.dart';
-import 'package:metra/src/ui/free_play_guard.dart';
-import 'package:metra/src/ui/save_as_new_dialog.dart';
-import 'package:metra/src/ui/swipe_row.dart';
-import 'package:metra/src/ui/setlist_group.dart';
-import 'package:metra/src/ui/time_signature_sheet.dart';
-import 'package:metra/src/ui/value_stepper.dart';
+import 'package:stikka/src/controller/library_controller.dart';
+import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/model/library.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/storage/library_store.dart';
+import 'package:stikka/src/ui/count_in.dart';
+import 'package:stikka/src/ui/editor_scaffold.dart' show deleteConfirmKey;
+import 'package:stikka/src/ui/metronome_screen.dart';
+import 'package:stikka/src/ui/on_start_sheet.dart';
+import 'package:stikka/src/ui/parts_page.dart';
+import 'package:stikka/src/ui/song_map.dart';
+import 'package:stikka/src/ui/free_play_guard.dart';
+import 'package:stikka/src/ui/save_as_new_dialog.dart';
+import 'package:stikka/src/ui/swipe_row.dart';
+import 'package:stikka/src/ui/setlist_group.dart';
+import 'package:stikka/src/ui/time_signature_sheet.dart';
+import 'package:stikka/src/ui/value_stepper.dart';
 
 import '../audio/fake_click_output.dart';
 import 'button_text.dart';
 
-import 'package:metra/src/ui/theme.dart';
+import 'package:stikka/src/ui/theme.dart';
 
 import 'test_theme.dart';
 
@@ -218,7 +218,7 @@ void main() {
         tester.widget(find.byKey(LeaveFreePlayKeys.cancel)),
         isA<TextButton>(),
       );
-      final colors = testTheme.extension<MetraColors>()!;
+      final colors = testTheme.extension<StikkaColors>()!;
       Color? fg(Key key) => tester
           .widget<ButtonStyleButton>(find.byKey(key))
           .style!
@@ -549,7 +549,7 @@ void main() {
             ),
           )
           .color,
-      MetraColors.stageBlack.surfaceOnSheet,
+      StikkaColors.stageBlack.surfaceOnSheet,
     );
     expect(drawn.right, lessThan(minus.left));
     // Its label stays one line beside the ✕.
@@ -1050,7 +1050,7 @@ void main() {
         ),
       );
       return (box.decoration! as BoxDecoration).color ==
-          MetraColors.stageBlack.text;
+          StikkaColors.stageBlack.text;
     }
 
     // a: 1 bar, b: 2 bars, both 4/4 at 120 (a bar is 2 s); b loops.

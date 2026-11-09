@@ -126,7 +126,7 @@ class _TunerPageState extends State<TunerPage> {
     );
   }
 
-  Widget _body(BuildContext context, MetraColors colors) => Column(
+  Widget _body(BuildContext context, StikkaColors colors) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
       Expanded(
@@ -245,7 +245,7 @@ class _NoteName extends StatelessWidget {
   );
 
   static TextStyle _style(double size, Color color) => TextStyle(
-    fontFamily: MetraFonts.condensed,
+    fontFamily: StikkaFonts.condensed,
     fontWeight: FontWeight.w700,
     fontSize: size,
     height: 1,
@@ -477,7 +477,7 @@ class _MeterPainter extends CustomPainter {
   final double cents;
   final bool heard;
   final bool inTune;
-  final MetraColors colors;
+  final StikkaColors colors;
 
   @override
   void paint(Canvas canvas, Size size) {

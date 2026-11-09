@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/timing/tap_tempo.dart';
+import 'package:stikka/src/timing/tap_tempo.dart';
 
 const _ms = Duration(milliseconds: 1);
 

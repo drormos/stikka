@@ -141,7 +141,7 @@ class _TempoRulerState extends State<TempoRuler>
   // Restarted by every real move; fires once the finger has rested.
   Timer? _lockTimer;
   bool _locked = false;
-  // Dragged or gliding (see [MetraMotion.tempoMoving]).
+  // Dragged or gliding (see [StikkaMotion.tempoMoving]).
   bool _moving = false;
   // Bpm direction of the last move: +1 up, −1 down.
   int _direction = 0;
@@ -156,7 +156,7 @@ class _TempoRulerState extends State<TempoRuler>
 
   @override
   void dispose() {
-    if (_moving) MetraMotion.moving(-1);
+    if (_moving) StikkaMotion.moving(-1);
     _lockTimer?.cancel();
     _glide.dispose();
     super.dispose();
@@ -175,7 +175,7 @@ class _TempoRulerState extends State<TempoRuler>
   }
 
   void _start(DragStartDetails details) {
-    if (!_moving) MetraMotion.moving(1);
+    if (!_moving) StikkaMotion.moving(1);
     _moving = true;
     _glide.stop(); // touching the ruler stops a glide
     _value ??= widget.bpm.toDouble();
@@ -292,7 +292,7 @@ class _TempoRulerState extends State<TempoRuler>
 
   /// Back to rest: the ruler shows the whole tempo again.
   void _settle() {
-    if (_moving) MetraMotion.moving(-1);
+    if (_moving) StikkaMotion.moving(-1);
     _moving = false;
     if (!mounted) return;
     setState(() => _value = null);
@@ -353,7 +353,7 @@ class _RulerPainter extends CustomPainter {
 
   /// The current tempo; its label is highlighted.
   final int bpm;
-  final MetraColors colors;
+  final StikkaColors colors;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -384,7 +384,7 @@ class _RulerPainter extends CustomPainter {
       if (major) {
         final current = b == bpm;
         final style = TextStyle(
-          fontFamily: MetraFonts.body,
+          fontFamily: StikkaFonts.body,
           fontSize: 13,
           height: 18 / 13,
           fontWeight: current ? FontWeight.w600 : FontWeight.w500,

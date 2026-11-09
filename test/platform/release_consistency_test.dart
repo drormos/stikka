@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/model/whats_new.dart';
+import 'package:stikka/src/model/whats_new.dart';
 
 /// A version name can't ship with stale notes: the pubspec's version, the
 /// top What's new entry (the in-app block and the Play notes) and the top

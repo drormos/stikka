@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/ui/fit_text.dart';
+import 'package:stikka/src/ui/fit_text.dart';
 
 /// The test font draws every character one em wide, so widths are exact.
 void main() {

@@ -35,10 +35,10 @@ abstract final class RowGestures {
   static const springBack = Duration(milliseconds: 180);
 
   /// A committed swipe: the row slides the rest of the way off while it
-  /// fades and the gap closes ([MetraMotion.leave]) as the rows below
+  /// fades and the gap closes ([StikkaMotion.leave]) as the rows below
   /// move up.
   static const slideOff = Duration(milliseconds: 120);
-  static const collapse = MetraMotion.leave;
+  static const collapse = StikkaMotion.leave;
 
   /// A release faster than this (dp/s) commits in its direction even short
   /// of [swipeCommit]; one back toward the start cancels.
@@ -75,11 +75,11 @@ abstract final class RowGestures {
   /// Android's "Remove animations": list, sheet and panel animations are
   /// instant (ui-spec.md "Reduced motion").
   static bool reduceMotion(BuildContext context) =>
-      MetraMotion.reduced(context);
+      StikkaMotion.reduced(context);
 
   /// [duration], or none with "Remove animations" on.
   static Duration motion(BuildContext context, Duration duration) =>
-      MetraMotion.of(context, duration);
+      StikkaMotion.of(context, duration);
 }
 
 /// Running row animations that a new touch hurries along: each registers a
@@ -304,7 +304,7 @@ class RowExitHostState extends State<RowExitHost>
   CatchUp? _catchUp;
 
   /// How far the gap has closed (0 → 1).
-  double get _closed => MetraMotion.leaveSize.transform(_exit.value);
+  double get _closed => StikkaMotion.leaveSize.transform(_exit.value);
 
   /// The row at list position [index] (drawn as [ghost], in [box], [from]
   /// pixels sideways) was just removed from the data: show it leaving.
@@ -372,7 +372,7 @@ class RowExitHostState extends State<RowExitHost>
                           leaving.from + (leaving.to - leaving.from) * slid;
                       return Opacity(
                         opacity:
-                            1 - MetraMotion.leaveFade.transform(_exit.value),
+                            1 - StikkaMotion.leaveFade.transform(_exit.value),
                         child: Transform.translate(
                           offset: Offset(x, 0),
                           child: child,

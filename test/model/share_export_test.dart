@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/model/library.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/model/on_start.dart';
-import 'package:metra/src/model/share_export.dart';
+import 'package:stikka/src/model/library.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/model/on_start.dart';
+import 'package:stikka/src/model/share_export.dart';
 
 const _four = MetronomePattern.standard();
 

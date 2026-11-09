@@ -250,7 +250,7 @@ class _CountInTagState extends State<CountInTag>
     _progress.value = countInProgress(
       controller,
       controller.visualTimeAt(SchedulerBinding.instance.currentFrameTimeStamp),
-      steps: MetraMotion.reduced(context),
+      steps: StikkaMotion.reduced(context),
     );
   }
 

@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart' show AppLifecycleState;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/audio/call_pause.dart';
-import 'package:metra/src/controller/metronome_controller.dart';
-import 'package:metra/src/platform/android_bridge.dart';
+import 'package:stikka/src/audio/call_pause.dart';
+import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/platform/android_bridge.dart';
 
 import '../audio/fake_click_output.dart';
 

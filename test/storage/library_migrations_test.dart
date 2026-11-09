@@ -3,12 +3,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/model/click_sound.dart';
-import 'package:metra/src/model/library.dart';
-import 'package:metra/src/model/library_migrations.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/model/on_start.dart';
-import 'package:metra/src/storage/library_store.dart';
+import 'package:stikka/src/model/click_sound.dart';
+import 'package:stikka/src/model/library.dart';
+import 'package:stikka/src/model/library_migrations.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/model/on_start.dart';
+import 'package:stikka/src/storage/library_store.dart';
 
 /// Golden files: one library in every format that shipped (test/fixtures/,
 /// rebuilt from each release's toJson), loaded through the store, checked,

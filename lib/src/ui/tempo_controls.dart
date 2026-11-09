@@ -29,14 +29,14 @@ class BpmReadout extends StatefulWidget {
   final Key? numberKey;
 
   static TextStyle numberStyle(double fontSize) => TextStyle(
-    fontFamily: MetraFonts.condensed,
+    fontFamily: StikkaFonts.condensed,
     fontSize: fontSize,
     fontWeight: FontWeight.w700,
     height: 0.85,
   );
 
   static TextStyle _unitStyle(double unitSize) =>
-      TextStyle(fontFamily: MetraFonts.body, fontSize: unitSize);
+      TextStyle(fontFamily: StikkaFonts.body, fontSize: unitSize);
 
   /// The largest font size at which three digits, with "bpm" and its
   /// balancing twin, fit [area], up to [max]. It depends on the area only,
@@ -152,7 +152,7 @@ class TempoSteps extends StatelessWidget {
                 label,
                 maxLines: 1,
                 style: TextStyle(
-                  fontFamily: MetraFonts.condensed,
+                  fontFamily: StikkaFonts.condensed,
                   fontSize: fontSize,
                   fontWeight: FontWeight.w600,
                 ),

@@ -284,7 +284,7 @@ class _StageScreenState extends State<StageScreen>
               minFontSize: 24,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontFamily: MetraFonts.condensed,
+                fontFamily: StikkaFonts.condensed,
                 fontSize: 44,
                 fontWeight: FontWeight.w700,
                 height: 1,
@@ -437,7 +437,7 @@ class _StageScreenState extends State<StageScreen>
   ].join(' · ');
 
   /// "Friday set · 4 of 12": opens the set's list, read-only.
-  Widget _position(MetraColors colors, int count, int index) {
+  Widget _position(StikkaColors colors, int count, int index) {
     final set = _library.activeSetlist;
     final text = [
       ?set?.name,
@@ -511,7 +511,7 @@ class _StageScreenState extends State<StageScreen>
   }
 
   Widget _stepButton(
-    MetraColors colors, {
+    StikkaColors colors, {
     required Key key,
     required String label,
     required Song? song,
@@ -589,7 +589,7 @@ class _StageScreenState extends State<StageScreen>
 
   /// The only hold: a dashed pill with a lock, filling left to right over
   /// 1 s. Releasing early resets it and says how to leave.
-  Widget _exitPill(MetraColors colors) => Semantics(
+  Widget _exitPill(StikkaColors colors) => Semantics(
     button: true,
     // TalkBack's double-tap-and-hold is the hold.
     label: 'Exit stage mode, double-tap and hold',

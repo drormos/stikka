@@ -3,12 +3,12 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/audio/soloud_click_output.dart';
-import 'package:metra/src/controller/metronome_controller.dart';
-import 'package:metra/src/model/click_sound.dart';
-import 'package:metra/src/model/click_volumes.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/model/on_start.dart';
+import 'package:stikka/src/audio/soloud_click_output.dart';
+import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/model/click_sound.dart';
+import 'package:stikka/src/model/click_volumes.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/model/on_start.dart';
 
 import '../audio/fake_click_output.dart';
 

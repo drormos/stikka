@@ -157,7 +157,7 @@ class TimeSignatureSheet extends StatelessWidget {
   /// "Off · 2 … 7" in one frame; the beat count itself is dimmed and can't
   /// be chosen (n against n is just the beat). Applies at once (while
   /// playing, from the next beat; Off stops at once); the sheet stays.
-  Widget _polyrhythm(MetraColors colors, int selected, int beats) => Container(
+  Widget _polyrhythm(StikkaColors colors, int selected, int beats) => Container(
     decoration: BoxDecoration(
       border: Border.all(color: colors.border, width: 2),
       borderRadius: BorderRadius.circular(4),
@@ -183,7 +183,7 @@ class TimeSignatureSheet extends StatelessWidget {
   );
 
   Widget _polySegment(
-    MetraColors colors,
+    StikkaColors colors,
     int n, {
     required bool selected,
     required bool enabled,
@@ -210,7 +210,7 @@ class TimeSignatureSheet extends StatelessWidget {
             child: Text(
               n == 0 ? 'Off' : '$n',
               style: TextStyle(
-                fontFamily: n == 0 ? null : MetraFonts.condensed,
+                fontFamily: n == 0 ? null : StikkaFonts.condensed,
                 fontSize: n == 0 ? 15 : 24,
                 fontWeight: n == 0 ? FontWeight.w600 : FontWeight.w700,
                 color: selected
@@ -230,7 +230,7 @@ class TimeSignatureSheet extends StatelessWidget {
   /// and outlined in the text color; tap applies it and closes the sheet.
   Widget _quickPick(
     BuildContext context,
-    MetraColors colors,
+    StikkaColors colors,
     int beats,
     int unit, {
     required bool selected,
@@ -265,7 +265,7 @@ class TimeSignatureSheet extends StatelessWidget {
               child: Text(
                 '$beats/$unit',
                 style: TextStyle(
-                  fontFamily: MetraFonts.condensed,
+                  fontFamily: StikkaFonts.condensed,
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
                   color: selected ? colors.text : colors.muted,

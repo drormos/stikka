@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/model/tuner_note.dart';
+import 'package:stikka/src/model/tuner_note.dart';
 
 void main() {
   test('names the nearest note and octave', () {

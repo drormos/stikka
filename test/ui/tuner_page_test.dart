@@ -4,16 +4,16 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/audio/mic_input.dart';
-import 'package:metra/src/controller/library_controller.dart';
-import 'package:metra/src/controller/metronome_controller.dart';
-import 'package:metra/src/controller/tuner_controller.dart';
-import 'package:metra/src/storage/library_store.dart';
-import 'package:metra/src/ui/metronome_screen.dart';
-import 'package:metra/src/ui/icons.dart';
-import 'package:metra/src/ui/theme.dart';
-import 'package:metra/src/ui/tuner_page.dart';
-import 'package:metra/src/ui/value_stepper.dart';
+import 'package:stikka/src/audio/mic_input.dart';
+import 'package:stikka/src/controller/library_controller.dart';
+import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/controller/tuner_controller.dart';
+import 'package:stikka/src/storage/library_store.dart';
+import 'package:stikka/src/ui/metronome_screen.dart';
+import 'package:stikka/src/ui/icons.dart';
+import 'package:stikka/src/ui/theme.dart';
+import 'package:stikka/src/ui/tuner_page.dart';
+import 'package:stikka/src/ui/value_stepper.dart';
 
 import '../audio/fake_click_output.dart';
 import '../audio/fake_mic_input.dart';
@@ -24,9 +24,9 @@ import 'test_theme.dart';
 /// would cover the cents line and change every width.
 Future<void> loadFonts(WidgetTester tester) => tester.runAsync(() async {
   for (final (family, files) in [
-    (MetraFonts.body, ['Saira-Medium', 'Saira-SemiBold']),
+    (StikkaFonts.body, ['Saira-Medium', 'Saira-SemiBold']),
     (
-      MetraFonts.condensed,
+      StikkaFonts.condensed,
       ['SairaExtraCondensed-Bold', 'SairaExtraCondensed-SemiBold'],
     ),
   ]) {
@@ -53,7 +53,7 @@ void main() {
     LibraryController? library,
     double textScale = 1,
     Size size = const Size(412, 915),
-    MetraColors colors = MetraColors.stageBlack,
+    StikkaColors colors = StikkaColors.stageBlack,
   }) async {
     tester.view
       ..physicalSize = size
@@ -66,9 +66,9 @@ void main() {
           textScaler: TextScaler.linear(textScale),
         ),
         child: MaterialApp(
-          theme: metraTheme(
+          theme: stikkaTheme(
             colors,
-            colors == MetraColors.daylight ? Brightness.light : Brightness.dark,
+            colors == StikkaColors.daylight ? Brightness.light : Brightness.dark,
           ),
           home: TunerPage(library: library, mic: mic),
         ),
@@ -199,8 +199,8 @@ void main() {
   });
 
   for (final (colors, name) in [
-    (MetraColors.stageBlack, 'dark'),
-    (MetraColors.daylight, 'daylight'),
+    (StikkaColors.stageBlack, 'dark'),
+    (StikkaColors.daylight, 'daylight'),
   ]) {
     testWidgets('$name, text at 115% and 200% on 360dp: nothing overflows', (
       tester,
@@ -219,8 +219,8 @@ void main() {
   }
 
   for (final (colors, name) in [
-    (MetraColors.stageBlack, 'dark'),
-    (MetraColors.daylight, 'daylight'),
+    (StikkaColors.stageBlack, 'dark'),
+    (StikkaColors.daylight, 'daylight'),
   ]) {
     testWidgets('$name: tap targets, labels and contrast, listening and '
         'refused', (tester) async {

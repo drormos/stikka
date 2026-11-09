@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:metra/src/audio/click_output.dart';
-import 'package:metra/src/model/click_sound.dart';
-import 'package:metra/src/model/click_volumes.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
+import 'package:stikka/src/audio/click_output.dart';
+import 'package:stikka/src/model/click_sound.dart';
+import 'package:stikka/src/model/click_volumes.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
 
 class FakeClick {
   FakeClick(this.id, this.level, this.at, {this.raised = false});

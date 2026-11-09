@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart' show ThemeMode;
-import 'package:metra/src/model/click_sound.dart';
-import 'package:metra/src/model/click_volumes.dart';
-import 'package:metra/src/model/library.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/model/on_start.dart';
+import 'package:stikka/src/model/click_sound.dart';
+import 'package:stikka/src/model/click_volumes.dart';
+import 'package:stikka/src/model/library.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/model/on_start.dart';
 
 /// One library with every saved field set to a non-default value: the
 /// schema guard serializes it and compares with the snapshot for the

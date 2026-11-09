@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/controller/metronome_controller.dart';
-import 'package:metra/src/ui/count_in.dart';
+import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/ui/count_in.dart';
 
 import '../audio/fake_click_output.dart';
 import 'button_text.dart';

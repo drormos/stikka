@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/storage/library_store.dart';
+import 'package:stikka/src/storage/library_store.dart';
 
 /// Android Auto Backup must carry the library and settings, and nothing
 /// the store writes on the side (temp files, the version-1 copy, corrupt/).

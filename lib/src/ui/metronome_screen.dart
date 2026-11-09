@@ -68,14 +68,14 @@ class MetronomeScreen extends StatelessWidget {
   /// The "4/4" label: one line exactly the font size tall, its leading
   /// split evenly above and below.
   static const meterLabelStyle = TextStyle(
-    fontFamily: MetraFonts.condensed,
+    fontFamily: StikkaFonts.condensed,
     fontSize: 22,
     fontWeight: FontWeight.w700,
     height: 1,
     leadingDistribution: TextLeadingDistribution.even,
   );
   static const _meterStrut = StrutStyle(
-    fontFamily: MetraFonts.condensed,
+    fontFamily: StikkaFonts.condensed,
     fontSize: 22,
     fontWeight: FontWeight.w700,
     height: 1,
@@ -463,7 +463,7 @@ class MetronomeScreen extends StatelessWidget {
   }
 
   static const _titleStyle = TextStyle(
-    fontFamily: MetraFonts.condensed,
+    fontFamily: StikkaFonts.condensed,
     fontSize: 34,
     fontWeight: FontWeight.w700,
     height: 1,
@@ -950,7 +950,7 @@ class _TempoLineState extends State<_TempoLine> {
   }
 
   /// The tempo name, A's line, or C's confirmation.
-  Widget _quiet(MetraColors colors) {
+  Widget _quiet(StikkaColors colors) {
     final saved = _saved;
     return Center(
       child: saved != null
@@ -1010,7 +1010,7 @@ class _TempoLineState extends State<_TempoLine> {
   }
 
   /// Revert · Save · Save as new; the first time, Save is lit (B).
-  Widget _actions(MetraColors colors, LibraryController library) {
+  Widget _actions(StikkaColors colors, LibraryController library) {
     final controller = widget.controller;
     // Plain grey text buttons, "Revert · Save · Save as new": quiet, one
     // tap each (ui-spec.md "Changes to a loaded song").
@@ -1030,7 +1030,7 @@ class _TempoLineState extends State<_TempoLine> {
       child: Text(
         text,
         style: TextStyle(
-          fontFamily: MetraFonts.body,
+          fontFamily: StikkaFonts.body,
           fontSize: 15,
           fontWeight: lit ? FontWeight.w600 : FontWeight.w500,
         ),

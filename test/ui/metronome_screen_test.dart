@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/controller/metronome_controller.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/model/on_start.dart';
-import 'package:metra/src/ui/metronome_screen.dart';
-import 'package:metra/src/ui/on_start_sheet.dart';
-import 'package:metra/src/ui/panel_motion.dart';
-import 'package:metra/src/ui/value_stepper.dart';
-import 'package:metra/src/ui/poly_lane.dart';
-import 'package:metra/src/ui/tabular_text.dart';
-import 'package:metra/src/ui/theme.dart';
-import 'package:metra/src/ui/repeat_button.dart';
-import 'package:metra/src/ui/haptics.dart';
-import 'package:metra/src/ui/tempo_ruler.dart';
-import 'package:metra/src/ui/time_signature_sheet.dart';
-import 'package:metra/src/ui/top_panel.dart';
-import 'package:metra/src/ui/tuner_page.dart';
+import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/model/on_start.dart';
+import 'package:stikka/src/ui/metronome_screen.dart';
+import 'package:stikka/src/ui/on_start_sheet.dart';
+import 'package:stikka/src/ui/panel_motion.dart';
+import 'package:stikka/src/ui/value_stepper.dart';
+import 'package:stikka/src/ui/poly_lane.dart';
+import 'package:stikka/src/ui/tabular_text.dart';
+import 'package:stikka/src/ui/theme.dart';
+import 'package:stikka/src/ui/repeat_button.dart';
+import 'package:stikka/src/ui/haptics.dart';
+import 'package:stikka/src/ui/tempo_ruler.dart';
+import 'package:stikka/src/ui/time_signature_sheet.dart';
+import 'package:stikka/src/ui/top_panel.dart';
+import 'package:stikka/src/ui/tuner_page.dart';
 
 import '../audio/fake_click_output.dart';
 import 'button_text.dart';
@@ -921,7 +921,7 @@ void main() {
   testWidgets('the 4/4 label is optically centred in its 44px box (cap '
       'height, real font)', (tester) async {
     await tester.runAsync(() async {
-      final loader = FontLoader(MetraFonts.condensed)
+      final loader = FontLoader(StikkaFonts.condensed)
         ..addFont(rootBundle.load('assets/fonts/SairaExtraCondensed-Bold.ttf'));
       await loader.load();
     });
@@ -1005,7 +1005,7 @@ void main() {
       await tester.tap(find.byKey(OnStartSheet.countInKey));
       await tester.pumpAndSettle();
       expect(controller.countIn, 1);
-      expect(outline(tester), testTheme.extension<MetraColors>()!.accent);
+      expect(outline(tester), testTheme.extension<StikkaColors>()!.accent);
       expect(inSheet('2 bars'), findsOneWidget);
       expect(inSheet('1 bar'), findsNWidgets(2), reason: 'summary + choice');
       await tester.tap(inSheet('2 bars'));
@@ -1072,7 +1072,7 @@ void main() {
         ..physicalSize = const Size(420, 1400)
         ..devicePixelRatio = 1;
       addTearDown(tester.view.reset);
-      final colors = testTheme.extension<MetraColors>()!;
+      final colors = testTheme.extension<StikkaColors>()!;
       controller.setOnStart(const OnStart(countInOn: true, stopOn: true));
       await pumpScreen(tester);
       await tester.tap(find.byKey(MetronomeScreen.onStartKey));
@@ -1831,7 +1831,7 @@ void main() {
   ) async {
     // The real font: the test font's digits are all the same width anyway.
     await tester.runAsync(() async {
-      final loader = FontLoader(MetraFonts.condensed)
+      final loader = FontLoader(StikkaFonts.condensed)
         ..addFont(rootBundle.load('assets/fonts/SairaExtraCondensed-Bold.ttf'));
       await loader.load();
     });
@@ -1857,8 +1857,8 @@ void main() {
       tester.runAsync(() async {
         TabularText.clearCache(); // measured with the test font so far
         for (final (family, file) in [
-          (MetraFonts.condensed, 'SairaExtraCondensed-Bold'),
-          (MetraFonts.body, 'Saira-Medium'),
+          (StikkaFonts.condensed, 'SairaExtraCondensed-Bold'),
+          (StikkaFonts.body, 'Saira-Medium'),
         ]) {
           await (FontLoader(
             family,
@@ -2112,13 +2112,13 @@ void main() {
       await tester.pump();
       expect(digits(), findsNWidgets(3), reason: 'never two shapes');
       expect(find.text('0'), findsNothing, reason: 'the old is gone');
-      expect(dims(tester), [MetraMotion.brightenFrom], reason: 'units only');
+      expect(dims(tester), [StikkaMotion.brightenFrom], reason: 'units only');
       expect(at(find.text('1').last).center, units.center);
-      await tester.pump(MetraMotion.brighten ~/ 2);
+      await tester.pump(StikkaMotion.brighten ~/ 2);
       expect(dims(tester).single, inExclusiveRange(0.6, 1));
       expect(at(find.byKey(MetronomeScreen.bpmKey)), bpm);
       expect(at(find.byType(TempoRuler)), ruler);
-      await tester.pump(MetraMotion.brighten);
+      await tester.pump(StikkaMotion.brighten);
       expect(dims(tester), isEmpty, reason: 'full');
     });
 
@@ -2137,15 +2137,15 @@ void main() {
       controller.setBpm(123);
       await tester.pump();
       expect(dims(tester), isNotEmpty, reason: 'a slow change brightens');
-      await tester.pump(MetraMotion.brighten * 2);
+      await tester.pump(StikkaMotion.brighten * 2);
     });
 
     testWidgets('while the tempo is being held or dragged, instant', (
       tester,
     ) async {
       await pumpScreen(tester);
-      MetraMotion.tempoMoving.value++;
-      addTearDown(() => MetraMotion.tempoMoving.value--);
+      StikkaMotion.tempoMoving.value++;
+      addTearDown(() => StikkaMotion.tempoMoving.value--);
       await tester.pump();
       controller.setBpm(121);
       await tester.pump();

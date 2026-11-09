@@ -28,7 +28,7 @@ Future<T?> showShareMenu<T>(BuildContext anchor, List<ShareItem<T>> items) {
     _ShareMenuRoute<T>(
       button: button,
       items: items,
-      reduced: MetraMotion.reduced(anchor),
+      reduced: StikkaMotion.reduced(anchor),
     ),
   );
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart' show AppLifecycleState;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/audio/click_scheduler.dart';
-import 'package:metra/src/controller/metronome_controller.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
+import 'package:stikka/src/audio/click_scheduler.dart';
+import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
 
 import 'fake_click_output.dart';
 

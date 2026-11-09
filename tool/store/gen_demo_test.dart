@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/model/library.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/model/on_start.dart';
+import 'package:stikka/src/model/library.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/model/on_start.dart';
 
 /// Writes store/demo/ (the store screenshots' library):
 /// `flutter test tool/store/gen_demo_test.dart`.

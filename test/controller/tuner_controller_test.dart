@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/audio/mic_input.dart';
-import 'package:metra/src/controller/tuner_controller.dart';
+import 'package:stikka/src/audio/mic_input.dart';
+import 'package:stikka/src/controller/tuner_controller.dart';
 
 import '../audio/fake_mic_input.dart';
 import '../audio/pitch_detector_test.dart' show tone;

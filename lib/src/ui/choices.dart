@@ -44,7 +44,7 @@ class Choices<T> extends StatelessWidget {
   }
 
   Widget _chip(
-    MetraColors colors,
+    StikkaColors colors,
     T value,
     String text, {
     required bool selected,

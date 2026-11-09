@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:metra/src/controller/library_controller.dart';
-import 'package:metra/src/controller/metronome_controller.dart';
-import 'package:metra/src/model/click_sound.dart';
-import 'package:metra/src/model/click_volumes.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/model/whats_new.dart';
-import 'package:metra/src/storage/library_store.dart';
-import 'package:metra/src/ui/about.dart';
-import 'package:metra/src/ui/metronome_screen.dart';
-import 'package:metra/src/ui/settings_screen.dart';
-import 'package:metra/src/ui/theme.dart';
-import 'package:metra/src/ui/value_stepper.dart';
+import 'package:stikka/src/controller/library_controller.dart';
+import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/model/click_sound.dart';
+import 'package:stikka/src/model/click_volumes.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/model/whats_new.dart';
+import 'package:stikka/src/storage/library_store.dart';
+import 'package:stikka/src/ui/about.dart';
+import 'package:stikka/src/ui/metronome_screen.dart';
+import 'package:stikka/src/ui/settings_screen.dart';
+import 'package:stikka/src/ui/theme.dart';
+import 'package:stikka/src/ui/value_stepper.dart';
 
 import '../audio/fake_click_output.dart';
 import 'test_theme.dart';
@@ -259,7 +259,7 @@ void main() {
     expect(find.text('Stikka'), findsOneWidget);
     expect(find.text('1.2.3 (7)'), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
-    final colors = testTheme.extension<MetraColors>()!;
+    final colors = testTheme.extension<StikkaColors>()!;
     final bar = tester.widget<AppBar>(find.byType(AppBar));
     expect(
       Theme.of(tester.element(find.byType(AppBar))).cardColor,

@@ -53,7 +53,7 @@ Future<void> showQuickPick(
     context,
     PageRouteBuilder<void>(
       opaque: false,
-      transitionDuration: RowGestures.motion(context, MetraMotion.arrive),
+      transitionDuration: RowGestures.motion(context, StikkaMotion.arrive),
       reverseTransitionDuration: RowGestures.motion(
         context,
         PanelMotion.settle,
@@ -179,15 +179,15 @@ class _QuickPickLayerState extends State<_QuickPickLayer>
       if (mounted && !tall) setState(() => _sized = false);
     }
 
-    if (MetraMotion.reduced(context)) {
+    if (StikkaMotion.reduced(context)) {
       _height.value = target;
       return done();
     }
     _height
         .animateTo(
           target,
-          duration: MetraMotion.arrive,
-          curve: MetraMotion.arriveCurve,
+          duration: StikkaMotion.arrive,
+          curve: StikkaMotion.arriveCurve,
         )
         .whenCompleteOrCancel(done);
   }
@@ -287,7 +287,7 @@ class _QuickPickLayerState extends State<_QuickPickLayer>
   /// 36×4 in a 24px area, centered at the panel's top edge; dragged
   /// through the panel's grab strip ([PanelMotionState.panel]). Screen
   /// readers get it as an action on the panel ([build]).
-  Widget _handle(MetraColors colors) => ExcludeSemantics(
+  Widget _handle(StikkaColors colors) => ExcludeSemantics(
     child: KeyedSubtree(
       key: QuickPick.handleKey,
       child: SizedBox(
@@ -571,7 +571,7 @@ class _QuickPickState extends State<QuickPick>
       _hintKind == kind && i == _hintRow ? _hint : null;
 
   /// The muted line under the list, after the nudge.
-  Widget? _hintNote(MetraColors colors) {
+  Widget? _hintNote(StikkaColors colors) {
     final line = _hintLine;
     if (line == null || _hintKind != _kind) return null;
     return Padding(
@@ -968,7 +968,7 @@ class _QuickPickState extends State<QuickPick>
 
   /// One song to pick, 52px: tap anywhere ticks or unticks (light
   /// haptic). Already in the set: greyed, "In this set", not tappable.
-  Widget _pickRow(MetraColors colors, Song song, {required bool inSet}) {
+  Widget _pickRow(StikkaColors colors, Song song, {required bool inSet}) {
     final ticked = _picked.contains(song.id);
     final faint = inSet ? colors.disabledText : null;
     return Material(
@@ -1402,7 +1402,7 @@ class _QuickPickState extends State<QuickPick>
   }
 
   /// Pick mode's bar: what to do, and Cancel.
-  Widget _exportPickBar(MetraColors colors) => Padding(
+  Widget _exportPickBar(StikkaColors colors) => Padding(
     padding: const EdgeInsets.fromLTRB(14, 4, 4, 4),
     child: Row(
       children: [
@@ -1447,7 +1447,7 @@ class _QuickPickState extends State<QuickPick>
   /// [onPressed] gets the button's context (a menu drops from it).
   Widget _stacked({
     required Key key,
-    required MetraColors colors,
+    required StikkaColors colors,
     required void Function(BuildContext button)? onPressed,
     required Widget icon,
     required String label,
@@ -1507,7 +1507,7 @@ class _QuickPickState extends State<QuickPick>
   /// 56px: the set name with "Song 4 of 12" under it, and "Change set"
   /// on the right.
   Widget _setHeader(
-    MetraColors colors,
+    StikkaColors colors,
     Setlist setlist,
     int count,
     int current,
@@ -1585,7 +1585,7 @@ class _QuickPickState extends State<QuickPick>
   /// One of the set's songs, 48px: its position (the red play marker for
   /// the current one, on the selected background), name and tempo.
   Widget _entryRow(
-    MetraColors colors,
+    StikkaColors colors,
     Setlist setlist,
     Song song,
     int i, {
@@ -1767,7 +1767,7 @@ class _QuickPickState extends State<QuickPick>
       _startRename(_newSongId, _library.newSongName(), _Rename.newSong);
 
   /// The row being renamed: a field with the name selected, and "Done".
-  Widget _renameRow(MetraColors colors, {required Widget leading}) => Container(
+  Widget _renameRow(StikkaColors colors, {required Widget leading}) => Container(
     constraints: const BoxConstraints(minHeight: _rowHeight),
     color: colors.selectedRow,
     padding: const EdgeInsets.only(left: 14, right: 4),
@@ -1803,7 +1803,7 @@ class _QuickPickState extends State<QuickPick>
   );
 
   /// After a removal or deletion: what happened, and "Undo".
-  Widget? _undoBar(MetraColors colors) {
+  Widget? _undoBar(StikkaColors colors) {
     final undo = _undo;
     if (undo == null) return null;
     // Swiped sideways it goes (the action stays done); screen readers
@@ -1855,7 +1855,7 @@ class _QuickPickState extends State<QuickPick>
 
   /// Tap = play (long-press renames: see its [SwipeRow]).
   Widget _songRow(
-    MetraColors colors,
+    StikkaColors colors,
     Song song, {
     required Key key,
     required bool current,
@@ -1883,7 +1883,7 @@ class _QuickPickState extends State<QuickPick>
       Text(
         '${song.bpm}',
         style: const TextStyle(
-          fontFamily: MetraFonts.condensed,
+          fontFamily: StikkaFonts.condensed,
           fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
@@ -1903,7 +1903,7 @@ class _QuickPickState extends State<QuickPick>
 
   /// Tap = load at song 1 (long-press renames: see its [SwipeRow]). The loaded set is
   /// marked like the current song.
-  Widget _setRow(MetraColors colors, Setlist setlist, {required bool loaded}) =>
+  Widget _setRow(StikkaColors colors, Setlist setlist, {required bool loaded}) =>
       _row(
         colors,
         key: ValueKey('quick-set-${setlist.id}'),
@@ -1934,7 +1934,7 @@ class _QuickPickState extends State<QuickPick>
       );
 
   Widget _row(
-    MetraColors colors, {
+    StikkaColors colors, {
     required Key key,
     required bool selected,
     required VoidCallback onTap,

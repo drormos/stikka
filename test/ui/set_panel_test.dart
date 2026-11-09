@@ -5,18 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/semantics.dart';
-import 'package:metra/src/controller/library_controller.dart';
-import 'package:metra/src/controller/metronome_controller.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/storage/library_store.dart';
-import 'package:metra/src/ui/editor_scaffold.dart';
-import 'package:metra/src/ui/metronome_screen.dart';
-import 'package:metra/src/ui/panel_motion.dart';
-import 'package:metra/src/ui/top_panel.dart';
-import 'package:metra/src/ui/quick_pick.dart';
-import 'package:metra/src/ui/setlist_group.dart';
-import 'package:metra/src/ui/theme.dart';
-import 'package:metra/src/ui/swipe_row.dart';
+import 'package:stikka/src/controller/library_controller.dart';
+import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/storage/library_store.dart';
+import 'package:stikka/src/ui/editor_scaffold.dart';
+import 'package:stikka/src/ui/metronome_screen.dart';
+import 'package:stikka/src/ui/panel_motion.dart';
+import 'package:stikka/src/ui/top_panel.dart';
+import 'package:stikka/src/ui/quick_pick.dart';
+import 'package:stikka/src/ui/setlist_group.dart';
+import 'package:stikka/src/ui/theme.dart';
+import 'package:stikka/src/ui/swipe_row.dart';
 
 import '../audio/fake_click_output.dart';
 import 'test_theme.dart';
@@ -305,7 +305,7 @@ void main() {
       expect(find.byKey(QuickPick.undoKey), findsOneWidget);
       await tester.pump(QuickPick.undoFor + const Duration(seconds: 1));
       await tester.pump();
-      await tester.pump(MetraMotion.leave * 2); // past the fade
+      await tester.pump(StikkaMotion.leave * 2); // past the fade
       expect(find.byKey(QuickPick.undoKey), findsNothing);
     });
 
@@ -352,7 +352,7 @@ void main() {
       );
       await tester.pump(QuickPick.hintLineFor);
       await tester.pump();
-      await tester.pump(MetraMotion.leave * 2); // past the fade
+      await tester.pump(StikkaMotion.leave * 2); // past the fade
       expect(inPanel('Hold a song to move it · Swipe to remove'), findsNothing);
       // The sets view teaches its own, once.
       await tester.tap(find.byKey(QuickPick.changeSetKey));
@@ -364,7 +364,7 @@ void main() {
       expect(library.setsHintSeen, isTrue);
       await tester.pump(QuickPick.hintLineFor);
       await tester.pump();
-      await tester.pump(MetraMotion.leave * 2); // past the fade
+      await tester.pump(StikkaMotion.leave * 2); // past the fade
       await tester.tap(find.byKey(QuickPick.backKey));
       await tester.pumpAndSettle();
       await tester.tapAt(const Offset(200, 60));
@@ -894,7 +894,7 @@ void main() {
       await tester.pump();
       expect(tester.getTopLeft(row(0)).dx, closeTo(x - 50, 0.5), reason: '1:1');
       expect(haptics, isEmpty);
-      expect(behindColor(tester), MetraColors.stageBlack.accentResting);
+      expect(behindColor(tester), StikkaColors.stageBlack.accentResting);
       expect(
         tester.getTopLeft(find.byIcon(Icons.delete_outline)).dx,
         greaterThan(x + width / 2),
@@ -903,7 +903,7 @@ void main() {
       await gesture.moveBy(Offset(-width * 0.4, 0));
       await tester.pump(RowGestures.armTransition);
       expect(haptics, ['HapticFeedbackType.lightImpact'], reason: 'one tick');
-      expect(behindColor(tester), MetraColors.stageBlack.accent);
+      expect(behindColor(tester), StikkaColors.stageBlack.accent);
       expect(
         tester.widget<AnimatedScale>(find.byType(AnimatedScale).first).scale,
         RowGestures.armedScale,
@@ -911,7 +911,7 @@ void main() {
       await gesture.moveBy(Offset(width * 0.4, 0));
       await tester.pump(RowGestures.armTransition);
       expect(haptics, hasLength(2), reason: 'a second tick going back');
-      expect(behindColor(tester), MetraColors.stageBlack.accentResting);
+      expect(behindColor(tester), StikkaColors.stageBlack.accentResting);
       await gesture.up();
       await tester.pumpAndSettle();
       expect(friday(), hasLength(3), reason: 'released short: springs back');

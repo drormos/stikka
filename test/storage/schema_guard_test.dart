@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/model/library.dart';
+import 'package:stikka/src/model/library.dart';
 
 import 'sample_library.dart';
 

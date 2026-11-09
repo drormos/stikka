@@ -2,20 +2,20 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/controller/library_controller.dart';
-import 'package:metra/src/controller/metronome_controller.dart';
-import 'package:metra/src/model/library.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/model/on_start.dart';
-import 'package:metra/src/storage/library_store.dart';
-import 'package:metra/src/ui/metronome_screen.dart';
-import 'package:metra/src/ui/parts_page.dart';
-import 'package:metra/src/ui/song_map.dart';
-import 'package:metra/src/ui/top_panel.dart';
-import 'package:metra/src/ui/quick_pick.dart';
-import 'package:metra/src/ui/setlist_group.dart';
-import 'package:metra/src/ui/stage_screen.dart';
-import 'package:metra/src/ui/theme.dart';
+import 'package:stikka/src/controller/library_controller.dart';
+import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/model/library.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/model/on_start.dart';
+import 'package:stikka/src/storage/library_store.dart';
+import 'package:stikka/src/ui/metronome_screen.dart';
+import 'package:stikka/src/ui/parts_page.dart';
+import 'package:stikka/src/ui/song_map.dart';
+import 'package:stikka/src/ui/top_panel.dart';
+import 'package:stikka/src/ui/quick_pick.dart';
+import 'package:stikka/src/ui/setlist_group.dart';
+import 'package:stikka/src/ui/stage_screen.dart';
+import 'package:stikka/src/ui/theme.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../audio/fake_click_output.dart';
@@ -48,7 +48,7 @@ void main() {
 
   Future<void> pump(
     WidgetTester tester, {
-    required MetraColors colors,
+    required StikkaColors colors,
     double textScale = 1,
     bool stage = false,
   }) async {
@@ -88,9 +88,9 @@ void main() {
       ..nextSong(metronome);
     await tester.pumpWidget(
       MaterialApp(
-        theme: metraTheme(
+        theme: stikkaTheme(
           colors,
-          colors == MetraColors.stageBlack ? Brightness.dark : Brightness.light,
+          colors == StikkaColors.stageBlack ? Brightness.dark : Brightness.light,
         ),
         home: stage
             ? StageScreen(controller: metronome, library: library)
@@ -117,8 +117,8 @@ void main() {
   }
 
   for (final (theme, colors) in [
-    ('dark', MetraColors.stageBlack),
-    ('daylight', MetraColors.daylight),
+    ('dark', StikkaColors.stageBlack),
+    ('daylight', StikkaColors.daylight),
   ]) {
     testWidgets('$theme: main screen, panels, sheets, Settings', (
       tester,
@@ -167,7 +167,7 @@ void main() {
   ]) {
     testWidgets('text at ${(scale * 100).round()}% on '
         '${size.width.toInt()}dp: nothing breaks anywhere', (tester) async {
-      await pump(tester, colors: MetraColors.stageBlack, textScale: scale);
+      await pump(tester, colors: StikkaColors.stageBlack, textScale: scale);
       tester.view.physicalSize = size;
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull, reason: 'main screen');
@@ -202,8 +202,8 @@ void main() {
 
   // Stage mode: the guidelines in both themes, and large text.
   for (final (theme, colors) in [
-    ('dark', MetraColors.stageBlack),
-    ('daylight', MetraColors.daylight),
+    ('dark', StikkaColors.stageBlack),
+    ('daylight', StikkaColors.daylight),
   ]) {
     testWidgets('$theme: stage mode', (tester) async {
       final handle = tester.ensureSemantics();
@@ -223,7 +223,7 @@ void main() {
         '${size.width.toInt()}dp: nothing breaks', (tester) async {
       await pump(
         tester,
-        colors: MetraColors.stageBlack,
+        colors: StikkaColors.stageBlack,
         textScale: scale,
         stage: true,
       );
@@ -247,8 +247,8 @@ void main() {
   }
 
   for (final (theme, colors) in [
-    ('dark', MetraColors.stageBlack),
-    ('daylight', MetraColors.daylight),
+    ('dark', StikkaColors.stageBlack),
+    ('daylight', StikkaColors.daylight),
   ]) {
     testWidgets('$theme: parts page', (tester) async {
       final handle = tester.ensureSemantics();
@@ -266,7 +266,7 @@ void main() {
   ]) {
     testWidgets('parts page, text at ${(scale * 100).round()}% on '
         '${size.width.toInt()}dp: nothing breaks', (tester) async {
-      await pump(tester, colors: MetraColors.stageBlack, textScale: scale);
+      await pump(tester, colors: StikkaColors.stageBlack, textScale: scale);
       tester.view.physicalSize = size;
       await tester.pumpAndSettle();
       await openParts(tester);
@@ -295,8 +295,8 @@ void main() {
   );
 
   for (final (theme, colors) in [
-    ('dark', MetraColors.stageBlack),
-    ('daylight', MetraColors.daylight),
+    ('dark', StikkaColors.stageBlack),
+    ('daylight', StikkaColors.daylight),
   ]) {
     testWidgets('$theme: main screen with parts', (tester) async {
       final handle = tester.ensureSemantics();
@@ -312,7 +312,7 @@ void main() {
   }
   testWidgets('main screen with parts, text at 200% on 320dp: nothing '
       'breaks', (tester) async {
-    await pump(tester, colors: MetraColors.stageBlack, textScale: 2);
+    await pump(tester, colors: StikkaColors.stageBlack, textScale: 2);
     tester.view.physicalSize = const Size(320, 690);
     withParts();
     await tester.pumpAndSettle();

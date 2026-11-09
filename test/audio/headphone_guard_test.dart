@@ -2,7 +2,7 @@
 
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/audio/headphone_guard.dart';
+import 'package:stikka/src/audio/headphone_guard.dart';
 
 AudioDevice _device(AudioDeviceType type, {bool isOutput = true}) =>
     AudioDevice(

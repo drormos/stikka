@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/ui/media_cover.dart';
+import 'package:stikka/src/ui/media_cover.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

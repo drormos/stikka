@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/model/on_start.dart';
-import 'package:metra/src/model/song_part.dart';
-import 'package:metra/src/model/song_plan.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/model/on_start.dart';
+import 'package:stikka/src/model/song_part.dart';
+import 'package:stikka/src/model/song_plan.dart';
 
 const _four = MetronomePattern.standard();
 final _three = MetronomePattern.simple(beatsPerBar: 3, stepsPerBeat: 1);

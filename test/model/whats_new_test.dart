@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/controller/library_controller.dart';
-import 'package:metra/src/model/whats_new.dart';
-import 'package:metra/src/storage/library_store.dart';
+import 'package:stikka/src/controller/library_controller.dart';
+import 'package:stikka/src/model/whats_new.dart';
+import 'package:stikka/src/storage/library_store.dart';
 
 void main() {
   late Directory dir;

@@ -77,8 +77,8 @@ class _PolyLaneState extends State<PolyLane>
     final pulse = now == null ? null : _controller.pulseAt(now);
     final lights = <int, double>{};
     if (now != null) {
-      final reduced = MetraMotion.reduced(context);
-      final next = _controller.pulseAt(now + MetraMotion.lightLead);
+      final reduced = StikkaMotion.reduced(context);
+      final next = _controller.pulseAt(now + StikkaMotion.lightLead);
       for (final p in {?pulse, ?next}) {
         // Only a pulse of the lane being drawn lights, never a muted one.
         if (p.level == StepLevel.silent ||

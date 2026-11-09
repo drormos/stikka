@@ -151,7 +151,7 @@ class _SongMapState extends State<SongMap> with TickerProviderStateMixin {
     final blocks = SongMap.layout(parts);
     if (_controller.isPlaying) _going = part;
     _snapTween = Tween(begin: _drag ?? _x, end: blocks[part].x);
-    _snap.duration = MetraMotion.of(context, MetraMotion.mapSnap);
+    _snap.duration = StikkaMotion.of(context, StikkaMotion.mapSnap);
     _snap.forward(from: 0).whenComplete(() {
       if (mounted) setState(() => _drag = null);
     });
@@ -257,7 +257,7 @@ class _MapPainter extends CustomPainter {
 
   /// The last part loops until Stop: a loop icon after its name.
   final bool loops;
-  final MetraColors colors;
+  final StikkaColors colors;
 
   static const _blockTop = 8.0;
 
@@ -332,7 +332,7 @@ class _MapPainter extends CustomPainter {
       text: TextSpan(
         text: part.name,
         style: TextStyle(
-          fontFamily: MetraFonts.body,
+          fontFamily: StikkaFonts.body,
           fontSize: 11,
           fontWeight: FontWeight.w600,
           color: color,

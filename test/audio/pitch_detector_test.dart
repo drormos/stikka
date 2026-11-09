@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/audio/pitch_detector.dart';
+import 'package:stikka/src/audio/pitch_detector.dart';
 
 /// [hz] with [harmonics] (amplitude per partial, the fundamental first),
 /// plus a little noise: a stand-in for a plucked string.

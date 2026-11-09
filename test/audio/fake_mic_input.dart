@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:metra/src/audio/mic_input.dart';
+import 'package:stikka/src/audio/mic_input.dart';
 
 /// A microphone for tests: a permission to set, what the dialog answers,
 /// and samples pushed by hand.

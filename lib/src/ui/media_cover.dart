@@ -24,7 +24,7 @@ Future<Uint8List> renderMediaCover(int bpm, {int size = 512}) async {
     text: TextSpan(
       text: '$bpm',
       style: TextStyle(
-        fontFamily: MetraFonts.condensed,
+        fontFamily: StikkaFonts.condensed,
         fontWeight: FontWeight.w700,
         fontSize: 96 * u, // ~48% of the height
         height: 0.85,

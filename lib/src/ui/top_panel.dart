@@ -94,7 +94,7 @@ class _TopPanelRoute extends PopupRoute<void> {
 
   @override
   Duration get transitionDuration =>
-      reduced ? Duration.zero : MetraMotion.arrive;
+      reduced ? Duration.zero : StikkaMotion.arrive;
 
   @override
   Duration get reverseTransitionDuration =>
@@ -224,7 +224,7 @@ class _TopPanelPage extends StatelessWidget {
     );
   }
 
-  Widget _surface(BuildContext context, MetraColors colors) => Container(
+  Widget _surface(BuildContext context, StikkaColors colors) => Container(
     key: TopPanel.surfaceKey,
     decoration: BoxDecoration(
       color: colors.sheet,

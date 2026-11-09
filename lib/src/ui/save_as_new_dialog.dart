@@ -111,7 +111,7 @@ class _SaveAsNewDialogState extends State<_SaveAsNewDialog> {
               onChanged: (_) => setState(() {}),
               onSubmitted: (_) => _save(),
               style: const TextStyle(
-                fontFamily: MetraFonts.condensed,
+                fontFamily: StikkaFonts.condensed,
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
               ),
@@ -171,7 +171,7 @@ class _SaveAsNewDialogState extends State<_SaveAsNewDialog> {
   /// "Add to a setlist": a closed field showing the choice; tapped, the
   /// choices open in place (None, the 3 most recently played sets, "More
   /// setlists ⌄" for the rest, "+ New setlist").
-  List<Widget> _addToSet(MetraColors colors) {
+  List<Widget> _addToSet(StikkaColors colors) {
     final library = widget.library;
     final sets = library.setlistsRecentlyPlayed;
     final label = Text(

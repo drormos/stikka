@@ -3,19 +3,19 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/main.dart';
-import 'package:metra/src/controller/library_controller.dart';
-import 'package:metra/src/controller/metronome_controller.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/model/on_start.dart';
-import 'package:metra/src/storage/library_store.dart';
-import 'package:metra/src/ui/metronome_screen.dart';
-import 'package:metra/src/ui/play_marker.dart';
-import 'package:metra/src/ui/quick_pick.dart';
-import 'package:metra/src/ui/setlist_group.dart';
-import 'package:metra/src/ui/stage_screen.dart';
-import 'package:metra/src/ui/tempo_controls.dart';
-import 'package:metra/src/ui/theme.dart';
+import 'package:stikka/main.dart';
+import 'package:stikka/src/controller/library_controller.dart';
+import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/model/on_start.dart';
+import 'package:stikka/src/storage/library_store.dart';
+import 'package:stikka/src/ui/metronome_screen.dart';
+import 'package:stikka/src/ui/play_marker.dart';
+import 'package:stikka/src/ui/quick_pick.dart';
+import 'package:stikka/src/ui/setlist_group.dart';
+import 'package:stikka/src/ui/stage_screen.dart';
+import 'package:stikka/src/ui/tempo_controls.dart';
+import 'package:stikka/src/ui/theme.dart';
 
 import '../audio/fake_click_output.dart';
 import 'button_text.dart';
@@ -95,7 +95,7 @@ void main() {
     if (tipSeen) library.markTipSeen(LibraryController.stageTip);
     before?.call();
     if (stage) library.enterStageMode(metronome);
-    await tester.pumpWidget(MetraApp(controller: metronome, library: library));
+    await tester.pumpWidget(StikkaApp(controller: metronome, library: library));
   }
 
   String hint(WidgetTester tester) =>
@@ -331,7 +331,7 @@ void main() {
           matching: find.byType(Scaffold),
         ),
       );
-      expect(scaffold.backgroundColor, MetraColors.daylight.background);
+      expect(scaffold.backgroundColor, StikkaColors.daylight.background);
     });
 
     testWidgets('while playing, the line under the BPM shows the run\'s '

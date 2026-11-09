@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/model/tempo_name.dart';
+import 'package:stikka/src/model/tempo_name.dart';
 
 void main() {
   test('tempo names at their boundaries (metronome scale)', () {

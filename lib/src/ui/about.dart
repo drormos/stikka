@@ -306,7 +306,7 @@ Future<void> openLicenses(BuildContext context) async {
                 toolbarHeight: 64,
                 titleSpacing: 0,
                 titleTextStyle: TextStyle(
-                  fontFamily: MetraFonts.body,
+                  fontFamily: StikkaFonts.body,
                   fontSize: 22,
                   fontWeight: FontWeight.w600,
                   color: colors.text,

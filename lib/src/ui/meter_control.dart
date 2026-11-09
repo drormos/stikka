@@ -78,7 +78,7 @@ class MeterControl extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final big = TextStyle(
-      fontFamily: MetraFonts.condensed,
+      fontFamily: StikkaFonts.condensed,
       fontSize: size * 0.82,
       fontWeight: FontWeight.w700,
     );
@@ -118,7 +118,7 @@ class MeterControl extends StatelessWidget {
             onSelected: (option) => onChanged(beats, option),
             height: size - 4,
             style: const TextStyle(
-              fontFamily: MetraFonts.condensed,
+              fontFamily: StikkaFonts.condensed,
               fontSize: 26,
               fontWeight: FontWeight.w700,
             ),

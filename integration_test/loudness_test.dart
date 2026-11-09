@@ -11,11 +11,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:metra/src/audio/soloud_click_output.dart';
-import 'package:metra/src/controller/metronome_controller.dart';
-import 'package:metra/src/model/click_sound.dart';
-import 'package:metra/src/model/click_volumes.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
+import 'package:stikka/src/audio/soloud_click_output.dart';
+import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/model/click_sound.dart';
+import 'package:stikka/src/model/click_volumes.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
 
 const _sampleRate = 44100;
 const _full = ClickVolumes(accent: 1, beat: 1, subdivision: 1, polyrhythm: 1);

@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/controller/library_controller.dart';
-import 'package:metra/src/controller/metronome_controller.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/storage/library_store.dart';
-import 'package:metra/src/ui/metronome_screen.dart';
-import 'package:metra/src/ui/parts_page.dart';
-import 'package:metra/src/ui/time_signature_sheet.dart';
+import 'package:stikka/src/controller/library_controller.dart';
+import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/storage/library_store.dart';
+import 'package:stikka/src/ui/metronome_screen.dart';
+import 'package:stikka/src/ui/parts_page.dart';
+import 'package:stikka/src/ui/time_signature_sheet.dart';
 
 import '../audio/fake_click_output.dart';
 import 'test_theme.dart';

@@ -4,21 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show RenderRepaintBoundary;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/main.dart';
-import 'package:metra/src/controller/library_controller.dart';
-import 'package:metra/src/controller/metronome_controller.dart';
-import 'package:metra/src/model/library.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/model/on_start.dart';
-import 'package:metra/src/storage/library_store.dart';
-import 'package:metra/src/ui/metronome_screen.dart';
-import 'package:metra/src/ui/song_map.dart';
-import 'package:metra/src/ui/stage_screen.dart';
-import 'package:metra/src/ui/tempo_ruler.dart';
+import 'package:stikka/main.dart';
+import 'package:stikka/src/controller/library_controller.dart';
+import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/model/library.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/model/on_start.dart';
+import 'package:stikka/src/storage/library_store.dart';
+import 'package:stikka/src/ui/metronome_screen.dart';
+import 'package:stikka/src/ui/song_map.dart';
+import 'package:stikka/src/ui/stage_screen.dart';
+import 'package:stikka/src/ui/tempo_ruler.dart';
 
 import '../audio/fake_click_output.dart';
 
-import 'package:metra/src/ui/theme.dart';
+import 'package:stikka/src/ui/theme.dart';
 
 import 'test_theme.dart';
 
@@ -135,7 +135,7 @@ void main() {
         ..loadSetlist(set.id, metronome)
         ..enterStageMode(metronome);
       await tester.pumpWidget(
-        MetraApp(controller: metronome, library: library),
+        StikkaApp(controller: metronome, library: library),
       );
     } else {
       library.playSingleSong(song, metronome);
@@ -260,10 +260,10 @@ void main() {
     );
     expect(
       (box.decoration! as BoxDecoration).color,
-      MetraColors.stageBlack.text,
+      StikkaColors.stageBlack.text,
       reason: 'white tag',
     );
-    expect(tag().style!.color, MetraColors.stageBlack.background);
+    expect(tag().style!.color, StikkaColors.stageBlack.background);
     await runTo(tester, 4300); // beat 2 at 4120
     expect(tag().data, 'Verse in 3');
     // Verse (4 bars of 3/4 at 120, from 5920): short too, from bar 1.

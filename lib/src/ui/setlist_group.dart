@@ -229,7 +229,7 @@ class SetlistGroup extends StatelessWidget {
   /// An icon over a 12px label; the current mode white with a 2px red
   /// line on its top edge (over the bar's 1px line), the others muted.
   Widget _tab(
-    MetraColors colors, {
+    StikkaColors colors, {
     required Key key,
     required Widget icon,
     required String label,
@@ -437,7 +437,7 @@ class SetlistGroup extends StatelessWidget {
                           position,
                           brightens: true,
                           style: const TextStyle(
-                            fontFamily: MetraFonts.condensed,
+                            fontFamily: StikkaFonts.condensed,
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                           ),
@@ -470,7 +470,7 @@ class SetlistGroup extends StatelessWidget {
   /// small and muted with a small chevron: "‹ 98 bpm" / "168 bpm ›".
   Widget _stepButton({
     required Key key,
-    required MetraColors colors,
+    required StikkaColors colors,
     required Song? song,
     required bool forward,
     required VoidCallback onPressed,

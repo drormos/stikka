@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
 
 void main() {
   group('MetronomePattern', () {

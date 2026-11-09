@@ -48,7 +48,7 @@ class _RepeatButtonState extends State<RepeatButton> {
   Duration _held = Duration.zero;
 
   void _start() {
-    if (!_holding) MetraMotion.moving(1);
+    if (!_holding) StikkaMotion.moving(1);
     _holding = true;
     widget.onPressed?.call();
     _held = RepeatButton.holdDelay;
@@ -80,7 +80,7 @@ class _RepeatButtonState extends State<RepeatButton> {
   }
 
   void _stop() {
-    if (_holding) MetraMotion.moving(-1);
+    if (_holding) StikkaMotion.moving(-1);
     _holding = false;
     _repeat?.cancel();
     _repeat = null;

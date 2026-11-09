@@ -4,8 +4,8 @@ import 'package:flutter/scheduler.dart';
 import 'theme.dart';
 
 /// Decides how a change of text in place shows (ui-spec.md "Text that
-/// changes in place"): brightening from ~60% over [MetraMotion.brighten],
-/// or at full at once when it comes within [MetraMotion.brightenSkip] of
+/// changes in place"): brightening from ~60% over [StikkaMotion.brighten],
+/// or at full at once when it comes within [StikkaMotion.brightenSkip] of
 /// the last change (fast tapping never pulses), while a ±button is held
 /// or the ruler moves, or with "Remove animations" on. Call [next] once
 /// per real change.
@@ -16,17 +16,17 @@ class BrightenGate {
     final now = SchedulerBinding.instance.currentFrameTimeStamp;
     final last = _last;
     _last = now;
-    if (last != null && now - last < MetraMotion.brightenSkip) {
+    if (last != null && now - last < StikkaMotion.brightenSkip) {
       return Duration.zero;
     }
-    if (MetraMotion.tempoMoving.value > 0) return Duration.zero;
-    return MetraMotion.of(context, MetraMotion.brighten);
+    if (StikkaMotion.tempoMoving.value > 0) return Duration.zero;
+    return StikkaMotion.of(context, StikkaMotion.brighten);
   }
 
   /// The new text's opacity [t] (0 → 1) into its brightening.
   static double opacity(double t) =>
-      MetraMotion.brightenFrom +
-      (1 - MetraMotion.brightenFrom) * MetraMotion.brightenCurve.transform(t);
+      StikkaMotion.brightenFrom +
+      (1 - StikkaMotion.brightenFrom) * StikkaMotion.brightenCurve.transform(t);
 }
 
 /// A whole state that replaces another in place (the line under the BPM:
@@ -93,11 +93,11 @@ class ArriveLeave extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (MetraMotion.reduced(context)) return child ?? const SizedBox.shrink();
+    if (StikkaMotion.reduced(context)) return child ?? const SizedBox.shrink();
     final current = child?.key ?? _none;
     return AnimatedSwitcher(
-      duration: MetraMotion.arrive,
-      reverseDuration: MetraMotion.leave,
+      duration: StikkaMotion.arrive,
+      reverseDuration: StikkaMotion.leave,
       layoutBuilder: (current, previous) => Stack(
         alignment: Alignment.topCenter,
         children: [...previous, ?current],
@@ -108,11 +108,11 @@ class ArriveLeave extends StatelessWidget {
         builder: (context, child) {
           final t = animation.value;
           if (child!.key == current) {
-            final p = MetraMotion.arriveCurve.transform(t);
+            final p = StikkaMotion.arriveCurve.transform(t);
             return Opacity(
               opacity: p,
               child: Transform.translate(
-                offset: Offset(0, MetraMotion.arriveRise * (1 - p)),
+                offset: Offset(0, StikkaMotion.arriveRise * (1 - p)),
                 child: child,
               ),
             );
@@ -123,7 +123,7 @@ class ArriveLeave extends StatelessWidget {
           final faded = IgnorePointer(
             child: ExcludeSemantics(
               child: Opacity(
-                opacity: 1 - MetraMotion.leaveFade.transform(gone),
+                opacity: 1 - StikkaMotion.leaveFade.transform(gone),
                 child: child,
               ),
             ),
@@ -132,7 +132,7 @@ class ArriveLeave extends StatelessWidget {
           return ClipRect(
             child: Align(
               alignment: Alignment.topCenter,
-              heightFactor: 1 - MetraMotion.leaveSize.transform(gone),
+              heightFactor: 1 - StikkaMotion.leaveSize.transform(gone),
               child: faded,
             ),
           );
@@ -155,16 +155,16 @@ class Arrive extends StatelessWidget {
   @override
   Widget build(BuildContext context) => TweenAnimationBuilder<double>(
     key: ValueKey(value),
-    tween: Tween(begin: MetraMotion.reduced(context) ? 1 : 0, end: 1),
-    duration: MetraMotion.arrive,
-    curve: MetraMotion.arriveCurve,
+    tween: Tween(begin: StikkaMotion.reduced(context) ? 1 : 0, end: 1),
+    duration: StikkaMotion.arrive,
+    curve: StikkaMotion.arriveCurve,
     child: child,
     builder: (context, p, child) => p == 1
         ? child!
         : Opacity(
             opacity: p,
             child: Transform.translate(
-              offset: Offset(0, MetraMotion.arriveRise * (1 - p)),
+              offset: Offset(0, StikkaMotion.arriveRise * (1 - p)),
               child: child,
             ),
           ),

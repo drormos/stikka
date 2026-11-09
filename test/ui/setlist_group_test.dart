@@ -4,23 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/controller/library_controller.dart';
-import 'package:metra/src/controller/metronome_controller.dart';
-import 'package:metra/src/model/metronome_pattern.dart';
-import 'package:metra/src/storage/library_store.dart';
-import 'package:metra/src/ui/metronome_screen.dart';
-import 'package:metra/src/ui/editor_scaffold.dart';
-import 'package:metra/src/ui/play_marker.dart';
-import 'package:metra/src/ui/quick_pick.dart';
-import 'package:metra/src/ui/save_as_new_dialog.dart';
-import 'package:metra/src/ui/setlist_group.dart';
-import 'package:metra/src/ui/parts_page.dart';
-import 'package:metra/src/ui/tabular_text.dart';
-import 'package:metra/src/ui/tempo_ruler.dart';
+import 'package:stikka/src/controller/library_controller.dart';
+import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/model/metronome_pattern.dart';
+import 'package:stikka/src/storage/library_store.dart';
+import 'package:stikka/src/ui/metronome_screen.dart';
+import 'package:stikka/src/ui/editor_scaffold.dart';
+import 'package:stikka/src/ui/play_marker.dart';
+import 'package:stikka/src/ui/quick_pick.dart';
+import 'package:stikka/src/ui/save_as_new_dialog.dart';
+import 'package:stikka/src/ui/setlist_group.dart';
+import 'package:stikka/src/ui/parts_page.dart';
+import 'package:stikka/src/ui/tabular_text.dart';
+import 'package:stikka/src/ui/tempo_ruler.dart';
 
 import '../audio/fake_click_output.dart';
 
-import 'package:metra/src/ui/theme.dart';
+import 'package:stikka/src/ui/theme.dart';
 
 import 'test_theme.dart';
 
@@ -318,7 +318,7 @@ void main() {
               .widget<Text>(find.byKey(MetronomeScreen.partsHintKey))
               .style!
               .color,
-          testTheme.extension<MetraColors>()!.muted,
+          testTheme.extension<StikkaColors>()!.muted,
         );
         await tester.pump(const Duration(milliseconds: 16));
         expect(titleDimmed(), findsWidgets, reason: 'one soft brighten');
@@ -326,7 +326,7 @@ void main() {
         expect(titleDimmed(), findsNothing);
         await tester.pump(const Duration(seconds: 4));
         await tester.pump();
-        await tester.pump(MetraMotion.leave * 2);
+        await tester.pump(StikkaMotion.leave * 2);
         expect(find.text(hint), findsNothing);
         expect(find.byKey(MetronomeScreen.tempoNameKey), findsOneWidget);
         await tester.tap(find.byKey(SetlistGroup.nextKey)); // Two
@@ -413,7 +413,7 @@ void main() {
         expect(find.text(firstLoad), findsOneWidget);
         await tester.pump(const Duration(seconds: 4));
         await tester.pump();
-        await tester.pump(MetraMotion.leave * 2); // past the fade
+        await tester.pump(StikkaMotion.leave * 2); // past the fade
         expect(find.text(firstLoad), findsNothing);
         expect(find.byKey(MetronomeScreen.tempoNameKey), findsOneWidget);
         await tester.tap(find.byKey(SetlistGroup.nextKey)); // Two
@@ -443,7 +443,7 @@ void main() {
         expect(find.text(firstLoad), findsOneWidget);
         await tester.pump(const Duration(seconds: 4));
         await tester.pump();
-        await tester.pump(MetraMotion.leave * 2); // past the fade
+        await tester.pump(StikkaMotion.leave * 2); // past the fade
         library.saveAsNewSong('Fresher', metronome, fresh: true);
         await tester.pump();
         expect(find.text(firstLoad), findsNothing, reason: 'once');
@@ -461,7 +461,7 @@ void main() {
           await tester.pump();
           await tester.pump(const Duration(seconds: 4));
           await tester.pump();
-          await tester.pump(MetraMotion.leave * 2); // past the fade
+          await tester.pump(StikkaMotion.leave * 2); // past the fade
           Rect at(Finder f) => tester.getRect(f);
           final ruler = at(find.byType(TempoRuler));
           final bpm = at(find.byKey(MetronomeScreen.bpmKey));
@@ -476,7 +476,7 @@ void main() {
           expect(find.text('Saved to the song'), findsOneWidget, reason: 'C');
           await tester.pump(const Duration(milliseconds: 1500));
           await tester.pump();
-          await tester.pump(MetraMotion.leave * 2); // past the fade
+          await tester.pump(StikkaMotion.leave * 2); // past the fade
           expect(find.byKey(MetronomeScreen.tempoNameKey), findsOneWidget);
           await tester.tap(find.text('+1'));
           await tester.pump();
@@ -541,7 +541,7 @@ void main() {
         }
         await tester.pump();
         await tester.pump();
-        await tester.pump(MetraMotion.brighten); // the new name is at full
+        await tester.pump(StikkaMotion.brighten); // the new name is at full
         expect(
           tester
               .widget<Text>(find.byKey(MetronomeScreen.titleKey))
@@ -709,7 +709,7 @@ void main() {
       await tester.tap(find.byKey(SetlistGroup.nextKey));
       await tester.pump();
       await tester.pump();
-      await tester.pump(MetraMotion.brighten); // the new name is at full
+      await tester.pump(StikkaMotion.brighten); // the new name is at full
       expect(title(tester), 'One');
       expect(metronome.bpm, 100);
       expect(position('1/3'), findsOneWidget);
@@ -720,14 +720,14 @@ void main() {
       await tester.tap(find.byKey(SetlistGroup.nextKey));
       await tester.pump();
       await tester.pump();
-      await tester.pump(MetraMotion.brighten); // the new name is at full
+      await tester.pump(StikkaMotion.brighten); // the new name is at full
       expect(title(tester), 'Three');
       expect(enabled(tester, SetlistGroup.nextKey), isFalse);
 
       await tester.tap(find.byKey(SetlistGroup.previousKey));
       await tester.pump();
       await tester.pump();
-      await tester.pump(MetraMotion.brighten); // the new name is at full
+      await tester.pump(StikkaMotion.brighten); // the new name is at full
       expect(title(tester), 'Two');
       expect(
         find.bySemanticsLabel('Previous song: One, 100 BPM'),

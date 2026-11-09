@@ -3,8 +3,8 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metra/src/model/library.dart';
-import 'package:metra/src/storage/library_store.dart';
+import 'package:stikka/src/model/library.dart';
+import 'package:stikka/src/storage/library_store.dart';
 
 /// Damaged saved files (keys removed, values of the wrong type or out of
 /// range, truncated text) never stop the app: loading either repairs them
