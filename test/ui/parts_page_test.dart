@@ -35,7 +35,7 @@ void main() {
   late MetronomeController metronome;
   late LibraryController library;
 
-  setUp(() => dir = Directory.systemTemp.createTempSync('metra_parts_page'));
+  setUp(() => dir = Directory.systemTemp.createTempSync('stikka_parts_page'));
   tearDown(() {
     try {
       dir.deleteSync(recursive: true);

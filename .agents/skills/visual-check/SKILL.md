@@ -1,6 +1,6 @@
 ---
 name: visual-check
-description: Use when the user reports that something on Metra's screen looks off by a few pixels - misaligned, not centred, a box taller than its neighbours, text sitting high or low - or when a layout must match a reference exactly.
+description: Use when the user reports that something on Stikka's screen looks off by a few pixels - misaligned, not centred, a box taller than its neighbours, text sitting high or low - or when a layout must match a reference exactly.
 ---
 
 # Pixel-level fixes

@@ -12,7 +12,7 @@ void main() {
   late LibraryStore store;
 
   setUp(() {
-    dir = Directory.systemTemp.createTempSync('metra_store_test');
+    dir = Directory.systemTemp.createTempSync('stikka_store_test');
     file = File('${dir.path}/library.json');
     store = LibraryStore(file);
   });

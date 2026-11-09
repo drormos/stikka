@@ -173,7 +173,7 @@ void main() {
   testWidgets('Reference A4 steps 430–450 and is saved app-wide', (
     tester,
   ) async {
-    final dir = Directory.systemTemp.createTempSync('metra_tuner');
+    final dir = Directory.systemTemp.createTempSync('stikka_tuner');
     final library = (await tester.runAsync(
       () => LibraryController.load(
         LibraryStore(File('${dir.path}/library.json')),

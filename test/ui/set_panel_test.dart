@@ -29,7 +29,7 @@ void main() {
   late LibraryController library;
   late List<String> haptics;
 
-  setUp(() => dir = Directory.systemTemp.createTempSync('metra_set_panel'));
+  setUp(() => dir = Directory.systemTemp.createTempSync('stikka_set_panel'));
   tearDown(() {
     try {
       dir.deleteSync(recursive: true);

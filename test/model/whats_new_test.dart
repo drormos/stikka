@@ -10,7 +10,7 @@ void main() {
   late LibraryController library;
 
   setUp(() async {
-    dir = Directory.systemTemp.createTempSync('metra_whats_new');
+    dir = Directory.systemTemp.createTempSync('stikka_whats_new');
     library = await LibraryController.load(
       LibraryStore(File('${dir.path}/library.json')),
     );

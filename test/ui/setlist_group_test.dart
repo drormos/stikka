@@ -30,7 +30,7 @@ void main() {
   late LibraryController library;
 
   setUp(() {
-    dir = Directory.systemTemp.createTempSync('metra_group_test');
+    dir = Directory.systemTemp.createTempSync('stikka_group_test');
   });
 
   tearDown(() {

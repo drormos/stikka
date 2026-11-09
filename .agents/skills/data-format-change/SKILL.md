@@ -1,6 +1,6 @@
 ---
 name: data-format-change
-description: Use whenever a change touches what Metra saves - any toJson/fromJson in lib/src/model/, a field added, renamed or removed on Library, Song, Setlist, MetronomePattern, OnStart or ClickVolumes, or the files LibraryStore writes - and when the schema guard test fails.
+description: Use whenever a change touches what Stikka saves - any toJson/fromJson in lib/src/model/, a field added, renamed or removed on Library, Song, Setlist, MetronomePattern, OnStart or ClickVolumes, or the files LibraryStore writes - and when the schema guard test fails.
 ---
 
 # Changing the saved data format

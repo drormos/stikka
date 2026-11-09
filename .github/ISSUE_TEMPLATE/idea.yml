@@ -1,5 +1,5 @@
 name: Idea
-description: Something Metra could do.
+description: Something Stikka could do.
 labels: [idea]
 body:
   - type: textarea

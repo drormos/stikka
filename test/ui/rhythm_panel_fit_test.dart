@@ -18,7 +18,7 @@ import 'test_theme.dart';
 /// panel must still fit on one screen").
 void main() {
   late Directory dir;
-  setUp(() => dir = Directory.systemTemp.createTempSync('metra_fit'));
+  setUp(() => dir = Directory.systemTemp.createTempSync('stikka_fit'));
   tearDown(() {
     try {
       dir.deleteSync(recursive: true);

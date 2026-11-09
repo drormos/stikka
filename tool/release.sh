@@ -50,7 +50,7 @@ if [[ "$pinned" != "$installed" ]]; then
 fi
 
 if $drift; then
-  export DRIFT_ROOT=${TMPDIR:-/tmp}/metra-drift
+  export DRIFT_ROOT=${TMPDIR:-/tmp}/stikka-drift
   mkdir -p "$DRIFT_ROOT" && touch "$DRIFT_ROOT/hold"
   tool/drift_parallel.sh >"$DRIFT_ROOT/summary.log" 2>&1 &
   drift_pid=$!

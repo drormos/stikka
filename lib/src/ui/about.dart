@@ -67,7 +67,7 @@ Future<Uri> feedbackUri() async {
 /// The privacy policy (PRIVACY.md in the public repo), also the store
 /// listing's policy link.
 const privacyPolicyUrl =
-    'https://github.com/drormos/metra/blob/main/PRIVACY.md';
+    'https://github.com/drormos/stikka/blob/main/PRIVACY.md';
 
 /// Opens the privacy policy in the browser (the app itself has no network
 /// access); says where to find it if no browser opens.

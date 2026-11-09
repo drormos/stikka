@@ -18,7 +18,7 @@ void main() {
   late LibraryStore store;
 
   setUp(() {
-    dir = Directory.systemTemp.createTempSync('metra_migrations');
+    dir = Directory.systemTemp.createTempSync('stikka_migrations');
     store = LibraryStore(File('${dir.path}/library.json'));
   });
   tearDown(() => dir.deleteSync(recursive: true));

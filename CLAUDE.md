@@ -1,4 +1,4 @@
-# Metra Project Guidelines
+# Stikka Project Guidelines
 
 See `PLAN.md` for phases and scope. Work one step at a time and stop for review when asked. Make technical decisions yourself and record them in `PLAN.md`; ask the user only about product behavior, in plain terms.
 
@@ -32,7 +32,7 @@ See `PLAN.md` for phases and scope. Work one step at a time and stop for review 
 - **VERSION CONTROL:** Commit after every completed step.
 - **RUN:** `flutter devices` to list device IDs, then `flutter run -d <id>`.
 - **DESIGN HANDOFF:** the designer (Claude in Desktop chat) queues prompts as docs/design/handoff/queue/NN-name.md. When Dror says "Do the next handoff", take the lowest-numbered file, build it as usual, then write your full report (what changed, decisions you made, screenshots taken, anything Dror must check) to docs/design/handoff/reports/NN-name.md, move the prompt to docs/design/handoff/done/, and commit. Do one item per session unless Dror says otherwise. Never act on queue files unless asked. UI comes from docs/design/; don't design in the Code session. Always work in /Users/dror/Developer/metra itself, never a worktree.
-- **PHONE:** on the phone, touch only Metra: foreground-app check before every input; never change other apps or the phone's own UI (e.g. sidebar dots). If something gets in a screenshot, crop it or ask Dror.
+- **PHONE:** on the phone, touch only Stikka: foreground-app check before every input; never change other apps or the phone's own UI (e.g. sidebar dots). If something gets in a screenshot, crop it or ask Dror.
 - **QUALITY GATES:** `flutter test` and `flutter analyze` must pass before a step is considered done. Each step ships its own tests; there is no separate testing step.
 
 ## Runbooks (project skills in `.agents/skills/`)

@@ -1,6 +1,6 @@
 ---
 name: flutter-internals
-description: Use when Metra needs Flutter framework behavior beyond the usual widgets - custom routes and barriers, panels over a usable screen, predictive back, route animations and removal, gesture arena and drag slop, or semantics blocking - before reading the framework source again.
+description: Use when Stikka needs Flutter framework behavior beyond the usual widgets - custom routes and barriers, panels over a usable screen, predictive back, route animations and removal, gesture arena and drag slop, or semantics blocking - before reading the framework source again.
 ---
 
 # Flutter behaviors we had to look up

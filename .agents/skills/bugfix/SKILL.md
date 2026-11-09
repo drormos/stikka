@@ -1,6 +1,6 @@
 ---
 name: bugfix
-description: Use when fixing a reported Metra bug or regression ("X is broken", "it does Y instead of Z", a crash, a wrong timing or layout).
+description: Use when fixing a reported Stikka bug or regression ("X is broken", "it does Y instead of Z", a crash, a wrong timing or layout).
 ---
 
 # Bug fix

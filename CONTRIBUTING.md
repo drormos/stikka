@@ -1,6 +1,6 @@
 # Contributing
 
-Metra is built with Claude Code from the design spec. The working rules are in [CLAUDE.md](CLAUDE.md) (audio timing, architecture, workflow) and the plan and decisions in [PLAN.md](PLAN.md). The design lives in `docs/design/` (`ui-spec.md` and its `*.reference.html` files) and is owned by the designer.
+Stikka is built with Claude Code from the design spec. The working rules are in [CLAUDE.md](CLAUDE.md) (audio timing, architecture, workflow) and the plan and decisions in [PLAN.md](PLAN.md). The design lives in `docs/design/` (`ui-spec.md` and its `*.reference.html` files) and is owned by the designer.
 
 Runbooks (also used as Claude Code skills, in `.agents/skills/`):
 

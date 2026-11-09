@@ -1,6 +1,8 @@
-# Metra
+# Stikka
 
 A sample-accurate metronome for Android and macOS, built with Flutter and flutter_soloud.
+
+Formerly Metra.
 
 ## Run
 
@@ -19,7 +21,7 @@ A sample-accurate metronome for Android and macOS, built with Flutter and flutte
 - [PLAN.md](PLAN.md): status, rules and decisions; [docs/history.md](docs/history.md): how it was built.
 - [CONTRIBUTING.md](CONTRIBUTING.md), [TESTING.md](TESTING.md), [RELEASING.md](RELEASING.md), [CHANGELOG.md](CHANGELOG.md).
 - `docs/design/ui-spec.md`: the product design.
-- [PRIVACY.md](PRIVACY.md) (Metra collects nothing) and [SECURITY.md](SECURITY.md).
+- [PRIVACY.md](PRIVACY.md) (Stikka collects nothing) and [SECURITY.md](SECURITY.md).
 
 ## License
 

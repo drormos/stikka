@@ -16,7 +16,7 @@ void main() {
   late MetronomeController metronome;
 
   setUp(() async {
-    dir = Directory.systemTemp.createTempSync('metra_awake_test');
+    dir = Directory.systemTemp.createTempSync('stikka_awake_test');
     library = await LibraryController.load(
       LibraryStore(File('${dir.path}/library.json')),
     );

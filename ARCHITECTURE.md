@@ -1,4 +1,4 @@
-# Metra architecture
+# Stikka architecture
 
 A one-page map for anyone (or any agent) about to change the code. Rules that must hold are in [CLAUDE.md](CLAUDE.md); decisions and their reasons in [PLAN.md](PLAN.md) and [docs/history.md](docs/history.md); the product design in `docs/design/ui-spec.md` (the designer's, read-only for us).
 
@@ -36,7 +36,7 @@ Timing never comes from Dart timers: the scheduler hands every click to the engi
 | Count-in display | `ui/count_in.dart` | `countInAt` (where a count-in is, from Start on), `CountInBuilder` (per frame while playing), `StopLabel` ("■ Stop · Count-in 3 of 4" on the main screen, parts page and stage mode; two lines when it doesn't fit). |
 | Leaving Free play | `ui/free_play_guard.dart` | `leaveFreePlay`: "Save your song parts?" before a tab or pick loads a song or set while Free play has parts. |
 | Beat lights | `ui/beat_indicator.dart`, `ui/poly_lane.dart` | Per-frame from the engine clock; `beatPulse` (up, lit, down). |
-| Bottom lists | `ui/setlist_group.dart` (tabs, context row), `ui/quick_pick.dart` (set panel, sets view, Songs list, picker), `ui/swipe_row.dart` (swipe / long-press / reorder) | Opened from the context row's center button. The share menus: `ui/share_menu.dart` (menu, import flow, check dialog); `model/share_text.dart` (song list text) and `model/share_export.dart` (Metra exports: `metra1:` data line, `parseShared`, `ImportPlan` matching); `AndroidBridge.shareText` sends, `ShareReceiver.kt` + `AndroidBridge.sharedText` receive. |
+| Bottom lists | `ui/setlist_group.dart` (tabs, context row), `ui/quick_pick.dart` (set panel, sets view, Songs list, picker), `ui/swipe_row.dart` (swipe / long-press / reorder) | Opened from the context row's center button. The share menus: `ui/share_menu.dart` (menu, import flow, check dialog); `model/share_text.dart` (song list text) and `model/share_export.dart` (Stikka exports: `stikka1:` data line, `parseShared` finds any `<letters><version>:` block or a bare one, `ImportPlan` matching); `AndroidBridge.shareText` sends, `ShareReceiver.kt` + `AndroidBridge.sharedText` receive. |
 | Top panels | `ui/top_panel.dart`, `ui/time_signature_sheet.dart` (Rhythm), `ui/on_start_sheet.dart` (When I press Start), `ui/value_stepper.dart` | A `PopupRoute` whose barrier only blocks semantics, so the top row stays usable. |
 | Panel motion | `ui/panel_motion.dart` | Shared by top and bottom panels: grow from the button, 1:1 drag, continuous fling, grab strip, predictive back. |
 | Text and motion | `ui/motion.dart` (`BrightenSwap`, `ArriveLeave`, `Arrive`), `ui/fit_text.dart`, `ui/tabular_text.dart` | "Snap in, soft brighten"; fixed digit slots. |

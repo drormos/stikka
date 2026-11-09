@@ -35,7 +35,7 @@ void main() {
       buildSignature: '',
     ),
   );
-  setUp(() => dir = Directory.systemTemp.createTempSync('metra_settings'));
+  setUp(() => dir = Directory.systemTemp.createTempSync('stikka_settings'));
   tearDown(() {
     try {
       dir.deleteSync(recursive: true);

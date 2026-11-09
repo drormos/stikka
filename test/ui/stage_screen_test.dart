@@ -28,7 +28,7 @@ void main() {
   late FakeClickOutput output;
   late List<String> systemCalls;
 
-  setUp(() => dir = Directory.systemTemp.createTempSync('metra_stage'));
+  setUp(() => dir = Directory.systemTemp.createTempSync('stikka_stage'));
   tearDown(() {
     try {
       dir.deleteSync(recursive: true);

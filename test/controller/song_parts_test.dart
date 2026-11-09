@@ -688,7 +688,7 @@ void main() {
     late LibraryController library;
 
     setUp(() async {
-      dir = Directory.systemTemp.createTempSync('metra_parts');
+      dir = Directory.systemTemp.createTempSync('stikka_parts');
       library = await LibraryController.load(
         LibraryStore(File('${dir.path}/library.json')),
       );

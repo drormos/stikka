@@ -27,7 +27,7 @@ void main() {
   late List<String> shared;
   String clipboard = '';
 
-  setUp(() => dir = Directory.systemTemp.createTempSync('metra_share'));
+  setUp(() => dir = Directory.systemTemp.createTempSync('stikka_share'));
   tearDown(() {
     try {
       dir.deleteSync(recursive: true);

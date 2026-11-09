@@ -1,6 +1,6 @@
 ---
 name: feature-from-spec
-description: Use when building or changing a Metra feature from the designer's prompt or docs/design/ui-spec.md (a new screen, panel, control, behavior or motion described in the spec or a *.reference.html).
+description: Use when building or changing a Stikka feature from the designer's prompt or docs/design/ui-spec.md (a new screen, panel, control, behavior or motion described in the spec or a *.reference.html).
 ---
 
 # Feature from the spec

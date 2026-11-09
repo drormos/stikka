@@ -98,7 +98,7 @@ void main() {
 
   test('removing the task stops playback and the card, then ends the app '
       'once the library is saved (a reopen starts clean)', () async {
-    final dir = Directory.systemTemp.createTempSync('metra_task_');
+    final dir = Directory.systemTemp.createTempSync('stikka_task_');
     addTearDown(() => dir.deleteSync(recursive: true));
     final library = await LibraryController.load(
       LibraryStore(File('${dir.path}/library.json')),
@@ -177,7 +177,7 @@ void main() {
     late LibraryController library;
 
     setUp(() async {
-      dir = Directory.systemTemp.createTempSync('metra_handler_test');
+      dir = Directory.systemTemp.createTempSync('stikka_handler_test');
       library = await LibraryController.load(
         LibraryStore(File('${dir.path}/library.json')),
       );

@@ -32,7 +32,7 @@ void main() {
       buildSignature: '',
     ),
   );
-  setUp(() => dir = Directory.systemTemp.createTempSync('metra_a11y'));
+  setUp(() => dir = Directory.systemTemp.createTempSync('stikka_a11y'));
   tearDown(() {
     try {
       dir.deleteSync(recursive: true);

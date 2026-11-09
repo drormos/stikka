@@ -9,7 +9,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 seconds=${1:-300}
-root=${DRIFT_ROOT:-${TMPDIR:-/tmp}/metra-drift}
+root=${DRIFT_ROOT:-${TMPDIR:-/tmp}/stikka-drift}
 
 # name|test name regex: the four long tempos, then everything else.
 jobs=(

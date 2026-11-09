@@ -1,4 +1,4 @@
-# Testing Metra
+# Testing Stikka
 
 `flutter analyze` and `flutter test` must pass before every commit. Tests live next to what they test (`test/audio`, `test/controller`, `test/model`, `test/storage`, `test/ui`, …). These notes are the traps that each cost a failed run once.
 

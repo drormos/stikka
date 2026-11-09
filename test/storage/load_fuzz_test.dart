@@ -12,7 +12,7 @@ import 'package:stikka/src/storage/library_store.dart';
 /// newer version is refused, untouched.
 void main() {
   late Directory dir;
-  setUp(() => dir = Directory.systemTemp.createTempSync('metra_load_fuzz'));
+  setUp(() => dir = Directory.systemTemp.createTempSync('stikka_load_fuzz'));
   tearDown(() => dir.deleteSync(recursive: true));
 
   final fixtures = [

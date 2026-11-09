@@ -20,7 +20,7 @@ void main() {
   late LibraryController library;
 
   setUp(() async {
-    dir = Directory.systemTemp.createTempSync('metra_library_test');
+    dir = Directory.systemTemp.createTempSync('stikka_library_test');
     store = LibraryStore(File('${dir.path}/library.json'));
     library = await LibraryController.load(store);
   });
