@@ -202,7 +202,7 @@ POSTS = {
     ],
     '05-setlists-sharing': [
         ('s', 'The whole gig in your pocket.', 'Save songs with their tempo, rhythm and parts, then build setlists.', S + '04-set-list.png', 420),
-        ('s', 'Send the set to the band.', 'Share the running order with tempos and time signatures, in any app.', D + 'share-menu-set-115.png', 900),
+        ('s', 'Send the set to the band.', 'Share the running order with tempos and time signatures, in any app.', D + 'rename-share-menu.png', 900),
         ('s', 'Or send the songs themselves.', 'Export a set with every song and its parts. Your bandmates import it into their Stikka.', D + 'share-pick-mode-115.png', 640),
         ('cta',),
     ],
