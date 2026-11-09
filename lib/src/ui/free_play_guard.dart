@@ -54,7 +54,7 @@ class _LeaveDialog extends StatelessWidget {
     // muted text (ui-spec.md "Parts in Free play" › "Button look").
     final buttons = [
       (cancelKey, 'Cancel', _Leave.cancel, colors.muted, null),
-      (discardKey, 'Discard', _Leave.discard, colors.accent, null),
+      (discardKey, 'Discard', _Leave.discard, colors.danger, null),
       (saveKey, 'Save as song', _Leave.save, colors.background, colors.text),
     ];
     const pad = 18.0, gap = 8.0;

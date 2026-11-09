@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import '../controller/library_controller.dart';
 import '../controller/metronome_controller.dart';
+import '../model/library.dart' show AccentColor;
 
 /// Bridges [MetronomeController] to audio_service: while playing, Android
 /// keeps the app alive as a media foreground service (screen off or app in
@@ -25,12 +26,13 @@ class MetronomeAudioHandler extends BaseAudioHandler {
   final MetronomeController _controller;
   final LibraryController? _library;
 
-  /// The cover image for a tempo, as a file URI; null: no artwork.
-  final Future<Uri> Function(int bpm)? _cover;
+  /// The cover image for a tempo in the user's color, as a file URI; null:
+  /// no artwork.
+  final Future<Uri> Function(int bpm, AccentColor color)? _cover;
 
   /// Ends the app (swiped away from recents, once saved).
   final void Function()? _onClosed;
-  int? _coverBpm;
+  (int, AccentColor)? _coverFor;
   Uri? _coverUri;
 
   // Stopped from outside the app (the card, headset, watch, the tile): the
@@ -157,14 +159,15 @@ class MetronomeAudioHandler extends BaseAudioHandler {
     }
   }
 
-  /// Renders the cover for a new tempo, then shows it if the tempo hasn't
-  /// moved on meanwhile.
+  /// Renders the cover for a new tempo or color, then shows it if neither
+  /// has moved on meanwhile.
   void _requestCover(int bpm) {
     final cover = _cover;
-    if (cover == null || bpm == _coverBpm) return;
-    _coverBpm = bpm;
-    cover(bpm).then((uri) {
-      if (_coverBpm != bpm) return;
+    final key = (bpm, _library?.accentColor ?? AccentColor.red);
+    if (cover == null || key == _coverFor) return;
+    _coverFor = key;
+    cover(key.$1, key.$2).then((uri) {
+      if (_coverFor != key) return;
       _coverUri = uri;
       _publish();
     }, onError: (Object e) => debugPrint('Media cover failed: $e'));

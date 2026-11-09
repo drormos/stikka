@@ -29,10 +29,11 @@
 ///   the step only bumps the version (an older app then refuses the file
 ///   instead of misreading 2.5).
 /// - 10 (build 105 on): settings gain the tuner's `referenceA4` (440 Hz).
+/// - 11 (build 111 on): settings gain `accentColor` (`red`).
 library;
 
 /// The latest format, and the two files' shapes in it.
-const latestVersion = 10;
+const latestVersion = 11;
 
 typedef Json = Map<String, Object?>;
 
@@ -65,6 +66,7 @@ final List<Json Function(Json)> _steps = [
   _v7ToV8,
   _v8ToV9,
   _v9ToV10,
+  _v10ToV11,
 ];
 
 /// Version 1, in all the shapes it shipped in, to version 2:
@@ -272,6 +274,8 @@ Json _v8ToV9(Json v8) => {...v8, 'version': 9};
 
 /// The tuner's Reference A4, at the usual 440 Hz.
 Json _v9ToV10(Json v9) => {...v9, 'version': 10, 'referenceA4': 440};
+
+Json _v10ToV11(Json v10) => {...v10, 'version': 11, 'accentColor': 'red'};
 
 /// The one-time hints' names in `tipsSeen` (version 1 had a flag each).
 const swipeHintTip = 'set-swipe-hint';

@@ -117,7 +117,7 @@ class _SaveAsNewDialogState extends State<_SaveAsNewDialog> {
               ),
               decoration: InputDecoration(
                 errorText: _error,
-                errorStyle: TextStyle(color: colors.accentSounding),
+                errorStyle: TextStyle(color: colors.danger),
               ),
             ),
             if (set == null) ..._addToSet(colors),

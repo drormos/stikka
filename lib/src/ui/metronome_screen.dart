@@ -372,7 +372,7 @@ class MetronomeScreen extends StatelessWidget {
           Text(
             notice,
             textAlign: TextAlign.center,
-            style: TextStyle(color: colors.accentSounding),
+            style: TextStyle(color: colors.danger),
           ),
         ],
       ],

@@ -580,7 +580,7 @@ class _SwipeRowState extends State<SwipeRow>
     final colors = context.colors;
     return AnimatedContainer(
       duration: RowGestures.motion(context, RowGestures.armTransition),
-      color: _armed ? colors.accent : colors.accentResting,
+      color: _armed ? colors.danger : colors.dangerResting,
       alignment: offset > 0 ? Alignment.centerLeft : Alignment.centerRight,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: AnimatedScale(

@@ -11,7 +11,8 @@ void main() {
             file.path.endsWith('.dart') &&
             !file.path.endsWith('theme.dart'))
           for (final (i, line) in file.readAsLinesSync().indexed)
-            if (RegExp(r'Color\(0x|\bColors\.[a-z]').hasMatch(line))
+            if (RegExp(r'Color\(0x|Color\.from(ARGB|RGBO)|\bColors\.[a-z]')
+                .hasMatch(line))
               '${file.path}:${i + 1}: ${line.trim()}',
     ];
     expect(offenders, isEmpty);

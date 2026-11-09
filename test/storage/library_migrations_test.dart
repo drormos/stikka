@@ -306,6 +306,20 @@ void main() {
     expect((await LibraryStore(store.file).load()).referenceA4, 442);
   });
 
+  test('an upgrade keeps Red; version 11 keeps the chosen color', () async {
+    for (final f in ['library.json', 'settings.json']) {
+      File('test/fixtures/library_v10/$f').copySync('${dir.path}/$f');
+    }
+    expect((await store.load()).accentColor, AccentColor.red);
+    for (final f in ['library.json', 'settings.json']) {
+      File('test/fixtures/library_v11/$f').copySync('${dir.path}/$f');
+    }
+    expect(
+      (await LibraryStore(store.file).load()).accentColor,
+      AccentColor.blue,
+    );
+  });
+
   test('every step runs in order up to the latest; unknown versions throw', () {
     final latest = migrate({'version': 1, 'songs': [], 'setlists': []});
     expect(latest['version'], Library.version);
@@ -315,6 +329,7 @@ void main() {
     expect(latest['lastParts'], isEmpty, reason: 'version 7: Free play');
     expect(latest['lastEnd'], 'loopLastPart');
     expect(latest['referenceA4'], 440, reason: 'version 10: the tuner');
+    expect(latest['accentColor'], 'red', reason: 'version 11: Color');
     expect(() => migrate({'version': 0}), throwsFormatException);
     expect(latestVersion, Library.version);
   });

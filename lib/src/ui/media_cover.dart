@@ -4,12 +4,19 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/painting.dart';
 
+import '../model/library.dart' show AccentColor;
+
 import 'theme.dart';
 
 /// The media card's cover, style "Tempo ruler" (ui-spec.md "Media
 /// controls", media-cover.reference.html): the BPM over a slice of the
-/// tempo ruler with its red needle, on black. [size] px square.
-Future<Uint8List> renderMediaCover(int bpm, {int size = 512}) async {
+/// tempo ruler with its needle in the user's [color], on black. [size] px
+/// square.
+Future<Uint8List> renderMediaCover(
+  int bpm, {
+  AccentColor color = AccentColor.red,
+  int size = 512,
+}) async {
   final s = size.toDouble();
   // The reference draws it 200 px wide; everything scales from there.
   final u = s / 200;
@@ -58,7 +65,7 @@ Future<Uint8List> renderMediaCover(int bpm, {int size = 512}) async {
       paint,
     );
   }
-  paint.color = CoverColors.needle;
+  paint.color = CoverColors.needle(color);
   canvas.drawRect(
     Rect.fromLTWH(centre - 1.6 * u, rulerTop, 3.2 * u, rulerHeight * u),
     paint,
@@ -70,14 +77,22 @@ Future<Uint8List> renderMediaCover(int bpm, {int size = 512}) async {
   return png!.buffer.asUint8List();
 }
 
-/// The cover for [bpm] as a PNG file in [dir], written once per tempo (a
-/// new file name per tempo, so the system doesn't show a cached one).
-Future<Uri> mediaCoverFile(Directory dir, int bpm) async {
-  final file = File('${dir.path}/media_cover_$bpm.png');
+/// The cover for [bpm] as a PNG file in [dir], written once per tempo and
+/// color (a new file name for each, so the system doesn't show a cached
+/// one).
+Future<Uri> mediaCoverFile(
+  Directory dir,
+  int bpm, {
+  AccentColor color = AccentColor.red,
+}) async {
+  final file = File('${dir.path}/media_cover_${bpm}_${color.name}.png');
   if (!await file.exists()) {
     // Through a temp file: a crash mid-write never leaves a broken cover.
     final temp = File('${file.path}.tmp');
-    await temp.writeAsBytes(await renderMediaCover(bpm), flush: true);
+    await temp.writeAsBytes(
+      await renderMediaCover(bpm, color: color),
+      flush: true,
+    );
     await temp.rename(file.path);
   }
   return file.uri;

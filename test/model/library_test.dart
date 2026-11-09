@@ -156,11 +156,22 @@ void main() {
     );
   });
 
-  test('theme mode survives JSON; missing falls back to system', () {
+  test('theme mode and color survive JSON; missing: system, Red', () {
     final dark = Library.empty.copyWith(themeMode: ThemeMode.dark);
     expect(roundTrip(dark).themeMode, ThemeMode.dark);
     final old = Library.empty.toJson()..remove('themeMode');
     expect(Library.fromJson(old).themeMode, ThemeMode.system);
+
+    final blue = Library.empty.copyWith(accentColor: AccentColor.blue);
+    expect(roundTrip(blue).accentColor, AccentColor.blue);
+    for (final saved in [null, 'magenta', 7]) {
+      final json = Library.empty.toJson()..['accentColor'] = saved;
+      expect(
+        Library.fromJson(json).accentColor,
+        AccentColor.red,
+        reason: '$saved',
+      );
+    }
   });
 
   test('volumes survive JSON; missing means defaults; odd values clamp', () {

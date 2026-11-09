@@ -212,6 +212,7 @@ class Library {
     this.lastEnd = SongEnd.loopLastPart,
     this.clickSound = ClickSound.woodblock,
     this.themeMode = ThemeMode.system,
+    this.accentColor = AccentColor.red,
     this.vibrate = true,
     this.partChangeSound = false,
     this.keepScreenOn = KeepScreenOn.whileOpen,
@@ -254,6 +255,9 @@ class Library {
 
   /// System (follow the OS), dark or light.
   final ThemeMode themeMode;
+
+  /// Settings › Color: the app's accent (ui-spec.md "Color").
+  final AccentColor accentColor;
 
   /// "Vibrate on touch": can only turn haptics off; the phone's own
   /// vibration setting still applies.
@@ -298,6 +302,7 @@ class Library {
     Duration? visualOffset,
     ClickSound? clickSound,
     ThemeMode? themeMode,
+    AccentColor? accentColor,
     bool? vibrate,
     bool? partChangeSound,
     KeepScreenOn? keepScreenOn,
@@ -316,6 +321,7 @@ class Library {
     visualOffset: visualOffset ?? this.visualOffset,
     clickSound: clickSound ?? this.clickSound,
     themeMode: themeMode ?? this.themeMode,
+    accentColor: accentColor ?? this.accentColor,
     vibrate: vibrate ?? this.vibrate,
     partChangeSound: partChangeSound ?? this.partChangeSound,
     keepScreenOn: keepScreenOn ?? this.keepScreenOn,
@@ -345,6 +351,7 @@ class Library {
     visualOffset: visualOffset,
     clickSound: clickSound,
     themeMode: themeMode,
+    accentColor: accentColor,
     vibrate: vibrate,
     partChangeSound: partChangeSound,
     keepScreenOn: keepScreenOn,
@@ -367,6 +374,7 @@ class Library {
     'visualOffsetMs': visualOffset.inMilliseconds,
     'clickSound': clickSound.name,
     'themeMode': themeMode.name,
+    'accentColor': accentColor.name,
     'vibrate': vibrate,
     'partChangeSound': partChangeSound,
     'keepScreenOn': keepScreenOn.name,
@@ -421,6 +429,9 @@ class Library {
           ClickSound.woodblock,
       themeMode:
           ThemeMode.values.asNameMap()[latest['themeMode']] ?? ThemeMode.system,
+      accentColor:
+          AccentColor.values.asNameMap()[latest['accentColor']] ??
+          AccentColor.red,
       vibrate: read('vibrate', true),
       partChangeSound: read('partChangeSound', false),
       keepScreenOn:
@@ -499,6 +510,7 @@ class Library {
       visualOffset: Duration(milliseconds: offset),
       clickSound: clickSound,
       themeMode: themeMode,
+      accentColor: accentColor,
       vibrate: vibrate,
       partChangeSound: partChangeSound,
       keepScreenOn: keepScreenOn,
@@ -562,6 +574,20 @@ class Library {
 
 /// Settings → "Keep screen on" (ui-spec.md "Behavior").
 enum KeepScreenOn { whileOpen, whilePlaying }
+
+/// Settings › Color, in the order the picker shows them.
+enum AccentColor {
+  red('Red'),
+  orange('Orange'),
+  yellow('Yellow'),
+  green('Green'),
+  blue('Blue'),
+  purple('Purple');
+
+  const AccentColor(this.label);
+
+  final String label;
+}
 
 /// The file was saved by a newer app version (after a downgrade). It is
 /// left as it is, so updating the app again opens it.

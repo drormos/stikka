@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
+import '../model/library.dart' show AccentColor;
+
 /// Design tokens from `docs/design/ui-spec.md`. Every widget color comes
 /// from here (via [StikkaColorsContext.colors] or the [ThemeData] built by
 /// [stikkaTheme]); widgets hardcode none.
@@ -37,6 +39,8 @@ class StikkaColors extends ThemeExtension<StikkaColors> {
     required this.accent,
     required this.primary,
     required this.onPrimary,
+    required this.danger,
+    required this.dangerResting,
   });
 
   /// Dark theme.
@@ -70,6 +74,8 @@ class StikkaColors extends ThemeExtension<StikkaColors> {
     accent: Color(0xFFFF3B30),
     primary: Color(0xFFFF3B30),
     onPrimary: Color(0xFF000000),
+    danger: Color(0xFFFF3B30),
+    dangerResting: Color(0xFF8E2620),
   );
 
   /// Light theme. Picked after the dark one; to be checked on a real screen.
@@ -103,7 +109,134 @@ class StikkaColors extends ThemeExtension<StikkaColors> {
     accent: Color(0xFFD7261E),
     primary: Color(0xFF111111),
     onPrimary: Color(0xFFF3F1EC),
+    danger: Color(0xFFD7261E),
+    dangerResting: Color(0xFFE9B0AA),
   );
+
+  /// The palette for [brightness] in the user's [color] (ui-spec.md
+  /// "Color"): only the accent tokens change; [danger] stays red.
+  static StikkaColors of(Brightness brightness, AccentColor color) {
+    final dark = brightness == Brightness.dark;
+    final base = dark ? stageBlack : daylight;
+    final [accent, sounding, resting, pulse] = (dark
+        ? _stageBlackAccents
+        : _daylightAccents)[color]!;
+    return StikkaColors(
+      background: base.background,
+      sheet: base.sheet,
+      dim: base.dim,
+      lifted: base.lifted,
+      slot: base.slot,
+      shadow: base.shadow,
+      surface: base.surface,
+      surfaceOnSheet: base.surfaceOnSheet,
+      divider: base.divider,
+      selectedRow: base.selectedRow,
+      border: base.border,
+      text: base.text,
+      muted: base.muted,
+      beatResting: base.beatResting,
+      beatSounding: base.beatSounding,
+      accentResting: resting,
+      accentSounding: sounding,
+      mutedFill: base.mutedFill,
+      mutedLine: base.mutedLine,
+      tickResting: base.tickResting,
+      tickSounding: base.tickSounding,
+      pulseResting: base.pulseResting,
+      pulseAccentResting: pulse,
+      pulseMutedLine: base.pulseMutedLine,
+      disabledText: base.disabledText,
+      controlOutline: base.controlOutline,
+      accent: accent,
+      // Daylight's primary button stays black in every color.
+      primary: dark ? accent : base.primary,
+      onPrimary: base.onPrimary,
+      danger: base.danger,
+      dangerResting: base.dangerResting,
+    );
+  }
+
+  /// ui-spec.md "Color" table, Stage Black: accent (= primary), accent
+  /// sounding, accent resting, pulse accent resting.
+  static const _stageBlackAccents = {
+    AccentColor.red: [
+      Color(0xFFFF3B30),
+      Color(0xFFFF4A3D),
+      Color(0xFF8E2620),
+      Color(0xFF5A1A16),
+    ],
+    AccentColor.orange: [
+      Color(0xFFFF9500),
+      Color(0xFFFF9D14),
+      Color(0xFF8C5200),
+      Color(0xFF593400),
+    ],
+    AccentColor.yellow: [
+      Color(0xFFFFD60A),
+      Color(0xFFFFD91E),
+      Color(0xFF8C7606),
+      Color(0xFF594B04),
+    ],
+    AccentColor.green: [
+      Color(0xFF30D158),
+      Color(0xFF41D565),
+      Color(0xFF1A7330),
+      Color(0xFF11491F),
+    ],
+    AccentColor.blue: [
+      Color(0xFF0A84FF),
+      Color(0xFF1E8EFF),
+      Color(0xFF06498C),
+      Color(0xFF042E59),
+    ],
+    AccentColor.purple: [
+      Color(0xFFBF5AF2),
+      Color(0xFFC467F3),
+      Color(0xFF693285),
+      Color(0xFF431F55),
+    ],
+  };
+
+  /// The same for Daylight, where accent and accent sounding are one.
+  static const _daylightAccents = {
+    AccentColor.red: [
+      Color(0xFFD7261E),
+      Color(0xFFD7261E),
+      Color(0xFFE9B0AA),
+      Color(0xFFF0CCC8),
+    ],
+    AccentColor.orange: [
+      Color(0xFFA85200),
+      Color(0xFFA85200),
+      Color(0xFFD6B592),
+      Color(0xFFE1CBB3),
+    ],
+    AccentColor.yellow: [
+      Color(0xFF8A6A00),
+      Color(0xFF8A6A00),
+      Color(0xFFCBBE92),
+      Color(0xFFDAD1B3),
+    ],
+    AccentColor.green: [
+      Color(0xFF1B7F37),
+      Color(0xFF1B7F37),
+      Color(0xFFA1C6A7),
+      Color(0xFFBFD6C1),
+    ],
+    AccentColor.blue: [
+      Color(0xFF0A62C4),
+      Color(0xFF0A62C4),
+      Color(0xFF9ABBDD),
+      Color(0xFFBBCFE2),
+    ],
+    AccentColor.purple: [
+      Color(0xFF8A3CB8),
+      Color(0xFF8A3CB8),
+      Color(0xFFCBACD8),
+      Color(0xFFDAC6E0),
+    ],
+  };
 
   final Color background;
 
@@ -165,18 +298,61 @@ class StikkaColors extends ThemeExtension<StikkaColors> {
   /// fields): 3:1 or better.
   final Color controlOutline;
 
-  /// Tempo needle, current-song marker, checkmarks.
+  /// Tempo needle, current-song marker, checkmarks: the user's color.
   final Color accent;
   final Color primary;
   final Color onPrimary;
 
+  /// Destructive actions (Delete, Remove, their dialogs) and error text:
+  /// red in every color. [dangerResting] is a swipe-to-remove row's
+  /// background before it's armed.
+  final Color danger;
+  final Color dangerResting;
+
   @override
   StikkaColors copyWith() => this;
 
-  // Theme switches snap; no color animation between the two palettes.
+  // Theme switches snap; a new accent color crossfades (ui-spec.md
+  // "Color"), so within one palette every token lerps.
   @override
-  StikkaColors lerp(StikkaColors? other, double t) =>
-      t < 0.5 || other == null ? this : other;
+  StikkaColors lerp(StikkaColors? other, double t) {
+    if (other == null) return this;
+    if (other.background != background) return t < 0.5 ? this : other;
+    Color l(Color a, Color b) => Color.lerp(a, b, t)!;
+    return StikkaColors(
+      background: background,
+      sheet: sheet,
+      dim: dim,
+      lifted: lifted,
+      slot: slot,
+      shadow: shadow,
+      surface: surface,
+      surfaceOnSheet: surfaceOnSheet,
+      divider: divider,
+      selectedRow: selectedRow,
+      border: border,
+      text: text,
+      muted: muted,
+      beatResting: beatResting,
+      beatSounding: beatSounding,
+      accentResting: l(accentResting, other.accentResting),
+      accentSounding: l(accentSounding, other.accentSounding),
+      mutedFill: mutedFill,
+      mutedLine: mutedLine,
+      tickResting: tickResting,
+      tickSounding: tickSounding,
+      pulseResting: pulseResting,
+      pulseAccentResting: l(pulseAccentResting, other.pulseAccentResting),
+      pulseMutedLine: pulseMutedLine,
+      disabledText: disabledText,
+      controlOutline: controlOutline,
+      accent: l(accent, other.accent),
+      primary: l(primary, other.primary),
+      onPrimary: onPrimary,
+      danger: danger,
+      dangerResting: dangerResting,
+    );
+  }
 }
 
 extension StikkaColorsContext on BuildContext {
@@ -194,7 +370,16 @@ abstract final class CoverColors {
   static const rule = Color(0xFF1F1F1F);
   static const minorTick = Color(0xFF4A4A4A);
   static const majorTick = Color(0xFF8C8C8C);
-  static const needle = Color(0xFFFF3B30);
+
+  /// The needle: the Stage Black accent in the user's color.
+  static Color needle(AccentColor color) =>
+      StikkaColors.of(Brightness.dark, color).accent;
+}
+
+/// Settings › Color: the check on the chosen swatch is black in every
+/// color and theme (ui-spec.md "Settings" › "Color").
+abstract final class SwatchColors {
+  static const check = Color(0xFF000000);
 }
 
 /// The motion tokens (ui-spec.md "Motion"): one set of values, used for
@@ -315,7 +500,7 @@ ThemeData stikkaTheme(StikkaColors c, Brightness brightness) {
       onPrimary: c.onPrimary,
       secondary: c.accentSounding,
       onSecondary: c.onPrimary,
-      error: c.accentSounding,
+      error: c.danger,
       onError: c.onPrimary,
       surface: c.background,
       onSurface: c.text,

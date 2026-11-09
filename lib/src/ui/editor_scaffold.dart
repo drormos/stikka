@@ -223,7 +223,7 @@ Future<bool> confirmDelete(
                       child: FilledButton(
                         key: deleteConfirmKey,
                         style: FilledButton.styleFrom(
-                          backgroundColor: colors.accent,
+                          backgroundColor: colors.danger,
                           foregroundColor: colors.background,
                           padding: const EdgeInsets.symmetric(horizontal: 22),
                         ),
@@ -299,12 +299,12 @@ class LabeledField extends StatelessWidget {
               borderSide: BorderSide(color: colors.text, width: 2),
             ),
             errorText: error,
-            errorStyle: TextStyle(color: colors.accentSounding, fontSize: 13),
+            errorStyle: TextStyle(color: colors.danger, fontSize: 13),
             errorBorder: border.copyWith(
-              borderSide: BorderSide(color: colors.accentSounding, width: 2),
+              borderSide: BorderSide(color: colors.danger, width: 2),
             ),
             focusedErrorBorder: border.copyWith(
-              borderSide: BorderSide(color: colors.accentSounding, width: 2),
+              borderSide: BorderSide(color: colors.danger, width: 2),
             ),
           ),
         ),
@@ -479,7 +479,7 @@ class SelectionBar extends StatelessWidget {
           child: TextButton(
             key: actionKey,
             style: TextButton.styleFrom(
-              foregroundColor: colors.accentSounding,
+              foregroundColor: colors.danger,
               minimumSize: const Size(0, 44),
             ),
             onPressed: count == 0 ? null : onAction,

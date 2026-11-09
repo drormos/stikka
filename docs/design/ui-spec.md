@@ -72,6 +72,25 @@ All colors live in one theme file. No hardcoded colors in widgets.
 
 Theme setting: System (default) / Dark / Light, persisted. System follows the OS. The Daylight values are a first pass; check them on a real screen.
 
+### Color (the user's accent color)
+Settings › Color picks the accent: **Red (default), Orange, Yellow, Green, Blue, Purple**. Only the accent tokens change; every other token stays as above. Canvas: "Detail · Accent color in Settings (decided: A, swatches)" and "Detail · Accent colors in both themes".
+- **What follows the color:** accent (tempo needle, current-song marker, checkmarks, accent text such as the heads-up line), beat accent resting and sounding, the pulse's accent, the primary button in Stage Black (Start / Stop, Save…), and anything else that uses the accent token today, such as selected-tab lines, the count-in tag and the tuner's "In tune".
+- **What stays red in every color:** danger. Delete, Remove and every other destructive action, their dialogs, and error text. It gets its own token, **danger**: #FF3B30 Stage Black, #D7261E Daylight. Where the app uses red today to mean "destructive", it must use danger, not accent.
+- **In Daylight the primary button stays black** (#111111, label #F3F1EC) in every color, as today. The color shows in beats, the needle and accent text.
+- **Labels on the primary button stay black (#000000)** in Stage Black for all six; each passes 4.5:1.
+- **Outside the app:** the lock-screen / notification cover's tempo needle follows the color. The status-bar icon (white, one color by Android's rule) and the Quick Settings tile (system colors) don't.
+- **The launcher icon, store graphics and social images stay red:** red is the brand. No icon switching. Android can only do it by swapping launcher entries, which on some phones closes the app, drops or duplicates the home-screen icon, and is overridden anyway by themed icons (Android 13+). The color is the user's own touch inside the app.
+
+| Color | SB accent / primary | SB accent sounding | SB accent resting | SB pulse accent resting | Daylight accent (= sounding) | Daylight accent resting | Daylight pulse accent resting |
+|---|---|---|---|---|---|---|---|
+| Red | #FF3B30 | #FF4A3D | #8E2620 | #5A1A16 | #D7261E | #E9B0AA | #F0CCC8 |
+| Orange | #FF9500 | #FF9D14 | #8C5200 | #593400 | #A85200 | #D6B592 | #E1CBB3 |
+| Yellow | #FFD60A | #FFD91E | #8C7606 | #594B04 | #8A6A00 | #CBBE92 | #DAD1B3 |
+| Green | #30D158 | #41D565 | #1A7330 | #11491F | #1B7F37 | #A1C6A7 | #BFD6C1 |
+| Blue | #0A84FF | #1E8EFF | #06498C | #042E59 | #0A62C4 | #9ABBDD | #BBCFE2 |
+| Purple | #BF5AF2 | #C467F3 | #693285 | #431F55 | #8A3CB8 | #CBACD8 | #DAC6E0 |
+
+
 ## Long-press rule
 
 Long-press means "edit it", as a shortcut. In a set's songs (an ordered list), editing means moving: long-press lifts the row and dragging reorders. In the Songs list and the sets view, long-press renames in place. Long-pressing the song title on the main screen opens the song editor. Never on stage-critical buttons (Start/Stop, tempo, previous/next, the context row's center button).
@@ -428,6 +447,7 @@ A full page opened from the **gear button** at the top right of the main screen 
 
 - **Top bar:** back chevron and "Settings". Changes apply immediately; there's no Save.
 - **Theme:** System / Dark / Light segmented control.
+- **Color** (right under Theme): heading "Color · Blue" (muted "Color", the chosen name in the normal text color). Below it, one row of six 40px circles spread across the width, each in a 48dp touch target, in the order Red, Orange, Yellow, Green, Blue, Purple. The chosen one has a 2px ring in the text color with a 3px gap, and a black check inside. Tap = the whole app switches at once (no Save, no confirm; the setting is saved at once), with a ~200ms color crossfade, never moving anything. A tap on the chosen one does nothing. TalkBack reads "Color, Blue, selected, 5 of 6". Default Red; a missing or unknown saved value loads as Red. At 115% text the circles stay one row (they don't contain text).
 - **Click sound:** a 2×2 grid of buttons: Woodblock, Beep, Cowbell, Bell. Default Woodblock. (Classic was removed: it sounded almost the same as Woodblock. A saved "classic" setting loads as Woodblock.) The four are kept clearly apart by character and pitch range: Woodblock (wood, mid), Beep (pure tone), Cowbell (a high, clean agogo-style metal bell, not the drum-machine square-wave one), Bell (a small bright ding, highest of all). Cowbell and Bell are defined in `sounds/click_prototypes.py` (chosen by ear); Woodblock and Beep are unchanged. Selected = filled white. Tapping selects it and plays a short sample. Every tap plays the sample, including a tap on the sound that's already selected, so you can listen as many times as you like. A new tap restarts the sample.
 - **Sound on part changes:** one switch, default off, with the hint "For songs with parts: a higher click on the first beat of each new part". See Song parts › Heads-up.
 - **Vibration:** one switch, "Vibrate on touch", default on, with the hint "Only when vibration is on in your phone's settings". It can only turn the app's haptics off; it never overrides the system setting.

@@ -28,7 +28,7 @@ void main() {
     final dir = Directory.systemTemp.createTempSync('stikka_cover');
     addTearDown(() => dir.deleteSync(recursive: true));
     final uri = await mediaCoverFile(dir, 96);
-    expect(uri.pathSegments.last, 'media_cover_96.png');
+    expect(uri.pathSegments.last, 'media_cover_96_red.png');
     final written = File.fromUri(uri).lastModifiedSync();
     await mediaCoverFile(dir, 96);
     expect(File.fromUri(uri).lastModifiedSync(), written);

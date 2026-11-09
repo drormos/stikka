@@ -40,7 +40,7 @@ Timing never comes from Dart timers: the scheduler hands every click to the engi
 | Top panels | `ui/top_panel.dart`, `ui/time_signature_sheet.dart` (Rhythm), `ui/on_start_sheet.dart` (When I press Start), `ui/value_stepper.dart` | A `PopupRoute` whose barrier only blocks semantics, so the top row stays usable. |
 | Panel motion | `ui/panel_motion.dart` | Shared by top and bottom panels: grow from the button, 1:1 drag, continuous fling, grab strip, predictive back. |
 | Text and motion | `ui/motion.dart` (`BrightenSwap`, `ArriveLeave`, `Arrive`), `ui/fit_text.dart`, `ui/tabular_text.dart` | "Snap in, soft brighten"; fixed digit slots. |
-| Theme | `ui/theme.dart` (`StikkaColors`, `StikkaMotion`, `StikkaFonts`) | Every color is a token; a test forbids hardcoded colors in widgets. |
+| Theme | `ui/theme.dart` (`StikkaColors`, `StikkaColors.of(brightness, AccentColor)`, `StikkaMotion`, `StikkaFonts`) | Every color is a token; a test forbids hardcoded colors in widgets. The user's color (Settings › Color) changes only the accent tokens; destructive actions use `danger`. |
 | Stage mode | `ui/stage_screen.dart`, `controller/keep_awake.dart` | Shown instead of the main screen while `LibraryController.stageMode`; taps settle into one restart. |
 | Parts page | `ui/parts_page.dart` (`PartsPage`, `SongPartsRow`) | The song editor: strip, cards, edits through `MetronomeController.setParts`; the Rhythm panel via `RhythmTarget`. |
 | Song map | `ui/song_map.dart` | The ruler's slot for a song with parts; follows `MetronomeController.playheadAt`, goes with `jumpToPart`. |

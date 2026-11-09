@@ -311,6 +311,12 @@ void main() {
     expect((await reload()).themeMode, ThemeMode.light);
   });
 
+  test('color persists (default Red)', () async {
+    expect(library.accentColor, AccentColor.red);
+    library.setAccentColor(AccentColor.purple);
+    expect((await reload()).accentColor, AccentColor.purple);
+  });
+
   test(
     'a burst of changes is written as few saves of the latest state',
     () async {

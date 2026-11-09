@@ -8,6 +8,7 @@ import 'package:stikka/src/controller/library_controller.dart';
 import 'package:stikka/src/controller/metronome_controller.dart';
 import 'package:stikka/src/model/click_sound.dart';
 import 'package:stikka/src/model/click_volumes.dart';
+import 'package:stikka/src/model/library.dart';
 import 'package:stikka/src/model/metronome_pattern.dart';
 import 'package:stikka/src/model/whats_new.dart';
 import 'package:stikka/src/storage/library_store.dart';
@@ -332,6 +333,41 @@ void main() {
     await tester.pump();
     expect(metronome.clickSound, ClickSound.cowbell);
     expect(output.previewCount, 1, reason: 'a sample while stopped');
+  });
+
+  testWidgets('Color: six swatches under Theme, saved at once, read out', (
+    tester,
+  ) async {
+    await openSettingsScreen(tester);
+    expect(library.accentColor, AccentColor.red);
+    final swatches = [
+      for (final c in AccentColor.values)
+        tester.getRect(find.byKey(SettingsScreen.colorKey(c))),
+    ];
+    for (final r in swatches) {
+      expect(r.width, moreOrLessEquals(48));
+      expect(r.height, 48);
+      expect(r.top, swatches.first.top, reason: 'one row');
+    }
+    expect(
+      swatches.first.top,
+      greaterThan(tester.getRect(find.text('Dark')).bottom),
+      reason: 'right under Theme',
+    );
+    expect(find.text('Color · Red', findRichText: true), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('Color, Red, selected, 1 of 6'),
+      findsOneWidget,
+    );
+    await tester.tap(find.byKey(SettingsScreen.colorKey(AccentColor.blue)));
+    await tester.pumpAndSettle();
+    expect(library.accentColor, AccentColor.blue);
+    expect(find.text('Color · Blue', findRichText: true), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('Color, Blue, selected, 5 of 6'),
+      findsOneWidget,
+    );
+    expect(find.bySemanticsLabel('Color, Red, 1 of 6'), findsOneWidget);
   });
 
   testWidgets('volume sliders; Reset restores only the volumes', (

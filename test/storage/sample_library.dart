@@ -94,6 +94,7 @@ final sampleLibrary = Library(
   visualOffset: const Duration(milliseconds: 20),
   clickSound: ClickSound.bell,
   themeMode: ThemeMode.light,
+  accentColor: AccentColor.blue,
   vibrate: false,
   partChangeSound: true,
   keepScreenOn: KeepScreenOn.whilePlaying,

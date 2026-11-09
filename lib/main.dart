@@ -151,8 +151,8 @@ Future<MetronomeAudioHandler?> _initAndroidBackground(
       builder: () => MetronomeAudioHandler(
         controller,
         library: library,
-        cover: (bpm) async =>
-            mediaCoverFile(await getTemporaryDirectory(), bpm),
+        cover: (bpm, color) async =>
+            mediaCoverFile(await getTemporaryDirectory(), bpm, color: color),
         onClosed: () => exit(0),
       ),
       config: const AudioServiceConfig(
@@ -188,8 +188,15 @@ class StikkaApp extends StatelessWidget {
   /// Starts the app over after an engine failure.
   final VoidCallback? onRetry;
 
-  static final _dark = stikkaTheme(StikkaColors.stageBlack, Brightness.dark);
-  static final _light = stikkaTheme(StikkaColors.daylight, Brightness.light);
+  static final _themes = <(Brightness, AccentColor), ThemeData>{};
+
+  /// One ThemeData per palette, so a rebuild hands MaterialApp the same
+  /// object and only a real change animates.
+  static ThemeData _theme(Brightness brightness, AccentColor color) =>
+      _themes.putIfAbsent((
+        brightness,
+        color,
+      ), () => stikkaTheme(StikkaColors.of(brightness, color), brightness));
 
   @override
   Widget build(BuildContext context) {
@@ -198,31 +205,44 @@ class StikkaApp extends StatelessWidget {
     return ListenableBuilder(
       // Rebuilds for the theme setting; a null library follows the OS.
       listenable: Listenable.merge([?library]),
-      builder: (context, _) => MaterialApp(
-        title: 'Stikka',
-        debugShowCheckedModeBanner: false,
-        theme: _light,
-        darkTheme: _dark,
-        themeMode: library?.themeMode ?? ThemeMode.system,
-        // Bars match the theme (transparent, icons in contrast); English
-        // only, so the layout never mirrors (ui-spec.md "Android basics").
-        builder: (context, child) => AnnotatedRegion(
-          value: systemBarsStyle(Theme.of(context).brightness),
-          child: Directionality(
-            textDirection: TextDirection.ltr,
-            child: child!,
+      builder: (context, _) {
+        final color = library?.accentColor ?? AccentColor.red;
+        final reduced = WidgetsBinding
+            .instance
+            .platformDispatcher
+            .accessibilityFeatures
+            .disableAnimations;
+        return MaterialApp(
+          title: 'Stikka',
+          debugShowCheckedModeBanner: false,
+          theme: _theme(Brightness.light, color),
+          darkTheme: _theme(Brightness.dark, color),
+          themeMode: library?.themeMode ?? ThemeMode.system,
+          // A new color crossfades over ~200 ms (ui-spec.md "Color"); none
+          // with "Remove animations" on.
+          themeAnimationDuration: reduced
+              ? Duration.zero
+              : const Duration(milliseconds: 200),
+          // Bars match the theme (transparent, icons in contrast); English
+          // only, so the layout never mirrors (ui-spec.md "Android basics").
+          builder: (context, child) => AnnotatedRegion(
+            value: systemBarsStyle(Theme.of(context).brightness),
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: child!,
+            ),
           ),
-        ),
-        home: controller != null && library != null && library.stageMode
-            ? StageScreen(controller: controller, library: library)
-            : controller != null
-            ? MetronomeScreen(
-                controller: controller,
-                library: library,
-                libraryProblem: libraryProblem,
-              )
-            : _EngineFailure(error: engineError, onRetry: onRetry),
-      ),
+          home: controller != null && library != null && library.stageMode
+              ? StageScreen(controller: controller, library: library)
+              : controller != null
+              ? MetronomeScreen(
+                  controller: controller,
+                  library: library,
+                  libraryProblem: libraryProblem,
+                )
+              : _EngineFailure(error: engineError, onRetry: onRetry),
+        );
+      },
     );
   }
 }

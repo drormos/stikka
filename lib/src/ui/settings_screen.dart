@@ -44,6 +44,7 @@ class SettingsScreen extends StatelessWidget {
   static const vibrateKey = Key('settings-vibrate');
   static const partChangeSoundKey = Key('settings-part-change-sound');
   static const keepScreenOnKey = Key('settings-keep-screen-on');
+  static Key colorKey(AccentColor color) => Key('settings-color-${color.name}');
   static const resetKey = Key('settings-volume-reset');
   static const offsetKey = Key('settings-offset');
   static const offsetLabel = 'Visual offset';
@@ -101,6 +102,7 @@ class SettingsScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                      _color(context, library),
                     ],
                     _section(
                       context,
@@ -306,6 +308,79 @@ class SettingsScreen extends StatelessWidget {
       ],
     ),
   );
+
+  /// "Color · Blue" over six swatches (ui-spec.md "Settings" › "Color").
+  Widget _color(BuildContext context, LibraryController library) {
+    final colors = context.colors;
+    final brightness = Theme.of(context).brightness;
+    final chosen = library.accentColor;
+    const all = AccentColor.values;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 28),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text.rich(
+            TextSpan(
+              text: 'Color · ',
+              style: TextStyle(color: colors.muted),
+              children: [
+                TextSpan(
+                  text: chosen.label,
+                  style: TextStyle(color: colors.text),
+                ),
+              ],
+            ),
+            style: const TextStyle(fontSize: 14),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Narrower than 48 each only below ~336dp of row width
+              // (320dp phones): the circles stay one row.
+              for (final (i, color) in all.indexed)
+                Flexible(
+                  child: Semantics(
+                    container: true,
+                    button: true,
+                    excludeSemantics: true,
+                    label: [
+                      'Color, ${color.label}',
+                      if (color == chosen) 'selected',
+                      '${i + 1} of ${all.length}',
+                    ].join(', '),
+                    onTap: () => library.setAccentColor(color),
+                    child: GestureDetector(
+                      key: colorKey(color),
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => library.setAccentColor(color),
+                      child: SizedBox(
+                        width: 48,
+                        height: 48,
+                        child: CustomPaint(
+                          painter: _SwatchPainter(
+                            StikkaColors.of(brightness, color).accent,
+                            ring: color == chosen ? colors.text : null,
+                          ),
+                          child: color == chosen
+                              ? const Icon(
+                                  Icons.check,
+                                  size: 22,
+                                  color: SwatchColors.check,
+                                )
+                              : null,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _clickSound(BuildContext context) {
     final colors = context.colors;
@@ -606,4 +681,32 @@ class _OffsetFlashState extends State<_OffsetFlash>
       ),
     );
   }
+}
+
+/// A 40px color circle; the chosen one gets a 2px [ring] 3px outside it.
+class _SwatchPainter extends CustomPainter {
+  const _SwatchPainter(this.color, {this.ring});
+
+  final Color color;
+  final Color? ring;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final centre = size.center(Offset.zero);
+    canvas.drawCircle(centre, 20, Paint()..color = color);
+    if (ring case final ring?) {
+      canvas.drawCircle(
+        centre,
+        24,
+        Paint()
+          ..color = ring
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_SwatchPainter old) =>
+      old.color != color || old.ring != ring;
 }

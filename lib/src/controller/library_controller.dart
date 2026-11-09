@@ -95,6 +95,13 @@ class LibraryController extends ChangeNotifier {
     if (mode != themeMode) _update(_library.copyWith(themeMode: mode));
   }
 
+  /// Settings › Color (default Red).
+  AccentColor get accentColor => _library.accentColor;
+
+  void setAccentColor(AccentColor color) {
+    if (color != accentColor) _update(_library.copyWith(accentColor: color));
+  }
+
   /// "Vibrate on touch" (default on).
   bool get vibrate => _library.vibrate;
 

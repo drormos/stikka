@@ -79,7 +79,7 @@ void main() {
     final pending = <int, Completer<Uri>>{};
     handler = MetronomeAudioHandler(
       controller,
-      cover: (bpm) {
+      cover: (bpm, _) {
         requested.add(bpm);
         return (pending[bpm] = Completer<Uri>()).future;
       },
