@@ -25,7 +25,7 @@ void main() {
 
   setUpAll(
     () => PackageInfo.setMockInitialValues(
-      appName: 'Metra',
+      appName: 'Stikka',
       packageName: 'com.dror.metra',
       version: '1.0.0',
       buildNumber: '1',

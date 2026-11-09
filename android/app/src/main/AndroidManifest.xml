@@ -40,7 +40,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <!-- "Metra" in the share menu for text: a Metra export to import. -->
+        <!-- "Stikka" in the share menu for text: a Stikka export to import. -->
         <activity
             android:name=".ShareReceiver"
             android:exported="true"
@@ -63,7 +63,7 @@
         <!-- Quick Settings tile: Playing / Stopped, tap to start or stop. -->
         <service android:name=".PlaybackTile"
             android:exported="true"
-            android:label="Metra"
+            android:label="Stikka"
             android:icon="@drawable/ic_tile"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>

@@ -1,4 +1,4 @@
-package com.dror.metra
+package com.dror.metra // Old name, kept on purpose: see ui-spec.md › Name.
 
 import android.app.PendingIntent
 import android.content.ComponentName
@@ -10,7 +10,7 @@ import android.service.quicksettings.TileService
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
-/// The "Metra" Quick Settings tile (ui-spec.md "Android basics"): shows
+/// The "Stikka" Quick Settings tile (ui-spec.md "Android basics"): shows
 /// Playing / Stopped; a tap starts or stops the click. With no running
 /// app to start it in, it opens the app, which starts.
 class PlaybackTile : TileService() {

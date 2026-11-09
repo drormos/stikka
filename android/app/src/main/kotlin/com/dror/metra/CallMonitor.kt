@@ -1,4 +1,4 @@
-package com.dror.metra
+package com.dror.metra // Old name, kept on purpose: see ui-spec.md › Name.
 
 import android.content.Context
 import android.media.AudioManager
@@ -41,7 +41,7 @@ object CallMonitor {
                 )
             }
         } catch (e: RuntimeException) {
-            Log.w("Metra", "Call monitoring unavailable", e) // only costs the pause
+            Log.w("Stikka", "Call monitoring unavailable", e) // only costs the pause
         }
     }
 

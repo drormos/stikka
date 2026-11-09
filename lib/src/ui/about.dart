@@ -13,16 +13,16 @@ import 'theme.dart';
 import '../model/whats_new.dart';
 
 /// Settings → About (ui-spec.md "Settings"): Send feedback, All updates,
-/// About Metra, Privacy policy, Open-source licenses, and the version line.
+/// About Stikka, Privacy policy, Open-source licenses, and the version line.
 
-const feedbackEmail = 'metra.application@gmail.com';
+const feedbackEmail = 'stikka.app@gmail.com';
 
 /// The app's version and build.
 Future<PackageInfo> appVersion() => PackageInfo.fromPlatform();
 
-/// "Metra 1.0.0 (2)": shown in Settings, copied on long-press.
+/// "Stikka 1.0.0 (2)": shown in Settings, copied on long-press.
 String versionLine(PackageInfo app) =>
-    'Metra ${app.version} (${app.buildNumber})';
+    'Stikka ${app.version} (${app.buildNumber})';
 
 /// The device lines that start a feedback email; empty if unknown.
 Future<String> _deviceLines() async {
@@ -51,7 +51,7 @@ Future<String> _deviceLines() async {
 /// version and device, then an empty line for the message.
 Future<Uri> feedbackUri() async {
   final app = await appVersion();
-  final subject = 'Metra feedback (v${app.version} build ${app.buildNumber})';
+  final subject = 'Stikka feedback (v${app.version} build ${app.buildNumber})';
   final body = '${versionLine(app)}\n${await _deviceLines()}\n\n';
   // Encoded by hand: Uri's queryParameters would turn spaces into "+",
   // which mail apps show literally.
@@ -107,7 +107,7 @@ Future<void> sendFeedback(BuildContext context) async {
   }
 }
 
-/// The centred, muted "Metra 1.0.0 (2)"; long-press copies it.
+/// The centred, muted "Stikka 1.0.0 (2)"; long-press copies it.
 class VersionLine extends StatefulWidget {
   const VersionLine({super.key});
 
@@ -146,7 +146,7 @@ class _VersionLineState extends State<VersionLine> {
   );
 }
 
-/// "About Metra": why the app exists.
+/// "About Stikka": why the app exists.
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
@@ -166,7 +166,7 @@ class AboutScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const BackBar(title: 'About Metra'),
+            const BackBar(title: 'About Stikka'),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(24, 28, 24, 32),
@@ -315,7 +315,7 @@ Future<void> openLicenses(BuildContext context) async {
               ),
             ),
             child: LicensePage(
-              applicationName: 'Metra',
+              applicationName: 'Stikka',
               applicationVersion: '${app.version} (${app.buildNumber})',
             ),
           ),

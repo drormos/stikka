@@ -2,12 +2,12 @@ import 'library.dart';
 
 /// A setlist as plain text for the phone's share menu (ui-spec.md "Set ⌄"
 /// › "Share"): the set name and count, one line per song, then "Shared
-/// from Metra".
+/// from Stikka".
 String setlistShareText(Setlist setlist, List<Song> songs) => [
   '${setlist.name} (${songs.length == 1 ? '1 song' : '${songs.length} songs'})',
   for (final (i, song) in songs.indexed) '${i + 1}. ${songShareLine(song)}',
   '',
-  'Shared from Metra',
+  'Shared from Stikka',
 ].join('\n');
 
 /// "Midnight Engine · 148 · 7/8"; a song with parts stays one line and

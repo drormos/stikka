@@ -31,6 +31,7 @@ abstract class MicInput {
 /// offers it. Elsewhere (Mac, iPhone) there's no microphone yet: it reads
 /// as allowed and never starts, so the page shows "Play a string".
 class AndroidMicInput implements MicInput {
+  // Old name, kept on purpose: see ui-spec.md › Name.
   static const _channel = MethodChannel('metra/mic');
   static const _pcm = EventChannel('metra/mic/pcm');
 

@@ -190,12 +190,12 @@ class _Above extends SingleChildLayoutDelegate {
 /// The menus' lines (ui-spec.md "The share menu").
 abstract final class ShareMenus {
   static const forImport =
-      'From a Metra export someone sent you (copy their message first)';
+      'From a Stikka export someone sent you (copy their message first)';
   static const nothing = 'Nothing to add';
-  static const nothingLine = 'Copy the whole Metra message, then try again.';
+  static const nothingLine = 'Copy the whole Stikka message, then try again.';
 }
 
-/// Imports the Metra export in [text] (null: the clipboard, read only now):
+/// Imports the Stikka export in [text] (null: the clipboard, read only now):
 /// the check dialog, then the songs and set are added and what was shared
 /// loads. True when something was loaded (the caller closes its panel).
 Future<bool> importShared(
@@ -215,7 +215,7 @@ Future<bool> importShared(
       shared == null
           ? ShareMenus.nothingLine
           : '${_songs(shared.skipped)} ${shared.skipped == 1 ? 'needs' : 'need'} '
-                'a newer Metra.',
+                'a newer Stikka.',
     );
     return false;
   }
@@ -264,7 +264,7 @@ Future<bool> _check(BuildContext context, ImportPlan plan) async {
       'You have another set with this name: added as "${set.name}".',
     if (shared.skipped > 0)
       '${_songs(shared.skipped)} ${shared.skipped == 1 ? 'needs' : 'need'} '
-          'a newer Metra.',
+          'a newer Stikka.',
   ];
   final add = await showDialog<bool>(
     context: context,

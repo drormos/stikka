@@ -46,7 +46,7 @@ class TunerPage extends StatefulWidget {
   static const allowKey = Key('tuner-allow');
   static const referenceLabel = 'Reference A4';
   static const privacyLine =
-      'Metra listens only while the tuner is open. Nothing is recorded or '
+      'Stikka listens only while the tuner is open. Nothing is recorded or '
       'sent.';
   static const pauseLine = 'The click pauses while the tuner is open';
 

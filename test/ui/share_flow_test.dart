@@ -142,7 +142,7 @@ void main() {
     check(QuickPick.songsShareKey);
   });
 
-  testWidgets('Set ⌄ › Share › Export set: the whole set as a Metra export', (
+  testWidgets('Set ⌄ › Share › Export set: the whole set as a Stikka export', (
     tester,
   ) async {
     await pump(tester);
@@ -211,7 +211,7 @@ void main() {
     expect(find.byType(QuickPick), findsNothing);
   });
 
-  testWidgets('nothing Metra-shaped: "Nothing to add"; the same set again: '
+  testWidgets('nothing Stikka-shaped: "Nothing to add"; the same set again: '
       '"You already have this set", and it opens', (tester) async {
     await pump(tester);
     clipboard = 'see you at 8';
@@ -257,7 +257,7 @@ void main() {
     expect(library.songById(library.songsAZ.first.id)!.bpm, 100);
   });
 
-  testWidgets('shared to Metra from another app: the check opens on the '
+  testWidgets('shared to Stikka from another app: the check opens on the '
       'main screen', (tester) async {
     await pump(tester);
     AndroidBridge.sharedText.value = setExport('Sun', [song('Four', 90)]);

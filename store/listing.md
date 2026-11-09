@@ -1,14 +1,14 @@
 # Google Play store listing (default: English)
 
-App name (30): **Metra**
+App name (30): **Stikka**
 
 ## Short description (74 / 80)
 
 A precise metronome with tempo changes, setlists and a stage mode. No ads.
 
-## Full description (3033 / 4000)
+## Full description (3035 / 4000)
 
-Metra is a metronome for every hour you play: practice, rehearsal and the stage. The click stays exactly on time, the screen reads at a glance, and a whole song, tempo changes and all, plays from one tap.
+Stikka is a metronome for every hour you play: practice, rehearsal and the stage. The click stays exactly on time, the screen reads at a glance, and a whole song, tempo changes and all, plays from one tap.
 
 ON TIME, EVERY TIME
 • The click comes from the audio engine's own clock, so it doesn't drift, from 30 to 300 bpm.
@@ -52,7 +52,7 @@ TUNER
 • A chromatic tuner for the whole band: a big note name, cents off, and a smooth needle. Reference A4 from 430 to 450 Hz. The microphone is used only while the tuner is open; nothing is recorded or sent.
 
 PRIVATE AND FREE
-No ads, no account, no tracking. Metra has no internet access: your songs stay on your phone.
+No ads, no account, no tracking. Stikka has no internet access: your songs stay on your phone.
 
 Made by a drummer who wanted a metronome that just works, in the practice room and on stage.
 

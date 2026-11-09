@@ -1168,7 +1168,7 @@ class _QuickPickState extends State<QuickPick>
       note: ArriveLeave(child: _hintNote(colors)),
       // Swiped away, the bar is already gone: no leaving copy.
       bar: ArriveLeave(key: ValueKey(_undoSwiped), child: _undoBar(colors)),
-      // "+ New setlist" · "Paste shared" (sets or songs from a Metra
+      // "+ New setlist" · "Paste shared" (sets or songs from a Stikka
       // export on the clipboard), the bottom row style.
       actions: [
         Padding(
@@ -1345,7 +1345,7 @@ class _QuickPickState extends State<QuickPick>
     );
   }
 
-  /// The set's share menu: the song list as text, the set as a Metra
+  /// The set's share menu: the song list as text, the set as a Stikka
   /// export, or an import.
   Future<void> _setShare(
     BuildContext button,
@@ -1361,7 +1361,7 @@ class _QuickPickState extends State<QuickPick>
       (
         value: 'export',
         name: 'Export set',
-        line: 'Every song with its parts, for another Metra user to import',
+        line: 'Every song with its parts, for another Stikka user to import',
       ),
       (value: 'import', name: 'Import a set', line: ShareMenus.forImport),
     ]);
@@ -1381,7 +1381,7 @@ class _QuickPickState extends State<QuickPick>
       (
         value: 'export',
         name: 'Export a song…',
-        line: 'Pick one, for another Metra user to import',
+        line: 'Pick one, for another Stikka user to import',
       ),
       (value: 'import', name: 'Import a song', line: ShareMenus.forImport),
     ]);
@@ -1394,7 +1394,7 @@ class _QuickPickState extends State<QuickPick>
     }
   }
 
-  /// A Metra export from the clipboard; once it's loaded, the panel closes.
+  /// A Stikka export from the clipboard; once it's loaded, the panel closes.
   Future<void> _import() async {
     if (await importShared(context, _library, widget.metronome) && mounted) {
       Navigator.pop(context);

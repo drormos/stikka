@@ -64,7 +64,7 @@ Library _library(List<Song> songs, [List<Setlist> sets = const []]) => Library(
 
 /// The export of [payload] as a data line, for shapes the app doesn't make.
 String _line(Object payload) =>
-    'metra1:${base64Url.encode(gzip.encode(utf8.encode(jsonEncode(payload))))}';
+    'stikka1:${base64Url.encode(gzip.encode(utf8.encode(jsonEncode(payload))))}';
 
 /// ui-spec.md "Sharing sets and songs".
 void main() {
@@ -78,8 +78,7 @@ void main() {
     final lines = text.split('\n');
     expect(lines.first, 'Glass Harbor · 120, 128, 140 · 4/4, 2/4, 7/8');
     expect(lines[2], importHelp);
-    expect(lines.last, startsWith('metra1:'));
-    expect(lines.last, matches(RegExp(r'^metra1:[A-Za-z0-9_-]+$')));
+    expect(lines.last, matches(RegExp(r'^stikka1:[A-Za-z0-9_-]+$')));
     final read = parseShared(text)!;
     expect(read.isSet, isFalse);
     final song = read.songs.single;
@@ -104,18 +103,18 @@ void main() {
     );
     final text = exportSetText(set, [_harbor, rock, _harbor]);
     expect(text.split('\n').first, 'Fri · The Blue Room (3 songs)');
-    expect(text, isNot(contains('Shared from Metra')));
+    expect(text, isNot(contains('Shared from')));
     final read = parseShared(text)!;
     expect(read.setName, 'Fri · The Blue Room');
     expect([for (final s in read.songs) s.name], ['Glass Harbor', 'Rock']);
     expect(read.order, [0, 1, 0]);
   });
 
-  test('found anywhere in pasted text; nothing Metra-shaped is null', () {
+  test('found anywhere in pasted text; nothing Stikka-shaped is null', () {
     final data = exportSongText(_harbor).split('\n').last;
     expect(parseShared('fwd: look at this\n$data\nthanks!'), isNotNull);
     expect(parseShared('just a chat message'), isNull);
-    expect(parseShared('metra1:not-really-data'), isNull);
+    expect(parseShared('stikka1:not-really-data'), isNull);
     expect(parseShared(_line({'v': 1})), isNull);
   });
 
@@ -126,7 +125,7 @@ void main() {
         gzip.decode(
           base64Url.decode(
             base64Url.normalize(
-              exportSongText(_harbor).split('\n').last.substring(7),
+              exportSongText(_harbor).split('\n').last.split(':').last,
             ),
           ),
         ),
@@ -259,5 +258,64 @@ void main() {
     expect(read.setName, 'Fri');
     expect(musicKey(read.songs.first), musicKey(_harbor));
     expect(read.songs.last.parts.single.tempoStart, 100);
+  });
+
+  group('found by content, not by the app\'s name (ui-spec.md "Name")', () {
+    String data() => exportSongText(_harbor).split('\n').last;
+    String block() => data().substring(data().indexOf(':') + 1);
+
+    test('exports from the real 1.9.0 code (metra1:) still import', () {
+      final set = parseShared(
+        File('test/fixtures/export_v1/metra-1.9.0-set.txt').readAsStringSync(),
+      )!;
+      expect(set.setName, 'Fri');
+      expect([for (final s in set.songs) s.name], ['Glass Harbor', 'Rock']);
+      expect(set.order, [0, 1, 0]);
+      expect(musicKey(set.songs.first), musicKey(_harbor));
+      final song = parseShared(
+        File('test/fixtures/export_v1/metra-1.9.0-song.txt').readAsStringSync(),
+      )!;
+      expect(song.isSet, isFalse);
+      expect(musicKey(song.songs.single), musicKey(_harbor));
+    });
+
+    test('a bare block, an unknown name and a "Shared from" ending import', () {
+      for (final text in [
+        block(),
+        'foo1:${block()}',
+        'look:\n${data()}\n\nShared from Metra',
+        '${data()}\nShared from Stikka',
+      ]) {
+        expect(
+          musicKey(parseShared(text)!.songs.single),
+          musicKey(_harbor),
+          reason: text,
+        );
+      }
+    });
+
+    test(
+      'the version decides how the block is read: an unknown one isn\'t',
+      () {
+        expect(parseShared('stikka2:${block()}'), isNull);
+      },
+    );
+
+    test('garbage is nothing to import and never throws', () {
+      for (final text in [
+        '',
+        ':',
+        'stikka1:',
+        'metra1:H4sIAAAAAAAAE81STWvC',
+        'H4sIAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+        'Supercalifragilisticexpialidocious and 1234567890123456789',
+        'a1:b2:c3:d4:${'x' * 40}',
+        _line([1, 2, 3]),
+        _line('songs'),
+        _line({'songs': 'no'}),
+      ]) {
+        expect(parseShared(text), isNull, reason: text);
+      }
+    });
   });
 }

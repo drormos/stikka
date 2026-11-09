@@ -70,7 +70,7 @@ void main() {
       '3. Glass Harbor · 120, 128, 140 · 4/4, 2/4\n'
       '4. Long Road · 98–140 (5 tempos)\n'
       '\n'
-      'Shared from Metra',
+      'Shared from Stikka',
     );
   });
 

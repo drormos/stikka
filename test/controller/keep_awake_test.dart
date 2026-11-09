@@ -29,7 +29,7 @@ void main() {
     dir.deleteSync(recursive: true);
   });
 
-  test('while Metra is open (default): awake, playing or not', () async {
+  test('while Stikka is open (default): awake, playing or not', () async {
     final calls = <bool>[];
     keepScreenAwake(metronome, library, (awake) async => calls.add(awake));
     await metronome.play();

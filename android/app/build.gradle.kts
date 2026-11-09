@@ -17,6 +17,7 @@ val keystoreProperties = Properties().apply {
 }
 
 android {
+    // Old name, kept on purpose: see ui-spec.md › Name.
     namespace = "com.dror.metra"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
@@ -27,7 +28,7 @@ android {
     }
 
     defaultConfig {
-        // Permanent: Android matches updates by it.
+        // Permanent: Android matches updates by it. Old name, kept on purpose: see ui-spec.md › Name.
         applicationId = "com.dror.metra"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
@@ -39,7 +40,7 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        manifestPlaceholders["appLabel"] = "Metra"
+        manifestPlaceholders["appLabel"] = "Stikka"
     }
 
     signingConfigs {
@@ -58,7 +59,7 @@ android {
         // (a different key would force an uninstall and lose the library).
         debug {
             applicationIdSuffix = ".debug"
-            manifestPlaceholders["appLabel"] = "Metra dev"
+            manifestPlaceholders["appLabel"] = "Stikka dev"
         }
         release {
             signingConfig = signingConfigs.findByName("release")

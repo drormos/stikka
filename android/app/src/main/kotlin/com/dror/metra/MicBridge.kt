@@ -1,4 +1,4 @@
-package com.dror.metra
+package com.dror.metra // Old name, kept on purpose: see ui-spec.md › Name.
 
 import android.Manifest
 import android.app.Activity

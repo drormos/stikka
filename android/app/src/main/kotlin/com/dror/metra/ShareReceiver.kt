@@ -1,4 +1,4 @@
-package com.dror.metra
+package com.dror.metra // Old name, kept on purpose: see ui-spec.md › Name.
 
 import android.app.Activity
 import android.content.Intent
@@ -6,9 +6,9 @@ import android.os.Bundle
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
-// Metra in Android's share menu for text (a Metra export from a chat):
-// keeps the text for Dart, brings Metra's own task to the front and
-// closes, so Metra never opens inside the sending app's task.
+// Stikka in Android's share menu for text (a Stikka export from a chat):
+// keeps the text for Dart, brings Stikka's own task to the front and
+// closes, so Stikka never opens inside the sending app's task.
 class ShareReceiver : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

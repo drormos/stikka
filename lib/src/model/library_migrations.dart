@@ -158,7 +158,7 @@ Json _v1ToV2(Json v1) {
   };
 }
 
-/// Version 2 to 3: the screen stays on while Metra is open (the new
+/// Version 2 to 3: the screen stays on while Stikka is open (the new
 /// default), and stage mode starts off.
 Json _v2ToV3(Json v2) => {
   ...v2,

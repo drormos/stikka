@@ -1037,8 +1037,8 @@ class LibraryController extends ChangeNotifier {
     return setlist;
   }
 
-  /// The Metra export in [text] planned against the library (what adding
-  /// it would do), or null when there's nothing Metra-shaped in it.
+  /// The Stikka export in [text] planned against the library (what adding
+  /// it would do), or null when there's nothing Stikka-shaped in it.
   ImportPlan? planImport(String text) => switch (parseShared(text)) {
     final shared? => ImportPlan.of(_library, shared, _newId),
     null => null,

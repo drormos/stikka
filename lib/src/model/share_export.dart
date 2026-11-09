@@ -5,11 +5,12 @@ import 'library.dart';
 import 'on_start.dart';
 import 'share_text.dart';
 
-/// Metra exports (ui-spec.md "Sharing sets and songs"): a readable part,
-/// the help line, then one "metra1:" line holding the songs' music
+/// Stikka exports (ui-spec.md "Sharing sets and songs"): a readable part,
+/// the help line, then one "stikka1:" line holding the songs' music
 /// (gzip-compressed JSON, base64url). When I press Start is never in it.
 ///
-/// Payload versions (the "v" field; the line prefix stays "metra1:"):
+/// Payload versions (the "v" field; the line prefix stays "stikka1:",
+/// "metra1:" before the rename):
 /// - 1 (build 101 on): `{"v": 1, "songs": [song], "set"?: {"name",
 ///   "order": [song index]}}`, a song being `{"name", "end", "parts":
 ///   [SongPart.toJson() without "id"]}`. Golden: test/fixtures/export_v1.
@@ -19,7 +20,7 @@ const exportVersion = 1;
 
 /// The line between the readable part and the data.
 const importHelp =
-    'To import into Metra: copy this whole message, then in Metra tap '
+    'To import into Stikka: copy this whole message, then in Stikka tap '
     'Share › Import.';
 
 /// A set as an export: its song list, the help line, the data.
@@ -29,7 +30,7 @@ String exportSetText(Setlist setlist, List<Song> songs) {
     unique.putIfAbsent(song.id, () => unique.length);
   }
   final byId = {for (final s in songs) s.id: s};
-  // The song list without its "Shared from Metra" ending.
+  // The song list without its "Shared from Stikka" ending.
   final list = setlistShareText(setlist, songs).split('\n');
   return [
     ...list.takeWhile((l) => l.isNotEmpty),
@@ -80,9 +81,9 @@ Map<String, Object?> _songJson(Song song) => {
 String musicKey(Song song) => jsonEncode(_music(song));
 
 String _dataLine(Map<String, Object?> payload) =>
-    'metra1:${base64Url.encode(gzip.encode(utf8.encode(jsonEncode(payload)))).replaceAll('=', '')}';
+    'stikka1:${base64Url.encode(gzip.encode(utf8.encode(jsonEncode(payload)))).replaceAll('=', '')}';
 
-/// A Metra export, read: the set's name and order (null for songs alone),
+/// A Stikka export, read: the set's name and order (null for songs alone),
 /// the songs (music only, When I press Start off) and how many couldn't
 /// be read.
 class SharedImport {
@@ -99,28 +100,44 @@ class SharedImport {
   final List<int> order;
   final List<Song> songs;
 
-  /// Songs that need a newer Metra.
+  /// Songs that need a newer Stikka.
   final int skipped;
 
   bool get isSet => setName != null;
 }
 
-final _data = RegExp(r'metra(\d+):([A-Za-z0-9_-]+)');
+/// A data block, found by its content rather than the app's name so a
+/// rename never breaks sharing: an optional `<letters><version>:` prefix
+/// ("metra1:" from 1.9.0 and older, "stikka1:") and the encoded payload.
+/// No prefix reads as version 1.
+final _data = RegExp(r'(?:[A-Za-z]+(\d+):)?([A-Za-z0-9_-]{16,})');
 
 /// The export in [text] (the whole message, or any text holding its data
-/// line), or null when there's nothing Metra-shaped to add.
+/// block), or null when there's nothing Stikka-shaped to add.
 SharedImport? parseShared(String text) {
-  final match = _data.firstMatch(text);
-  if (match == null) return null;
-  final Object? payload;
+  for (final match in _data.allMatches(text)) {
+    // The version decides how the block is read; 1 is the only one so far.
+    if ((match.group(1) ?? '1') != '1') continue;
+    final payload = _decode(match.group(2)!);
+    if (payload != null) return _read(payload);
+  }
+  return null;
+}
+
+/// A version-1 block's payload, or null when it isn't one.
+Map<Object?, Object?>? _decode(String data) {
   try {
-    var data = match.group(2)!;
-    data = data.padRight((data.length + 3) ~/ 4 * 4, '=');
-    payload = jsonDecode(utf8.decode(gzip.decode(base64Url.decode(data))));
+    final padded = data.padRight((data.length + 3) ~/ 4 * 4, '=');
+    final payload = jsonDecode(
+      utf8.decode(gzip.decode(base64Url.decode(padded))),
+    );
+    return payload is Map && payload['songs'] is List ? payload : null;
   } catch (_) {
     return null;
   }
-  if (payload is! Map || payload['songs'] is! List) return null;
+}
+
+SharedImport? _read(Map<Object?, Object?> payload) {
   final raw = payload['songs'] as List;
   final songs = <Song>[];
   // Raw index → index in [songs] (null: skipped).

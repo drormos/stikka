@@ -28,7 +28,7 @@ void main() {
 
   setUpAll(
     () => PackageInfo.setMockInitialValues(
-      appName: 'Metra',
+      appName: 'Stikka',
       packageName: 'com.dror.metra',
       version: '1.2.3',
       buildNumber: '7',
@@ -152,7 +152,7 @@ void main() {
       'Send feedback',
       "Tell Dror what works and what doesn't",
       'All updates',
-      'About Metra',
+      'About Stikka',
       'Why this app exists',
       'Privacy policy',
       'Open-source licenses',
@@ -220,16 +220,16 @@ void main() {
     );
     await openSettingsScreen(tester);
     await reveal(tester, find.byKey(SettingsScreen.versionKey));
-    expect(find.text('Metra 1.2.3 (7)'), findsOneWidget);
+    expect(find.text('Stikka 1.2.3 (7)'), findsOneWidget);
     await tester.longPress(find.byKey(SettingsScreen.versionKey));
     await tester.pump();
     expect(copied, [
-      {'text': 'Metra 1.2.3 (7)'},
+      {'text': 'Stikka 1.2.3 (7)'},
     ]);
     expect(find.text('Copied'), findsOneWidget);
   });
 
-  testWidgets('About Metra opens the note; Back to Settings, then main', (
+  testWidgets('About Stikka opens the note; Back to Settings, then main', (
     tester,
   ) async {
     await openSettingsScreen(tester);
@@ -247,7 +247,7 @@ void main() {
     expectMain();
   });
 
-  testWidgets("Open-source licenses: Flutter's page in Metra's look, with "
+  testWidgets("Open-source licenses: Flutter's page in Stikka's look, with "
       'the native libraries and fonts; Back to Settings', (tester) async {
     registerBundledLicenses();
     await openSettingsScreen(tester);
@@ -256,7 +256,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(LicensePage), findsOneWidget);
     expect(find.text('Open-source licenses'), findsOneWidget);
-    expect(find.text('Metra'), findsOneWidget);
+    expect(find.text('Stikka'), findsOneWidget);
     expect(find.text('1.2.3 (7)'), findsOneWidget);
     expect(find.byIcon(Icons.chevron_left), findsOneWidget);
     final colors = testTheme.extension<MetraColors>()!;
@@ -303,11 +303,11 @@ void main() {
     () async {
       final uri = await feedbackUri();
       expect(uri.scheme, 'mailto');
-      expect(uri.path, 'metra.application@gmail.com');
+      expect(uri.path, 'stikka.app@gmail.com');
       expect(uri.query, isNot(contains('+')), reason: 'spaces as %20');
       final params = Uri.splitQueryString(uri.query);
-      expect(params['subject'], 'Metra feedback (v1.2.3 build 7)');
-      expect(params['body'], startsWith('Metra 1.2.3 (7)\n'));
+      expect(params['subject'], 'Stikka feedback (v1.2.3 build 7)');
+      expect(params['body'], startsWith('Stikka 1.2.3 (7)\n'));
       expect(params['body'], endsWith('\n\n'));
     },
   );

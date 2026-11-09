@@ -65,7 +65,7 @@ class SettingsScreen extends StatelessWidget {
   };
 
   static const _screenOn = {
-    KeepScreenOn.whileOpen: 'While Metra is open',
+    KeepScreenOn.whileOpen: 'While Stikka is open',
     KeepScreenOn.whilePlaying: 'Only while playing',
   };
 
@@ -207,7 +207,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  /// The last section: Send feedback, All updates, About Metra, Privacy
+  /// The last section: Send feedback, All updates, About Stikka, Privacy
   /// policy, Open-source licenses, then the version line (long-press copies it).
   Widget _about(BuildContext context) {
     final colors = context.colors;
@@ -261,7 +261,7 @@ class SettingsScreen extends StatelessWidget {
         row(allUpdatesRowKey, 'All updates', () => openAllUpdates(context)),
         row(
           aboutKey,
-          'About Metra',
+          'About Stikka',
           () => Navigator.push(
             context,
             MaterialPageRoute<void>(builder: (_) => const AboutScreen()),

@@ -131,7 +131,7 @@ Future<(LibraryController?, String?)> _loadLibrary() async {
     debugPrint('Library unavailable: $e');
     return (
       null,
-      'Your songs were saved by a newer version of Metra. '
+      'Your songs were saved by a newer version of Stikka. '
           'Update the app to open them.',
     );
   } catch (e) {
@@ -156,6 +156,7 @@ Future<MetronomeAudioHandler?> _initAndroidBackground(
         onClosed: () => exit(0),
       ),
       config: const AudioServiceConfig(
+        // Old name, kept on purpose: see ui-spec.md › Name.
         androidNotificationChannelId: 'com.dror.metra.playback',
         androidNotificationChannelName: 'Metronome playback',
       ),
@@ -198,7 +199,7 @@ class MetraApp extends StatelessWidget {
       // Rebuilds for the theme setting; a null library follows the OS.
       listenable: Listenable.merge([?library]),
       builder: (context, _) => MaterialApp(
-        title: 'Metra',
+        title: 'Stikka',
         debugShowCheckedModeBanner: false,
         theme: _light,
         darkTheme: _dark,
@@ -244,7 +245,7 @@ class _EngineFailure extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                "Metra couldn't start the sound.",
+                "Stikka couldn't start the sound.",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 20),
               ),

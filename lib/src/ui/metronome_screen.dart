@@ -54,7 +54,7 @@ class MetronomeScreen extends StatelessWidget {
   final String? libraryProblem;
 
   static const saveFailedNotice =
-      "Couldn't save your changes. Metra tries again with your next change.";
+      "Couldn't save your changes. Stikka tries again with your next change.";
 
   static const bpmKey = Key('bpm');
   static const playKey = Key('play');
@@ -674,7 +674,7 @@ class MetronomeScreen extends StatelessWidget {
 
 /// What a screen reader hears unasked (ui-spec.md "Accessibility"): only
 /// Start / Stop and song changes, never anything per click.
-/// Text shared to Metra from another app (a Metra export): offered for
+/// Text shared to Stikka from another app (a Stikka export): offered for
 /// import here, on the main screen (ui-spec.md "Receiving").
 class _ShareInbox extends StatefulWidget {
   const _ShareInbox({

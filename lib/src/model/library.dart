@@ -263,7 +263,7 @@ class Library {
   /// click.
   final bool partChangeSound;
 
-  /// "Keep screen on": while Metra is open, or only while playing.
+  /// "Keep screen on": while Stikka is open, or only while playing.
   final KeepScreenOn keepScreenOn;
 
   /// The tuner's "Reference A4" in Hz (430–450), app-wide.

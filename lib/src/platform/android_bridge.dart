@@ -11,15 +11,16 @@ import '../controller/metronome_controller.dart';
 /// Android-only links to `MainActivity` and the Quick Settings tile
 /// (`PlaybackTile.kt`). Failures only cost the extra, never the app.
 abstract final class AndroidBridge {
+  // Channel names: Old name, kept on purpose: see ui-spec.md › Name.
   static const android = MethodChannel('metra/android');
   static const tile = MethodChannel('metra/tile');
   static const share = MethodChannel('metra/share');
 
-  /// Text shared to Metra from another app (a Metra export), waiting for
+  /// Text shared to Stikka from another app (a Stikka export), waiting for
   /// the main screen to offer the import; null when there's none.
   static final sharedText = ValueNotifier<String?>(null);
 
-  /// Listens for text shared to Metra, including a share that opened it.
+  /// Listens for text shared to Stikka, including a share that opened it.
   static Future<void> attachShareTarget() async {
     Future<void> take() async {
       if (await _call(share, 'take') case final String text) {

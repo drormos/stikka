@@ -903,7 +903,7 @@ void main() {
         await tester.pumpAndSettle();
         expect(shared, [
           'Friday set (3 songs)\n1. One · 100\n2. Two · 110\n3. Three · 120\n'
-              '\nShared from Metra',
+              '\nShared from Stikka',
         ]);
       });
     }

@@ -23,7 +23,7 @@ version_line=$(grep -E '^version: [0-9]+\.[0-9]+\.[0-9]+\+[0-9]+$' pubspec.yaml)
 version=${version_line#version: }
 name=${version%%+*}
 build=${version##*+}
-echo "Releasing Metra $name (build $build)"
+echo "Releasing Stikka $name (build $build)"
 
 # Uncommitted work would not be in the release (the designer's
 # docs/design/ drafts are fine).
@@ -58,6 +58,8 @@ if $drift; then
 fi
 
 flutter analyze
+# Includes the release guards: notes match the version, saved-data schema,
+# permissions, and no user-visible "Metra" (test/platform/name_guard_test.dart).
 flutter test
 flutter build appbundle --release
 flutter build apk --release
@@ -104,4 +106,4 @@ echo "APK: build/app/outputs/flutter-apk/app-release.apk"
 echo
 echo "To publish (after the device checks in .agents/skills/device-qa/SKILL.md):"
 echo "  git push && git push origin v$name"
-echo "  gh release create v$name --title \"Metra $name\" --notes-file <notes.md>"
+echo "  gh release create v$name --title \"Stikka $name\" --notes-file <notes.md>"
