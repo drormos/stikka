@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:stikka/src/audio/metronome_audio_handler.dart';
 import 'package:stikka/src/controller/library_controller.dart';
 import 'package:stikka/src/controller/metronome_controller.dart';
+import 'package:stikka/src/model/library.dart' show AccentColor;
 import 'package:stikka/src/model/metronome_pattern.dart';
 import 'package:stikka/src/storage/library_store.dart';
 
@@ -92,6 +93,28 @@ void main() {
     pending[121]!.complete(Uri.file('/c/121.png'));
     await Future<void>.delayed(Duration.zero);
     expect(handler.mediaItem.value?.artUri, Uri.file('/c/121.png'));
+  });
+
+  test('a new color refreshes the cover on the next update', () async {
+    final dir = Directory.systemTemp.createTempSync('stikka_cover_');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final library = await LibraryController.load(
+      LibraryStore(File('${dir.path}/library.json')),
+    );
+    addTearDown(library.flush); // runs before the folder is deleted
+    final requested = <(int, AccentColor)>[];
+    handler = MetronomeAudioHandler(
+      controller,
+      library: library,
+      cover: (bpm, color) async {
+        requested.add((bpm, color));
+        return Uri.file('/c/${bpm}_${color.name}.png');
+      },
+    );
+    library.setAccentColor(AccentColor.blue);
+    await Future<void>.delayed(Duration.zero);
+    expect(requested, [(120, AccentColor.red), (120, AccentColor.blue)]);
+    expect(handler.mediaItem.value?.artUri, Uri.file('/c/120_blue.png'));
   });
 
   AudioProcessingState card() => handler.playbackState.value.processingState;

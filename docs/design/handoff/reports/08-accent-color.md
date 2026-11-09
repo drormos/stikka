@@ -1,6 +1,6 @@
 # 08 · Accent color in Settings: report
 
-Not released (ships with the next release). `flutter analyze` is clean and `flutter test` passes (1721 tests). The emulator hung (its System UI stopped responding), so I took the screenshots on Dror's phone in the debug app (Stikka dev), with the phone's own text size, which is already 115%. I only touched Stikka dev and set it back to System and Red at the end.
+Not released (ships with the next release). `flutter analyze` is clean and `flutter test` passes (1723 tests). The emulator hung (its System UI stopped responding), so I took the screenshots on Dror's phone in the debug app (Stikka dev), with the phone's own text size, which is already 115%. I only touched Stikka dev and set it back to System and Red at the end.
 
 ## What changed
 1. **Tokens.**
@@ -34,9 +34,11 @@ Not released (ships with the next release). `flutter analyze` is clean and `flut
    - The choice is saved at once. A missing or unknown value loads as Red, and an upgrade keeps Red.
    - TalkBack reads "Color, Blue, selected, 5 of 6", and "Color, Red, 1 of 6" for the others.
 4. **Outside the main screens.**
-   - The lock-screen / notification media cover draws its needle in the chosen color (the Stage Black value, since the cover is always black). It updates when the color changes.
-   - The Quick Settings tile and the notification's small icon are white system icons with no accent, so they're unchanged.
-   - The launcher icon stays red.
+   - The lock-screen / notification media cover (`media_cover.dart`) draws its tempo needle in the chosen color. It uses the Stage Black value, since the cover is always black.
+   - The cover is refreshed at the next media-item update. A color change itself triggers one, so the card shows the new needle right away. Cover files are named per tempo and color, so the system never shows a cached red one.
+   - This matches the later spec addition (Theme › Color › "Outside the app"): it was already built when that came in.
+   - The status-bar icon and the Quick Settings tile are white system icons with no accent, so they're unchanged.
+   - The launcher icon stays red; no icon switching.
 5. **Tests:**
    - All six colors in both themes match the table, and every other token stays the same.
    - Red equals today's palette.
@@ -45,6 +47,7 @@ Not released (ships with the next release). `flutter analyze` is clean and `flut
    - Colors crossfade, and a theme switch still snaps.
    - The setting saves and reloads, an unknown value loads as Red, and an old file (version 10) loads as Red.
    - The Settings row: placement, one row, 48dp targets, TalkBack labels.
+   - The cover: a rendered Blue cover has a Blue needle and no red one; Red still has red. A color change asks for a new cover and shows it (`metronome_audio_handler_test`). File names include the color.
 
 ## Decisions
 - **`dangerResting` token** (#8E2620 / #E9B0AA, today's red accent resting). The swipe-to-delete background is a softer red before it's armed. Without this token it would have followed the color, so I kept it red with today's exact values. It isn't in the spec table.
@@ -58,6 +61,7 @@ In `docs/design/screens/` (the phone's side dots are cropped off):
 - `color-settings-blue-dark-115.png`, `color-settings-blue-light-115.png`: Settings with Blue chosen.
 - `color-main-blue-*-115.png`, `color-main-yellow-*-115.png`, `color-main-purple-*-115.png` (dark and light): the main screen playing.
 - `color-delete-green-dark-115.png`, `color-delete-green-light-115.png`: "Delete Copper Sky?" in Green, Delete still red, and the red swipe background behind it.
+- `color-cover-blue.png`: the media cover at 120 bpm in Blue, rendered by the cover test (`STIKKA_COVER_OUT_blue=<path> flutter test test/ui/media_cover_test.dart`). It's the image itself, not a lock-screen screenshot: the lock screen is the phone's own UI, which I don't drive.
 
 ## For Dror / the designer to check
 - **Black check on Daylight swatches.** The spec asks for a black check. On Daylight's darker Blue (#0A62C4) and Purple (#8A3CB8), black is only about 3.5:1. That passes the 3:1 minimum for icons but looks dim on the phone (see `color-settings-blue-light-115.png`). Should Daylight use a light check?

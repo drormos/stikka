@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:stikka/src/model/library.dart';
 import 'package:stikka/src/ui/media_cover.dart';
+import 'package:stikka/src/ui/theme.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +27,30 @@ void main() {
     if (out != null) File(out).writeAsBytesSync(png);
   });
 
-  test('one file per tempo, written once', () async {
+  test('the needle is in the chosen color (its Stage Black value)', () async {
+    Future<Set<int>> centreColumn(AccentColor color) async {
+      final png = await renderMediaCover(120, color: color);
+      final out = Platform.environment['STIKKA_COVER_OUT_${color.name}'];
+      if (out != null) File(out).writeAsBytesSync(png);
+      final codec = await ui.instantiateImageCodec(png);
+      final image = (await codec.getNextFrame()).image;
+      final rgba = (await image.toByteData())!;
+      return {
+        for (var y = 0; y < 512; y++)
+          // ARGB from RGBA at x = 256.
+          (0xFF << 24) | (rgba.getUint32((y * 512 + 256) * 4) >> 8),
+      };
+    }
+
+    final blue = StikkaColors.of(ui.Brightness.dark, AccentColor.blue).accent;
+    final red = StikkaColors.stageBlack.accent;
+    final blueColumn = await centreColumn(AccentColor.blue);
+    expect(blueColumn, contains(blue.toARGB32()));
+    expect(blueColumn, isNot(contains(red.toARGB32())));
+    expect(await centreColumn(AccentColor.red), contains(red.toARGB32()));
+  });
+
+  test('one file per tempo and color, written once', () async {
     final dir = Directory.systemTemp.createTempSync('stikka_cover');
     addTearDown(() => dir.deleteSync(recursive: true));
     final uri = await mediaCoverFile(dir, 96);
@@ -32,5 +58,7 @@ void main() {
     final written = File.fromUri(uri).lastModifiedSync();
     await mediaCoverFile(dir, 96);
     expect(File.fromUri(uri).lastModifiedSync(), written);
+    final blue = await mediaCoverFile(dir, 96, color: AccentColor.blue);
+    expect(blue.pathSegments.last, 'media_cover_96_blue.png');
   });
 }
