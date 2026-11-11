@@ -21,6 +21,7 @@ import 'search_match.dart';
 import 'share_menu.dart';
 import 'swipe_row.dart';
 import 'panel_motion.dart';
+import 'pick_header.dart';
 import 'theme.dart';
 import 'top_panel.dart';
 
@@ -378,9 +379,13 @@ class QuickPick extends StatefulWidget {
   static const pasteSharedKey = Key('quick-pick-paste-shared');
   static const exportPickCancelKey = Key('quick-pick-export-cancel');
 
-  /// The Songs list's pick mode bar.
-  static const exportPickText = 'Tap the song to export';
-  static const clickPickText = 'Tap the song for a click track';
+  /// Pick mode coming in: the tapped menu row flies into the header over
+  /// [pickIn]; it shrinks back into Share over [pickOut]. The rows' icons
+  /// swap from [pickIconsAt] of the way in.
+  static const pickIn = Duration(milliseconds: 260);
+  static const pickOut = Duration(milliseconds: 220);
+  static const pickIconsAt = 0.3;
+  static const pickFlightKey = Key('quick-pick-pick-flight');
 
   /// Hands the share text to the phone's share menu; tests replace it.
   static Future<void> Function(String text) share = AndroidBridge.shareText;
@@ -410,8 +415,7 @@ class QuickPick extends StatefulWidget {
   State<QuickPick> createState() => _QuickPickState();
 }
 
-class _QuickPickState extends State<QuickPick>
-    with SingleTickerProviderStateMixin {
+class _QuickPickState extends State<QuickPick> with TickerProviderStateMixin {
   static const _rowHeight = 52.0;
 
   // The set panel's rows (the reference's denser 48px).
@@ -454,8 +458,20 @@ class _QuickPickState extends State<QuickPick>
   String? _pickFor;
 
   // "Export a song…" / "Export click track…": the Songs list picks the
-  // song to export, or to make a click track of.
-  _Pick? _exportPick;
+  // song to export, or to make a click track of. [_pickMotion] is how far
+  // the list looks like pick mode (0 = the play list, 1 = pick mode),
+  // [_pickShown] the action it shows meanwhile (also while leaving), and
+  // [_flight] the header flying in from the menu or back into Share.
+  PickAction? _exportPick;
+  PickAction? _pickShown;
+  late final _pickMotion = AnimationController(
+    vsync: this,
+    duration: QuickPick.pickIn,
+    reverseDuration: QuickPick.pickOut,
+  )..addListener(() => setState(() {}));
+  OverlayEntry? _flight;
+  final _pickHeaderKey = GlobalKey();
+  final _songsShareKey = GlobalKey();
   bool _pickReturnsToSets = false;
   final _picked = <String>[];
   final _pickSearch = TextEditingController();
@@ -590,6 +606,8 @@ class _QuickPickState extends State<QuickPick>
 
   @override
   void dispose() {
+    _endFlight();
+    _pickMotion.dispose();
     _undoTimer?.cancel();
     _addedTimer?.cancel();
     _hintLineTimer?.cancel();
@@ -647,7 +665,7 @@ class _QuickPickState extends State<QuickPick>
       _renaming = null;
       _renameKind = null;
     } else if (_exportPick != null) {
-      _exportPick = null;
+      _leavePick();
     } else if (_pickFor != null) {
       _pickFor = null; // nothing added
     } else {
@@ -696,18 +714,19 @@ class _QuickPickState extends State<QuickPick>
           song,
     ];
     final current = _library.currentSong?.id;
+    final search = all.length > QuickPick.searchAbove
+        ? Padding(
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 6),
+            child: SearchField(
+              controller: _search,
+              onChanged: (_) => setState(() {}),
+            ),
+          )
+        : null;
+    final picking = _pickMotion.value > 0;
+    final pickLook = _pickMotion.value >= QuickPick.pickIconsAt;
     return _Panel(
-      top: _exportPick != null
-          ? _exportPickBar(colors)
-          : all.length > QuickPick.searchAbove
-          ? Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 6),
-              child: SearchField(
-                controller: _search,
-                onChanged: (_) => setState(() {}),
-              ),
-            )
-          : null,
+      top: picking ? _pickTop(search) : search,
       list: all.isEmpty && _renaming == null
           ? _empty('No songs yet')
           : songs.isEmpty && _renaming == null
@@ -760,7 +779,9 @@ class _QuickPickState extends State<QuickPick>
                               colors,
                               song,
                               key: ValueKey('quick-song-${song.id}'),
-                              current: song.id == current,
+                              // Now playing doesn't matter while picking.
+                              current: song.id == current && !picking,
+                              pick: pickLook ? _pickShown : null,
                               onTap: _exportPick != null
                                   ? () => _exported(song)
                                   : () => _choose(
@@ -778,40 +799,55 @@ class _QuickPickState extends State<QuickPick>
       // Swiped away, the bar is already gone: no leaving copy.
       bar: ArriveLeave(key: ValueKey(_undoSwiped), child: _undoBar(colors)),
       // "+ New song" · "Share", the set panel's bottom row style; hidden
-      // while picking the song to export.
+      // while picking the song to export, keeping its space (nothing
+      // changes size), and fading while pick mode comes and goes.
       actions: [
-        if (_exportPick == null)
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: _stacked(
-                      key: QuickPick.newSongKey,
-                      colors: colors,
-                      onPressed: (_) => _newSong(),
-                      icon: const Icon(Icons.add, size: 20),
-                      label: 'New song',
-                      semanticsLabel: 'New song',
-                    ),
+        Visibility(
+          visible: _pickMotion.value < 1,
+          maintainSize: true,
+          maintainAnimation: true,
+          maintainState: true,
+          child: IgnorePointer(
+            ignoring: _exportPick != null,
+            child: Opacity(
+              opacity: 1 - _pickMotion.value,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        child: _stacked(
+                          key: QuickPick.newSongKey,
+                          colors: colors,
+                          onPressed: (_) => _newSong(),
+                          icon: const Icon(Icons.add, size: 20),
+                          label: 'New song',
+                          semanticsLabel: 'New song',
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: KeyedSubtree(
+                          key: _songsShareKey,
+                          child: _stacked(
+                            key: QuickPick.songsShareKey,
+                            colors: colors,
+                            onPressed: _songsShare,
+                            icon: const Icon(Icons.share_outlined, size: 20),
+                            label: 'Share',
+                            semanticsLabel: 'Share songs',
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _stacked(
-                      key: QuickPick.songsShareKey,
-                      colors: colors,
-                      onPressed: _songsShare,
-                      icon: const Icon(Icons.share_outlined, size: 20),
-                      label: 'Share',
-                      semanticsLabel: 'Share songs',
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
+        ),
       ],
     );
   }
@@ -1377,25 +1413,31 @@ class _QuickPickState extends State<QuickPick>
 
   /// The Songs list's share menu: pick a song to export, or an import.
   Future<void> _songsShare(BuildContext button) async {
-    final choice = await showShareMenu(button, [
-      (
-        value: 'export',
-        name: 'Export a song…',
-        line: 'Pick one, for another Stikka user to import',
-      ),
-      (
-        value: 'click',
-        name: 'Export click track…',
-        line: 'Pick one: WAV, MIDI or MP3, for recording software',
-      ),
-      (value: 'import', name: 'Import a song', line: ShareMenus.forImport),
-    ]);
+    Rect? from;
+    final choice = await showShareMenu(
+      button,
+      becomesHeader: const {'export', 'click'},
+      onHeaderFrom: (rect) => from = rect,
+      [
+        (
+          value: 'export',
+          name: 'Export a song…',
+          line: 'Pick one, for another Stikka user to import',
+        ),
+        (
+          value: 'click',
+          name: 'Export click track…',
+          line: 'Pick one: WAV, MIDI or MP3, for recording software',
+        ),
+        (value: 'import', name: 'Import a song', line: ShareMenus.forImport),
+      ],
+    );
     if (!mounted) return;
     switch (choice) {
       case 'export':
-        setState(() => _exportPick = _Pick.song);
+        _enterPick(PickAction.exportSong, from);
       case 'click':
-        setState(() => _exportPick = _Pick.clickTrack);
+        _enterPick(PickAction.clickTrack, from);
       case 'import':
         await _import();
     }
@@ -1405,8 +1447,8 @@ class _QuickPickState extends State<QuickPick>
   /// sheet.
   void _exported(Song song) {
     final pick = _exportPick;
-    setState(() => _exportPick = null);
-    if (pick == _Pick.song) {
+    _leavePick();
+    if (pick == PickAction.exportSong) {
       QuickPick.share(exportSongText(song));
     } else {
       showClickExportSheet(
@@ -1428,34 +1470,210 @@ class _QuickPickState extends State<QuickPick>
     }
   }
 
-  /// Pick mode's bar: what to do, and Cancel.
-  Widget _exportPickBar(StikkaColors colors) => Padding(
-    padding: const EdgeInsets.fromLTRB(14, 4, 4, 4),
-    child: Row(
+  /// Pick mode comes in: the menu row at [from] (global; null with
+  /// "Remove animations") flies into the header while the rows' icons swap.
+  void _enterPick(PickAction action, Rect? from) {
+    setState(() => _exportPick = _pickShown = action);
+    if (from == null || StikkaMotion.reduced(context)) {
+      _endFlight();
+      _pickMotion.value = 1;
+      return;
+    }
+    _fly(from, menuRow: true);
+    _pickMotion.forward(from: 0);
+  }
+
+  /// Cancel, Back or a pick: the header shrinks back into Share and the ▷
+  /// icons return. Taps play again at once.
+  void _leavePick() {
+    if (_exportPick == null) return;
+    setState(() => _exportPick = null);
+    if (StikkaMotion.reduced(context)) {
+      _endFlight();
+      _pickMotion.value = 0;
+      return;
+    }
+    _pickMotion.reverse();
+    // Share is laid out again from the next frame on.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final share = _globalRect(_songsShareKey);
+      if (mounted && share != null && _pickMotion.value > 0) {
+        _fly(share, menuRow: false);
+      }
+    });
+  }
+
+  static Rect? _globalRect(GlobalKey key) {
+    final box = key.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null || !box.attached || !box.hasSize) return null;
+    return box.localToGlobal(Offset.zero) & box.size;
+  }
+
+  // Standard ease (pick-mode-demo.html: cubic-bezier(.2,0,0,1)).
+  static const _pickCurve = Cubic(0.2, 0, 0, 1);
+
+  /// The header in flight, over everything: it moves and widens between
+  /// [end] (the tapped menu row coming in, Share going out) and the
+  /// header's place as [_pickMotion] runs. Coming in, the row's text
+  /// crossfades into the header's; going out, the header fades into Share.
+  void _fly(Rect end, {required bool menuRow}) {
+    _endFlight();
+    final overlay = Overlay.of(context);
+    final action = _pickShown!;
+    final entry = OverlayEntry(
+      builder: (context) {
+        final colors = context.colors;
+        final t = _pickMotion.value;
+        final p = _pickCurve.transform(t);
+        // Laid out from the frame after it's inserted.
+        final placed = _globalRect(_pickHeaderKey);
+        final header = placed ?? end;
+        final origin = (overlay.context.findRenderObject()! as RenderBox)
+            .localToGlobal(Offset.zero);
+        return Positioned.fromRect(
+          rect: Rect.lerp(end, header, p)!.shift(-origin),
+          child: IgnorePointer(
+            key: QuickPick.pickFlightKey,
+            child: ExcludeSemantics(
+              // Over everything: the panel's text style isn't here.
+              child: Material(
+                type: MaterialType.transparency,
+                child: Opacity(
+                  opacity: menuRow ? 1 : t,
+                  child: ClipRect(
+                    child: ColoredBox(
+                      color: Color.lerp(colors.selectedRow, colors.surface, p)!,
+                      child: Stack(
+                        children: [
+                          if (menuRow)
+                            Opacity(
+                              opacity: 1 - const Interval(0, 0.4).transform(t),
+                              child: _menuRow(action, colors),
+                            ),
+                          if (placed != null)
+                            Opacity(
+                              opacity: menuRow
+                                  ? const Interval(0.35, 1).transform(t)
+                                  : 1,
+                              child: OverflowBox(
+                                alignment: Alignment.topLeft,
+                                minWidth: header.width,
+                                maxWidth: header.width,
+                                minHeight: header.height,
+                                maxHeight: header.height,
+                                child: PickHeader(action: action),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+    void rebuild() => entry.markNeedsBuild();
+    void done(AnimationStatus status) {
+      if (status.isAnimating) return;
+      _pickMotion
+        ..removeListener(rebuild)
+        ..removeStatusListener(done);
+      if (_flight == entry) _endFlight();
+      if (mounted) setState(() {});
+    }
+
+    _pickMotion
+      ..addListener(rebuild)
+      ..addStatusListener(done);
+    _flight = entry;
+    overlay.insert(entry);
+  }
+
+  void _endFlight() {
+    _flight
+      ?..remove()
+      ..dispose();
+    _flight = null;
+  }
+
+  /// The share menu row that becomes the header, as it looked there.
+  Widget _menuRow(PickAction action, StikkaColors colors) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Text(
-            _exportPick == _Pick.clickTrack
-                ? QuickPick.clickPickText
-                : QuickPick.exportPickText,
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+        for (final (text, style) in [
+          (
+            action == PickAction.exportSong
+                ? 'Export a song…'
+                : 'Export click track…',
+            const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
-        ),
-        TextButton(
-          key: QuickPick.exportPickCancelKey,
-          style: TextButton.styleFrom(
-            foregroundColor: colors.muted,
-            minimumSize: const Size(48, 48),
+          (
+            action == PickAction.exportSong
+                ? 'Pick one, for another Stikka user to import'
+                : 'Pick one: WAV, MIDI or MP3, for recording software',
+            TextStyle(fontSize: 13, color: colors.muted),
           ),
-          onPressed: () => setState(() => _exportPick = null),
-          child: const Text(
-            'Cancel',
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-          ),
-        ),
+        ])
+          Text(text, maxLines: 1, softWrap: false, style: style),
       ],
     ),
   );
+
+  /// The search's place while picking: the header over it (the search
+  /// keeps its space and fades, so the rows don't move). Without a search
+  /// the header's own height opens with it.
+  Widget _pickTop(Widget? search) {
+    final t = _pickMotion.value;
+    final picking = _exportPick != null;
+    // In flight the overlay carries it; leaving, it's gone at once.
+    final header = Visibility(
+      visible: picking && _flight == null,
+      maintainSize: true,
+      maintainAnimation: true,
+      maintainState: true,
+      child: PickHeader(
+        key: _pickHeaderKey,
+        action: _pickShown!,
+        cancelKey: QuickPick.exportPickCancelKey,
+        onCancel: _leavePick,
+      ),
+    );
+    if (search == null) {
+      return ClipRect(
+        child: Align(
+          alignment: Alignment.topCenter,
+          heightFactor: _pickCurve.transform(t),
+          child: header,
+        ),
+      );
+    }
+    return Stack(
+      children: [
+        IgnorePointer(
+          ignoring: picking,
+          child: ExcludeSemantics(
+            excluding: picking,
+            child: Opacity(opacity: 1 - t, child: search),
+          ),
+        ),
+        // Sizes the space: the search's height, or the header's if taller
+        // (large text).
+        Visibility(
+          visible: false,
+          maintainSize: true,
+          maintainAnimation: true,
+          maintainState: true,
+          child: ExcludeSemantics(child: PickHeader(action: _pickShown!)),
+        ),
+        Positioned.fill(child: header),
+      ],
+    );
+  }
 
   /// [child] with a tooltip shown on tap, only when [on].
   static Widget _hintWhen(bool on, String hint, Widget child) => on
@@ -1893,13 +2111,34 @@ class _QuickPickState extends State<QuickPick>
     required Key key,
     required bool current,
     required VoidCallback onTap,
+    PickAction? pick,
   }) => _row(
     colors,
     key: key,
     selected: current,
     onTap: onTap,
     children: [
-      SizedBox(width: 16, child: PlayMarker(current: current)),
+      // While picking, the action's icon (20px, wider than ▷: the name
+      // doesn't move), snapping in and brightening.
+      SizedBox(
+        width: 16,
+        height: pick == null ? null : 16,
+        child: pick == null
+            ? PlayMarker(current: current)
+            : OverflowBox(
+                maxWidth: 20,
+                maxHeight: 20,
+                child: Opacity(
+                  opacity: BrightenGate.opacity(
+                    const Interval(
+                      QuickPick.pickIconsAt,
+                      0.65,
+                    ).transform(_pickMotion.value),
+                  ),
+                  child: pick.icon(size: 20, color: colors.text),
+                ),
+              ),
+      ),
       const SizedBox(width: 12),
       Expanded(
         child: SearchName(
@@ -2008,7 +2247,6 @@ class _QuickPickState extends State<QuickPick>
 
 /// Pinned [top], the scrolling [list], then the pinned [actions] under a
 /// 2px line, with 1px lines between them, so they never read as rows.
-enum _Pick { song, clickTrack }
 
 class _Panel extends StatelessWidget {
   const _Panel({

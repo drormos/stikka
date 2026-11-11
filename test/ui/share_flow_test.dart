@@ -11,11 +11,15 @@ import 'package:stikka/src/model/share_export.dart';
 import 'package:stikka/src/platform/android_bridge.dart';
 import 'package:stikka/src/storage/library_store.dart';
 import 'package:stikka/src/ui/click_export_sheet.dart';
+import 'package:stikka/src/ui/editor_scaffold.dart';
 import 'package:stikka/src/ui/metronome_screen.dart';
 import 'package:stikka/src/ui/parts_page.dart';
+import 'package:stikka/src/ui/pick_header.dart';
+import 'package:stikka/src/ui/play_marker.dart';
 import 'package:stikka/src/ui/quick_pick.dart';
 import 'package:stikka/src/ui/setlist_group.dart';
 import 'package:stikka/src/ui/share_menu.dart';
+import 'package:stikka/src/ui/theme.dart';
 
 import '../audio/fake_click_output.dart';
 import 'test_theme.dart';
@@ -39,9 +43,13 @@ void main() {
 
   /// "Fri" (One 100, Two 110) loaded at One; shares and the clipboard are
   /// caught.
-  Future<void> pump(WidgetTester tester) async {
+  Future<void> pump(
+    WidgetTester tester, {
+    int more = 0,
+    Size size = const Size(400, 900),
+  }) async {
     tester.view
-      ..physicalSize = const Size(400, 900)
+      ..physicalSize = size
       ..devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     shared = [];
@@ -78,6 +86,13 @@ void main() {
             )
             .id,
     ];
+    for (var i = 1; i <= more; i++) {
+      library.addSong(
+        name: 'S$i',
+        bpm: 80 + i,
+        pattern: const MetronomePattern.standard(),
+      );
+    }
     final set = library.saveSetlist(name: 'Fri', songIds: ids);
     library.loadSetlist(set.id, metronome);
     await tester.pumpWidget(
@@ -157,7 +172,7 @@ void main() {
   });
 
   testWidgets('Songs list: "New song" · "Share" in the bottom row; Export a '
-      'song… picks one (bar + Cancel, no search or Share meanwhile), a tap '
+      'song… picks one (header + Cancel, no search or Share meanwhile), a tap '
       'exports it and leaves; Cancel and Back leave too', (tester) async {
     await pump(tester);
     await openSongs(tester);
@@ -169,19 +184,19 @@ void main() {
     Future<void> pick() async {
       await tap(tester, find.byKey(QuickPick.songsShareKey));
       await tap(tester, find.text('Export a song…'));
-      expect(find.text(QuickPick.exportPickText), findsOneWidget);
-      expect(find.byKey(QuickPick.songsShareKey), findsNothing);
+      expect(find.text(PickAction.exportSong.title), findsOneWidget);
+      expect(find.byKey(QuickPick.songsShareKey).hitTestable(), findsNothing);
     }
 
     await pick();
     await tap(tester, find.byKey(QuickPick.exportPickCancelKey));
-    expect(find.text(QuickPick.exportPickText), findsNothing);
+    expect(find.text(PickAction.exportSong.title), findsNothing);
     expect(shared, isEmpty);
 
     await pick();
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
-    expect(find.text(QuickPick.exportPickText), findsNothing);
+    expect(find.text(PickAction.exportSong.title), findsNothing);
     expect(find.byType(QuickPick), findsOneWidget, reason: 'Back leaves it');
 
     await pick();
@@ -190,12 +205,12 @@ void main() {
       find.descendant(of: find.byType(QuickPick), matching: find.text('Two')),
     );
     expect(parseShared(shared.single)!.songs.single.name, 'Two');
-    expect(find.text(QuickPick.exportPickText), findsNothing);
+    expect(find.text(PickAction.exportSong.title), findsNothing);
     expect(library.currentSong!.name, 'One', reason: 'nothing loaded');
   });
 
-  testWidgets('Songs list: Export click track… picks a song ("Tap the song '
-      'for a click track"), and its export sheet opens', (tester) async {
+  testWidgets('Songs list: Export click track… picks a song (the "Click '
+      'track" header), and its export sheet opens', (tester) async {
     await pump(tester);
     await openSongs(tester);
     await tap(tester, find.byKey(QuickPick.songsShareKey));
@@ -204,17 +219,206 @@ void main() {
       findsOneWidget,
     );
     await tap(tester, find.text('Export click track…'));
-    expect(find.text(QuickPick.clickPickText), findsOneWidget);
-    expect(find.byKey(QuickPick.songsShareKey), findsNothing);
+    expect(find.text(PickAction.clickTrack.title), findsOneWidget);
+    expect(find.byKey(QuickPick.songsShareKey).hitTestable(), findsNothing);
     await tap(
       tester,
       find.descendant(of: find.byType(QuickPick), matching: find.text('Two')),
     );
-    expect(find.text(QuickPick.clickPickText), findsNothing);
+    expect(find.text(PickAction.clickTrack.title), findsNothing);
     expect(find.text(ClickExportSheet.title), findsOneWidget);
     expect(find.text('110 bpm · 4/4 · loops until you stop'), findsOneWidget);
     expect(shared, isEmpty);
     expect(library.currentSong!.name, 'One', reason: 'nothing loaded');
+  });
+
+  group('pick mode looks like a different list', () {
+    // Real Saira, so the header wraps (or not) as on the phone.
+    setUpAll(() async {
+      TestWidgetsFlutterBinding.ensureInitialized();
+      final loader = FontLoader(StikkaFonts.body)
+        ..addFont(rootBundle.load('assets/fonts/Saira-Medium.ttf'))
+        ..addFont(rootBundle.load('assets/fonts/Saira-SemiBold.ttf'));
+      await loader.load();
+    });
+
+    Finder inList(Finder f) =>
+        find.descendant(of: find.byType(QuickPick), matching: f);
+    final rows = ['One', 'S1', 'S2', 'S3'];
+    Map<String, Rect> rowRects(WidgetTester tester) => {
+      for (final name in rows) name: tester.getRect(inList(find.text(name))),
+    };
+    Future<void> openMenu(WidgetTester tester) =>
+        tap(tester, find.byKey(QuickPick.songsShareKey));
+
+    testWidgets('header, rows and the hidden bottom row, per mode', (
+      tester,
+    ) async {
+      await pump(tester, more: 9); // over 8 songs: the search shows
+      await openSongs(tester);
+      expect(find.byType(SearchField), findsOneWidget);
+      expect(inList(find.byType(PlayMarker)), findsWidgets);
+
+      for (final (item, action, icon) in [
+        ('Export a song…', PickAction.exportSong, Icons.share_outlined),
+        ('Export click track…', PickAction.clickTrack, null),
+      ]) {
+        await openMenu(tester);
+        await tap(tester, find.text(item));
+        final header = find.byKey(QuickPick.exportPickCancelKey);
+        expect(header.hitTestable(), findsOneWidget);
+        expect(find.text(action.title).hitTestable(), findsOneWidget);
+        expect(find.text(action.line).hitTestable(), findsOneWidget);
+        expect(find.byType(SearchField).hitTestable(), findsNothing);
+        expect(
+          inList(find.byType(PlayMarker)),
+          findsNothing,
+          reason: 'no ▷, no red ▶ on the loaded song',
+        );
+        final rowIcons = icon != null
+            ? inList(find.byIcon(icon))
+            : inList(find.byType(WaveformIcon));
+        // Every visible row, plus the header's badge.
+        expect(rowIcons.evaluate().length, greaterThan(rows.length));
+        expect(find.byKey(QuickPick.songsShareKey).hitTestable(), findsNothing);
+        expect(find.byKey(QuickPick.newSongKey).hitTestable(), findsNothing);
+        expect(
+          find.bySemanticsLabel('playing'),
+          findsNothing,
+          reason: 'now playing does not matter here',
+        );
+        await tap(tester, header);
+        expect(find.text(action.title), findsNothing);
+        expect(inList(find.byType(PlayMarker)), findsWidgets);
+        expect(find.byKey(QuickPick.songsShareKey).hitTestable(), findsOne);
+      }
+    });
+
+    testWidgets('the menu row flies into the header and back into Share; '
+        'the rows keep their places all the way', (tester) async {
+      await pump(tester, more: 9);
+      await openSongs(tester);
+      final before = rowRects(tester);
+      final share = tester.getRect(find.byKey(QuickPick.songsShareKey));
+      await openMenu(tester);
+      final menuRow = tester.getRect(
+        find.byKey(const ValueKey('share-export')),
+      );
+      await tester.tap(find.text('Export a song…'));
+      await tester.pump();
+      final flight = find.byKey(QuickPick.pickFlightKey);
+      expect(flight, findsOneWidget);
+      expect(
+        tester.getRect(flight).top,
+        moreOrLessEquals(menuRow.top, epsilon: 1),
+      );
+      expect(
+        tester.getRect(flight).width,
+        moreOrLessEquals(menuRow.width, epsilon: 1),
+      );
+
+      var lastTop = tester.getRect(flight).top;
+      var swappedAt = Duration.zero;
+      for (var ms = 16; ms <= 256; ms += 16) {
+        await tester.pump(const Duration(milliseconds: 16));
+        expect(rowRects(tester), before, reason: 'rows still at $ms ms');
+        if (flight.evaluate().isNotEmpty) {
+          final top = tester.getRect(flight).top;
+          expect(top, lessThanOrEqualTo(lastTop), reason: 'moving up');
+          lastTop = top;
+        }
+        if (swappedAt == Duration.zero &&
+            inList(find.byType(PlayMarker)).evaluate().isEmpty) {
+          swappedAt = Duration(milliseconds: ms);
+        }
+      }
+      expect(
+        swappedAt.inMilliseconds,
+        inInclusiveRange(48, 112),
+        reason: 'the icons swap a moment after the header starts',
+      );
+      await tester.pumpAndSettle();
+      expect(flight, findsNothing);
+      final header = tester.getRect(find.byType(PickHeader).hitTestable());
+      expect(lastTop, moreOrLessEquals(header.top, epsilon: 2));
+      expect(rowRects(tester), before);
+
+      // Cancel: back into Share.
+      await tester.tap(find.byKey(QuickPick.exportPickCancelKey));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 16));
+      expect(flight, findsOneWidget);
+      for (var ms = 32; ms <= 208; ms += 16) {
+        await tester.pump(const Duration(milliseconds: 16));
+        expect(rowRects(tester), before, reason: 'rows still at $ms ms');
+      }
+      final end = tester.getRect(flight);
+      expect(
+        (end.center - share.center).distance,
+        lessThan((header.center - share.center).distance / 4),
+        reason: 'it shrinks into Share',
+      );
+      await tester.pumpAndSettle();
+      expect(flight, findsNothing);
+      expect(rowRects(tester), before);
+      expect(find.byKey(QuickPick.songsShareKey).hitTestable(), findsOne);
+    });
+
+    testWidgets('Remove animations: all of it at once', (tester) async {
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(disableAnimations: true);
+      addTearDown(
+        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
+      await pump(tester, more: 9);
+      await openSongs(tester);
+      final before = rowRects(tester);
+      await tester.tap(find.byKey(QuickPick.songsShareKey));
+      await tester.pump();
+      await tester.tap(find.text('Export click track…'));
+      await tester.pump();
+      expect(find.byKey(QuickPick.pickFlightKey), findsNothing);
+      expect(find.text(PickAction.clickTrack.title).hitTestable(), findsOne);
+      expect(inList(find.byType(PlayMarker)), findsNothing);
+      expect(inList(find.byType(WaveformIcon)), findsWidgets);
+      expect(rowRects(tester), before);
+      await tester.tap(find.byKey(QuickPick.exportPickCancelKey));
+      await tester.pump();
+      expect(find.byKey(QuickPick.pickFlightKey), findsNothing);
+      expect(find.text(PickAction.clickTrack.title), findsNothing);
+      expect(inList(find.byType(PlayMarker)), findsWidgets);
+      expect(rowRects(tester), before);
+    });
+
+    testWidgets('115% text on 360dp: title and line wrap, Cancel keeps its '
+        'size', (tester) async {
+      tester.platformDispatcher.textScaleFactorTestValue = 1.15;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      await pump(tester, more: 9, size: const Size(360, 800));
+      await openSongs(tester);
+      await openMenu(tester);
+      await tap(tester, find.text('Export a song…'));
+      expect(tester.takeException(), isNull);
+      final cancel = tester.getSize(find.byKey(QuickPick.exportPickCancelKey));
+      final label = tester.getSize(
+        find.descendant(
+          of: find.byKey(QuickPick.exportPickCancelKey),
+          matching: find.text('Cancel'),
+        ),
+      );
+      expect(cancel.height, greaterThanOrEqualTo(40));
+      expect(label.height, lessThan(15 * 1.15 * 2), reason: 'one line');
+      final line = tester.getSize(
+        find.text(PickAction.exportSong.line).hitTestable(),
+      );
+      expect(line.height, greaterThan(13 * 1.15 * 1.35 * 1.5), reason: 'wraps');
+      final header = tester.getRect(find.byType(PickHeader).hitTestable());
+      final title = tester.getRect(
+        find.text(PickAction.exportSong.title).hitTestable(),
+      );
+      expect(header.contains(title.topLeft), isTrue);
+      expect(title.bottom, lessThanOrEqualTo(header.bottom));
+    });
   });
 
   testWidgets('Paste shared: the check ("1 song you already have, 1 new"), '

@@ -7,6 +7,9 @@ All notable changes to Stikka (called Metra until 1.10.0). The format follows [K
 ### Added
 - Export a song as a click track for recording software or to send: Songs list › Share › Export click track…, or Share this song on the parts page. WAV (exact timing), MIDI (tempo, time signatures and part names) or MP3 (for listening). The file is the song once, as written, with your click sound and volumes and without count-in or practice speed; a plain looping song asks how long. Save it to the phone or Drive, or share it.
 
+### Changed
+- Songs list › Share › Export a song… and Export click track… now look like a different list: a header with the action's icon, its name and what a tap does, an outlined Cancel, the action's icon on every row, and no now-playing highlight.
+
 ### Fixed
 - Tuner: tunes a bass, down to a 5-string's low B (it stopped at the guitar's low E). A string now reads while the one you just tuned is still ringing, and mains hum no longer shows as a note.
 

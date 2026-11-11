@@ -19,7 +19,18 @@ typedef ShareItem<T> = ({T value, String name, String line});
 /// button and 16px inside the screen edges; it grows out of the button
 /// and shrinks back into it, with the panels' motion. The chosen item's
 /// value, or null.
-Future<T?> showShareMenu<T>(BuildContext anchor, List<ShareItem<T>> items) {
+///
+/// An item in [becomesHeader] turns into what it opens (pick mode's
+/// header): tapped, its place on screen goes to [onHeaderFrom] (global
+/// coordinates), it vanishes there (the caller draws it from then on) and
+/// the rest of the menu just fades out ([carriedFade]). Not with "Remove
+/// animations" (then the caller shows its header at once).
+Future<T?> showShareMenu<T>(
+  BuildContext anchor,
+  List<ShareItem<T>> items, {
+  Set<T> becomesHeader = const {},
+  ValueChanged<Rect>? onHeaderFrom,
+}) {
   final navigator = Navigator.of(anchor);
   final box = anchor.findRenderObject()! as RenderBox;
   final overlay = navigator.overlay!.context.findRenderObject()! as RenderBox;
@@ -29,9 +40,14 @@ Future<T?> showShareMenu<T>(BuildContext anchor, List<ShareItem<T>> items) {
       button: button,
       items: items,
       reduced: StikkaMotion.reduced(anchor),
+      becomesHeader: becomesHeader,
+      onHeaderFrom: onHeaderFrom,
     ),
   );
 }
+
+/// How fast the rest of the menu fades when an item becomes a header.
+const carriedFade = Duration(milliseconds: 120);
 
 /// The menu itself, for tests.
 const shareMenuKey = Key('share-menu');
@@ -41,11 +57,34 @@ class _ShareMenuRoute<T> extends PopupRoute<T> {
     required this.button,
     required this.items,
     required this.reduced,
+    required this.becomesHeader,
+    required this.onHeaderFrom,
   });
 
   final Rect button;
   final List<ShareItem<T>> items;
   final bool reduced;
+  final Set<T> becomesHeader;
+  final ValueChanged<Rect>? onHeaderFrom;
+
+  // The item that became a header: hidden here, the menu fades.
+  final _carried = ValueNotifier<T?>(null);
+
+  void _choose(BuildContext item, T value) {
+    if (!reduced && becomesHeader.contains(value)) {
+      final box = item.findRenderObject()! as RenderBox;
+      onHeaderFrom?.call(box.localToGlobal(Offset.zero) & box.size);
+      _carried.value = value;
+      controller!.reverseDuration = carriedFade;
+    }
+    Navigator.pop(item, value);
+  }
+
+  @override
+  void dispose() {
+    _carried.dispose();
+    super.dispose();
+  }
 
   static const gap = 8.0, inset = 16.0, maxWidth = 340.0;
 
@@ -90,29 +129,41 @@ class _ShareMenuRoute<T> extends PopupRoute<T> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               for (final item in items)
-                InkWell(
-                  key: ValueKey('share-${item.value}'),
-                  onTap: () => Navigator.pop(context, item.value),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 10,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.name,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
+                ValueListenableBuilder(
+                  valueListenable: _carried,
+                  builder: (context, carried, child) => Opacity(
+                    opacity: carried == item.value ? 0 : 1,
+                    child: child,
+                  ),
+                  child: Builder(
+                    builder: (row) => InkWell(
+                      key: ValueKey('share-${item.value}'),
+                      onTap: () => _choose(row, item.value),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
                         ),
-                        Text(
-                          item.line,
-                          style: TextStyle(fontSize: 13, color: colors.muted),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item.name,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              item.line,
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: colors.muted,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -143,13 +194,23 @@ class _ShareMenuRoute<T> extends PopupRoute<T> {
       curve: Curves.easeOut,
       reverseCurve: Curves.easeIn,
     );
-    return FadeTransition(
-      opacity: curved,
-      child: ScaleTransition(
-        alignment: origin,
-        scale: Tween(begin: PanelMotion.openScale, end: 1.0).animate(curved),
-        child: child,
-      ),
+    return ValueListenableBuilder(
+      valueListenable: _carried,
+      child: child,
+      // An item became a header: the rest just fades, where it is.
+      builder: (context, carried, child) => carried != null
+          ? FadeTransition(opacity: animation, child: child)
+          : FadeTransition(
+              opacity: curved,
+              child: ScaleTransition(
+                alignment: origin,
+                scale: Tween(
+                  begin: PanelMotion.openScale,
+                  end: 1.0,
+                ).animate(curved),
+                child: child,
+              ),
+            ),
     );
   }
 }
