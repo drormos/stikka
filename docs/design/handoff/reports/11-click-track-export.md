@@ -77,15 +77,21 @@
   - Copper Sky (plain, 98 bpm in 8ths): Count by / Length at 4:00, "98 bars, rounded to whole bars. No count-in.", WAV 23 MB, MP3 4.8 MB, MIDI 8 KB.
   - Save to phone, WAV: the 4-minute file was ready in under 0.7 s, then Android's "Save to" screen opened with "Copper Sky.wav".
   - I pulled the WAV the phone made: 48 kHz mono, exactly 240.000 s. All 784 clicks are within 0.98 samples of the grid, the first at sample 0, peak −0.5 dBFS.
-- Not done, because the next steps are in Android's own screens, which I don't touch:
-  - tapping SAVE and the "Saved" note;
-  - the share menu;
-  - MIDI and MP3 from the phone;
-  - the Preparing screenshot. A 4-minute WAV is too fast to show it; a long MP3 should show it.
-- Screenshots in `docs/design/screens/`: `click-export-songs-menu-115.png`, `click-export-pick-115.png`, `click-export-parts-menu-115.png`, `click-export-sheet-plain-115.png`. The phone's side dots are cropped off.
+- Finished with Dror tapping SAVE in Android's "Save to" screen (I don't touch other apps):
+  - **Saved:** Copper Sky.wav (23,040,044 bytes), .mp3 (9,600,960) and .mid (14,200) are all in Download.
+  - **"Saved Copper Sky.mid"** shows at the bottom, clear and not dimmed, also with the Songs panel still open.
+  - **Preparing:** an 8:00 MP3 takes ~2.5 s on the phone. "Preparing · 36%" with Cancel next to it, the rest dimmed.
+  - **Cancel at 63%** deleted the half-made file and the sheet went back to Save / Share.
+  - **MP3 remembered** as the last format.
+  - **The phone's MP3** decodes (ffmpeg, which reads the LAME tag) to exactly 480.000 s, and every click peaks at the same sample offset as in the WAV.
+  - **The phone's MIDI:** type 1, 960 PPQ, 4/4, a "Part 1" marker, 612,245 µs per quarter (98 bpm), 1568 notes, ending exactly at bar 196.
+- Not checked: the Android share menu with a file. I opened it once by mistake (with a song's Stikka text, which was cancelled and nothing sent), but I don't drive it.
+- Screenshots in `docs/design/screens/` (115% font, the phone's side dots cropped off):
+  - `click-export-songs-menu-115.png`, `click-export-pick-115.png`, `click-export-parts-menu-115.png`
+  - `click-export-sheet-115.png` (Glass Harbor test), `click-export-sheet-plain-115.png`, `click-export-sheet-mp3-115.png`
+  - `click-export-preparing-115.png`, `click-export-saved-115.png`
 - No DAW on this Mac. Instead of the bar 1 / last bar check in a DAW, the tests check that MIDI and WAV agree, and ffmpeg confirmed the MP3.
 
 ## Dror should check
-- On the phone, in the open "Save to" screen, tap SAVE. You should get "Saved Copper Sky.wav" back in Stikka.
-- Then from Glass Harbor test: Share as MIDI into WhatsApp or Drive, and save an MP3 of a 20:00 plain song to see Preparing and Cancel.
+- Share a file to WhatsApp or Drive once (I don't drive the Android share menu).
 - If you have Reaper, Logic or GarageBand, drop the WAV and MIDI in at bar 1: the clicks should sit on the grid through the 7/8 Bridge and the Chorus ramp.
