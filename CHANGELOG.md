@@ -9,6 +9,7 @@ All notable changes to Stikka (called Metra until 1.10.0). The format follows [K
 
 ### Changed
 - Songs list › Share › Export a song… and Export click track… now look like a different list: a header with the action's icon, its name and what a tap does, an outlined Cancel, the action's icon on every row, and no now-playing highlight. Tapping outside the list (or Cancel, or Back) goes back to the Songs list.
+- In Export a song… and Export click track… the list now runs down to the bottom of the panel (more songs show), and the header's line is shorter, so it fits on two lines with larger text.
 
 ### Fixed
 - Tuner: tunes a bass, down to a 5-string's low B (it stopped at the guitar's low E). A string now reads while the one you just tuned is still ringing, and mains hum no longer shows as a note.

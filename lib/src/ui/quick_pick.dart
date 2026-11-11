@@ -502,6 +502,10 @@ class _QuickPickState extends State<QuickPick> with TickerProviderStateMixin {
 
   OverlayEntry? _flight;
   final _pickHeaderKey = GlobalKey();
+  // The Songs panel's height when pick mode came in: kept while picking,
+  // so the list runs down into the hidden bottom row's space.
+  final _songsPanelKey = GlobalKey();
+  double? _pickHeight;
   final _songsShareKey = GlobalKey();
   bool _pickReturnsToSets = false;
   final _picked = <String>[];
@@ -757,7 +761,10 @@ class _QuickPickState extends State<QuickPick> with TickerProviderStateMixin {
     final picking = _pickMotion.value > 0;
     final pickLook = _pickMotion.value >= QuickPick.pickIconsAt;
     return _Panel(
+      key: _songsPanelKey,
       top: picking ? _pickTop(search) : search,
+      height: picking ? _pickHeight : null,
+      actionsFade: _pickFadeOut,
       list: all.isEmpty && _renaming == null
           ? _empty('No songs yet')
           : songs.isEmpty && _renaming == null
@@ -830,8 +837,8 @@ class _QuickPickState extends State<QuickPick> with TickerProviderStateMixin {
       // Swiped away, the bar is already gone: no leaving copy.
       bar: ArriveLeave(key: ValueKey(_undoSwiped), child: _undoBar(colors)),
       // "+ New song" · "Share", the set panel's bottom row style; hidden
-      // while picking the song to export, keeping its space (nothing
-      // changes size), and fading while pick mode comes and goes.
+      // while picking the song to export (the list runs down under it),
+      // and fading while pick mode comes and goes.
       actions: [
         Visibility(
           visible: _pickMotion.value < 1,
@@ -1504,6 +1511,7 @@ class _QuickPickState extends State<QuickPick> with TickerProviderStateMixin {
   /// Pick mode comes in: the menu row at [from] (global; null with
   /// "Remove animations") flies into the header while the rows' icons swap.
   void _enterPick(PickAction action, Rect? from) {
+    _pickHeight = _globalRect(_songsPanelKey)?.height;
     setState(() => _exportPick = _pickShown = action);
     if (from == null || StikkaMotion.reduced(context)) {
       _endFlight();
@@ -2285,7 +2293,10 @@ class _QuickPickState extends State<QuickPick> with TickerProviderStateMixin {
 
 class _Panel extends StatelessWidget {
   const _Panel({
+    super.key,
     this.top,
+    this.height,
+    this.actionsFade = kAlwaysCompleteAnimation,
     required this.list,
     required this.actions,
     this.bar,
@@ -2295,6 +2306,13 @@ class _Panel extends StatelessWidget {
   final Widget? top;
   final Widget list;
   final List<Widget> actions;
+
+  /// Set (pick mode): the panel keeps this height and the actions lie over
+  /// the list's bottom edge, which runs down under them.
+  final double? height;
+
+  /// The actions' opacity while they lie over the list ([height] set).
+  final Animation<double> actionsFade;
 
   /// Just above the pinned actions (the Undo bar).
   final Widget? bar;
@@ -2306,51 +2324,80 @@ class _Panel extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return LayoutBuilder(
-      builder: (context, box) => Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (top case final top?) ...[
-            top,
-            Divider(height: 1, thickness: 1, color: colors.divider),
-          ],
-          // The lists' scroll slop: past it, vertical movement scrolls and a
-          // pending long-press is off.
-          Flexible(
-            fit: _FillsPanel.of(context) ? FlexFit.tight : FlexFit.loose,
-            // Where committed rows slide off and the gap closes.
-            child: RowExitHost(
-              child: MediaQuery(
-                data: MediaQuery.of(context)
-                    .copyWith(gestureSettings: RowGestures.listSettings),
-                child: list,
-              ),
-            ),
+      builder: (context, box) {
+        final fixed = height ?? 0;
+        final over = height != null;
+        final actionsBox = Container(
+          decoration: BoxDecoration(
+            color: over ? colors.sheet : null,
+            border: Border(top: BorderSide(color: colors.border, width: 2)),
           ),
-          ?note,
-          ?bar,
-          Container(
-            decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: colors.border, width: 2)),
-            ),
-            // Very large text can make the actions taller than a third of the
-            // panel (their words wrap, never cut): then they scroll there.
-            constraints: BoxConstraints(maxHeight: box.maxHeight / 3),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  for (final (i, action) in actions.indexed) ...[
-                    if (i > 0)
-                      Divider(height: 1, thickness: 1, color: colors.divider),
-                    action,
-                  ],
+          // Very large text can make the actions taller than a third of the
+          // panel (their words wrap, never cut): then they scroll there.
+          constraints: BoxConstraints(maxHeight: box.maxHeight / 3),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final (i, action) in actions.indexed) ...[
+                  if (i > 0)
+                    Divider(height: 1, thickness: 1, color: colors.divider),
+                  action,
                 ],
-              ),
+              ],
             ),
           ),
-        ],
-      ),
+        );
+        final column = Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (top case final top?) ...[
+              top,
+              Divider(height: 1, thickness: 1, color: colors.divider),
+            ],
+            // The lists' scroll slop: past it, vertical movement scrolls and a
+            // pending long-press is off.
+            Flexible(
+              fit: _FillsPanel.of(context) || over
+                  ? FlexFit.tight
+                  : FlexFit.loose,
+              // Where committed rows slide off and the gap closes.
+              child: RowExitHost(
+                child: MediaQuery(
+                  data: MediaQuery.of(context)
+                      .copyWith(gestureSettings: RowGestures.listSettings),
+                  child: list,
+                ),
+              ),
+            ),
+            ?note,
+            ?bar,
+            // Over the list (pick mode): no height of its own, so the list
+            // runs down under it; it paints upward from the panel's bottom.
+            // One tree shape either way, so nothing is re-parented.
+            Align(
+              alignment: Alignment.bottomCenter,
+              heightFactor: over ? 0 : 1,
+              // Only shown coming and going: the rows under it take taps.
+              child: IgnorePointer(
+                ignoring: over,
+                child: ExcludeSemantics(
+                  excluding: over,
+                  child: FadeTransition(
+                    opacity: over ? actionsFade : kAlwaysCompleteAnimation,
+                    child: actionsBox,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+        return SizedBox(
+          height: over ? min(fixed, box.maxHeight) : null,
+          child: column,
+        );
+      },
     );
   }
 }

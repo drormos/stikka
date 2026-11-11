@@ -430,8 +430,66 @@ void main() {
       expect(rowRects(tester), before);
     });
 
-    testWidgets('115% text on 360dp: title and line wrap, Cancel keeps its '
-        'size', (tester) async {
+    testWidgets('pick mode: the list runs down into the hidden bottom '
+        "row's space; the panel and rows stay put", (tester) async {
+      await pump(tester, more: 20); // more rows than the panel shows
+      library.markSongsHintSeen(); // no hint line under the list
+      await openSongs(tester);
+      Rect panel() => tester.getRect(
+        find
+            .ancestor(
+              of: find.byKey(QuickPick.handleKey),
+              matching: find.byType(Material),
+            )
+            .first,
+      );
+      Rect list() => tester.getRect(
+        find.ancestor(
+          of: inList(find.text('S1')),
+          matching: find.byType(ListView),
+        ),
+      );
+      int shown() =>
+          inList(find.textContaining(RegExp(r'^S\d+$')))
+              .hitTestable()
+              .evaluate()
+              .length;
+      Map<String, Rect> rowsAt() => {
+        for (final name in ['One', 'S1', 'S10'])
+          name: tester.getRect(inList(find.text(name))),
+      };
+      final before = (panel: panel(), list: list(), rows: rowsAt());
+      final rowsBefore = shown();
+      // The bottom row: its 2px line, 8px padding, the buttons, to the end.
+      final rowHeight =
+          before.panel.bottom -
+          tester.getRect(find.byKey(QuickPick.songsShareKey)).top +
+          10;
+      expect(
+        before.list.bottom,
+        lessThan(before.panel.bottom - 40),
+        reason: 'the bottom row is under the list',
+      );
+      for (final item in ['Export a song…', 'Export click track…']) {
+        await openMenu(tester);
+        await tap(tester, find.text(item));
+        expect(panel(), before.panel, reason: 'nothing changes size');
+        expect(
+          list().bottom - before.list.bottom,
+          moreOrLessEquals(rowHeight, epsilon: 1),
+          reason: "the list runs down by the bottom row's height",
+        );
+        expect(list().top, before.list.top);
+        expect(rowsAt(), before.rows, reason: 'rows stay put');
+        expect(shown(), greaterThan(rowsBefore), reason: 'more rows show');
+        await tap(tester, find.byKey(QuickPick.exportPickCancelKey));
+        expect(list(), before.list);
+        expect(find.byKey(QuickPick.songsShareKey).hitTestable(), findsOne);
+      }
+    });
+
+    testWidgets('115% text on 360dp: header lines take at most two lines, '
+        'Cancel keeps its size', (tester) async {
       tester.platformDispatcher.textScaleFactorTestValue = 1.15;
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
       await pump(tester, more: 9, size: const Size(360, 800));
@@ -448,16 +506,32 @@ void main() {
       );
       expect(cancel.height, greaterThanOrEqualTo(40));
       expect(label.height, lessThan(15 * 1.15 * 2), reason: 'one line');
-      final line = tester.getSize(
-        find.text(PickAction.exportSong.line).hitTestable(),
-      );
-      expect(line.height, greaterThan(13 * 1.15 * 1.35 * 1.5), reason: 'wraps');
       final header = tester.getRect(find.byType(PickHeader).hitTestable());
       final title = tester.getRect(
         find.text(PickAction.exportSong.title).hitTestable(),
       );
       expect(header.contains(title.topLeft), isTrue);
       expect(title.bottom, lessThanOrEqualTo(header.bottom));
+      await tap(tester, find.byKey(QuickPick.exportPickCancelKey));
+      // At most two lines each, both modes (handoff 13: they took three).
+      for (final (item, action) in [
+        ('Export a song…', PickAction.exportSong),
+        ('Export click track…', PickAction.clickTrack),
+      ]) {
+        await openMenu(tester);
+        await tap(tester, find.text(item));
+        for (final (text, size, height) in [
+          (action.title, 18, 1.25),
+          (action.line, 13, 1.35),
+        ]) {
+          expect(
+            tester.getSize(find.text(text).hitTestable()).height,
+            lessThanOrEqualTo(size * 1.15 * height * 2 + 0.5),
+            reason: '"$text": at most two lines',
+          );
+        }
+        await tap(tester, find.byKey(QuickPick.exportPickCancelKey));
+      }
     });
   });
 

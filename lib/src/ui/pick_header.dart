@@ -6,8 +6,8 @@ import 'theme.dart';
 /// Songs list): its header's title, the muted line under it, and the icon
 /// on the header and on every row.
 enum PickAction {
-  exportSong('Export a song', 'Tap one to send it to another Stikka user'),
-  clickTrack('Click track', 'Tap one to export it as WAV, MIDI or MP3');
+  exportSong('Export a song', 'Tap a song to send it'),
+  clickTrack('Click track', 'Tap a song for WAV, MIDI or MP3');
 
   const PickAction(this.title, this.line);
 
