@@ -47,7 +47,7 @@ Future<T?> showShareMenu<T>(
 }
 
 /// How fast the rest of the menu fades when an item becomes a header.
-const carriedFade = Duration(milliseconds: 120);
+const carriedFade = Duration(milliseconds: 90);
 
 /// The menu itself, for tests.
 const shareMenuKey = Key('share-menu');

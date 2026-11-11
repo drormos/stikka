@@ -319,7 +319,7 @@ void main() {
 
       var lastTop = tester.getRect(flight).top;
       var swappedAt = Duration.zero;
-      for (var ms = 16; ms <= 256; ms += 16) {
+      for (var ms = 16; ms < QuickPick.pickIn.inMilliseconds; ms += 16) {
         await tester.pump(const Duration(milliseconds: 16));
         expect(rowRects(tester), before, reason: 'rows still at $ms ms');
         if (flight.evaluate().isNotEmpty) {
@@ -348,7 +348,7 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 16));
       expect(flight, findsOneWidget);
-      for (var ms = 32; ms <= 208; ms += 16) {
+      for (var ms = 32; ms < QuickPick.pickOut.inMilliseconds; ms += 16) {
         await tester.pump(const Duration(milliseconds: 16));
         expect(rowRects(tester), before, reason: 'rows still at $ms ms');
       }

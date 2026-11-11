@@ -32,3 +32,8 @@ The still screens make the mode clear: the header with its badge and Cancel, and
 - How: the list's outside area (`CloseOnTouch`) now asks the panel first (`stepBack`); only the Songs list in pick mode takes the touch.
 - Test: "a tap outside steps back to the list like Cancel (both modes); a second one closes; dragging down closes from pick mode" in `test/ui/share_flow_test.dart`. `flutter analyze` and `flutter test` (1781) pass.
 - Phone: build 114 debug is installed but **not checked**. The notification shade came up while I was tapping, so I stopped. Some taps landed in the app in Free play (it opened "When I press Start"); I can't rule out that one landed in the shade. Please check: Songs ⌄ › Share › Export a song…, then tap the dim area above the list. It should go back to the Songs list, and a second tap should close it.
+
+## Follow-up: faster motion (asked by Dror: slow and low fps)
+- In 260 → 180ms, out 220 → 150ms, the rest of the menu fading 120 → 90ms (faster than the spec's ~260ms, on Dror's call). The icons still swap from 30% of the way in (~55ms).
+- Smoother: the list no longer rebuilds on every frame. It rebuilds only when the look steps (picking starts, icons swap, fully in); the fades and the header's height run as transitions.
+- Build 115 debug installed. Debug builds draw animations slower than the real (release) app, so judge the smoothness there too.

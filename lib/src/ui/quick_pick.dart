@@ -390,8 +390,9 @@ class QuickPick extends StatefulWidget {
   /// Pick mode coming in: the tapped menu row flies into the header over
   /// [pickIn]; it shrinks back into Share over [pickOut]. The rows' icons
   /// swap from [pickIconsAt] of the way in.
-  static const pickIn = Duration(milliseconds: 260);
-  static const pickOut = Duration(milliseconds: 220);
+  // Faster than the spec's ~260ms: Dror found it slow on the phone.
+  static const pickIn = Duration(milliseconds: 180);
+  static const pickOut = Duration(milliseconds: 150);
   static const pickIconsAt = 0.3;
   static const pickFlightKey = Key('quick-pick-pick-flight');
 
@@ -476,7 +477,29 @@ class _QuickPickState extends State<QuickPick> with TickerProviderStateMixin {
     vsync: this,
     duration: QuickPick.pickIn,
     reverseDuration: QuickPick.pickOut,
-  )..addListener(() => setState(() {}));
+  )..addListener(_pickStep);
+  // The list rebuilds only when the look changes step (picking starts,
+  // icons swap, fully in); the fades in between run on the animation.
+  (bool, bool, bool) _pickLookStep = (false, false, false);
+  late final _pickIconOpacity = _pickMotion.drive(
+    Tween(begin: StikkaMotion.brightenFrom, end: 1.0).chain(
+      CurveTween(
+        curve: const Interval(
+          QuickPick.pickIconsAt,
+          0.65,
+          curve: StikkaMotion.brightenCurve,
+        ),
+      ),
+    ),
+  );
+  late final _pickFadeOut = ReverseAnimation(_pickMotion);
+
+  void _pickStep() {
+    final t = _pickMotion.value;
+    final step = (t > 0, t >= QuickPick.pickIconsAt, t >= 1);
+    if (step != _pickLookStep) setState(() => _pickLookStep = step);
+  }
+
   OverlayEntry? _flight;
   final _pickHeaderKey = GlobalKey();
   final _songsShareKey = GlobalKey();
@@ -817,8 +840,8 @@ class _QuickPickState extends State<QuickPick> with TickerProviderStateMixin {
           maintainState: true,
           child: IgnorePointer(
             ignoring: _exportPick != null,
-            child: Opacity(
-              opacity: 1 - _pickMotion.value,
+            child: FadeTransition(
+              opacity: _pickFadeOut,
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: IntrinsicHeight(
@@ -1644,7 +1667,6 @@ class _QuickPickState extends State<QuickPick> with TickerProviderStateMixin {
   /// keeps its space and fades, so the rows don't move). Without a search
   /// the header's own height opens with it.
   Widget _pickTop(Widget? search) {
-    final t = _pickMotion.value;
     final picking = _exportPick != null;
     // In flight the overlay carries it; leaving, it's gone at once.
     final header = Visibility(
@@ -1660,12 +1682,14 @@ class _QuickPickState extends State<QuickPick> with TickerProviderStateMixin {
       ),
     );
     if (search == null) {
-      return ClipRect(
-        child: Align(
-          alignment: Alignment.topCenter,
-          heightFactor: _pickCurve.transform(t),
-          child: header,
+      return SizeTransition(
+        sizeFactor: CurvedAnimation(
+          parent: _pickMotion,
+          curve: _pickCurve,
+          reverseCurve: _pickCurve.flipped,
         ),
+        alignment: Alignment.topCenter,
+        child: header,
       );
     }
     return Stack(
@@ -1674,7 +1698,7 @@ class _QuickPickState extends State<QuickPick> with TickerProviderStateMixin {
           ignoring: picking,
           child: ExcludeSemantics(
             excluding: picking,
-            child: Opacity(opacity: 1 - t, child: search),
+            child: FadeTransition(opacity: _pickFadeOut, child: search),
           ),
         ),
         // Sizes the space: the search's height, or the header's if taller
@@ -2144,13 +2168,8 @@ class _QuickPickState extends State<QuickPick> with TickerProviderStateMixin {
             : OverflowBox(
                 maxWidth: 20,
                 maxHeight: 20,
-                child: Opacity(
-                  opacity: BrightenGate.opacity(
-                    const Interval(
-                      QuickPick.pickIconsAt,
-                      0.65,
-                    ).transform(_pickMotion.value),
-                  ),
+                child: FadeTransition(
+                  opacity: _pickIconOpacity,
                   child: pick.icon(size: 20, color: colors.text),
                 ),
               ),
