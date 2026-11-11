@@ -87,7 +87,9 @@ void main() {
         // Just after the attack the string is ~40 dB above the noise; by
         // 1 s it has faded to ~15 dB above (E4) and the reading wobbles a
         // little; by 2 s it may fade into the noise, where the tuner
-        // shows nothing rather than a wrong note.
+        // shows nothing or a reading within 4 cents, never a wrong note
+        // (the clarity floor is low so a string over a ringing one reads;
+        // see tuner_bass_test.dart).
         final samples = pluck(
           hz * math.pow(2, offset / 1200),
           2,
@@ -108,7 +110,7 @@ void main() {
             name,
             reason: at,
           );
-          expect(note.cents, closeTo(offset, tolerance ?? 3), reason: at);
+          expect(note.cents, closeTo(offset, tolerance ?? 4), reason: at);
         }
       });
     }

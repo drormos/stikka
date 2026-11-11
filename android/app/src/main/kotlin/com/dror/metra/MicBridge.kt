@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
@@ -138,6 +139,13 @@ object MicBridge {
             return null
         }
         record = created
+        // For device checks: `adb logcat -s Stikka` shows the source used.
+        Log.i(
+            "Stikka",
+            "tuner mic: " +
+                (if (source == MediaRecorder.AudioSource.UNPROCESSED) "UNPROCESSED" else "VOICE_RECOGNITION") +
+                " at ${created.sampleRate} Hz",
+        )
         created.startRecording()
         // ~21 ms chunks, read off the main thread and posted to Dart.
         thread = Thread {

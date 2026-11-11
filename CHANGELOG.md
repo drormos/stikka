@@ -4,6 +4,9 @@ All notable changes to Stikka (called Metra until 1.10.0). The format follows [K
 
 ## [Unreleased]
 
+### Fixed
+- Tuner: tunes a bass, down to a 5-string's low B (it stopped at the guitar's low E). A string now reads while the one you just tuned is still ringing, and mains hum no longer shows as a note.
+
 ## [1.11.0] - 2026-11-09
 
 ### Added

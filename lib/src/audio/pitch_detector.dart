@@ -6,7 +6,8 @@ import 'dart:typed_data';
 /// function (NSDF) comes from an FFT autocorrelation; the first peak
 /// within [_keyThreshold] of the highest is the period (no octave jumps),
 /// refined by a parabola through its three samples. Good to well under a
-/// cent on a steady tone from E2 to E6.
+/// cent on a steady tone from B0 to E6. Feed it samples through `MicFilter`:
+/// with the range down to B0, mains hum and rumble are in range.
 class PitchDetector {
   PitchDetector(this.sampleRate)
     : frameSize = _pow2AtLeast(sampleRate * 0.085),
@@ -17,9 +18,9 @@ class PitchDetector {
     _im = Float64List(_fftSize);
   }
 
-  /// Below a low E on a bass's open string is out of range (E1 is 41 Hz;
-  /// the spec asks from E2, the guitar's low string).
-  static const minHz = 60.0;
+  /// From a 5-string bass's low B (B0, 30.9 Hz) less half a semitone. The
+  /// 85 ms frame still holds 2.6 of its periods, enough for under a cent.
+  static const minHz = 29.0;
   static const maxHz = 1500.0;
 
   /// Quieter than this (RMS of full scale, −54 dBFS) is silence. The
@@ -27,13 +28,23 @@ class PitchDetector {
   static const silence = 0.002;
 
   /// How periodic a frame must be (NSDF peak, 0–1) to count as a note.
-  static const clarity = 0.85;
-  static const _keyThreshold = 0.9;
+  /// Low because tuning leaves the last string ringing: a new string with
+  /// the one a fourth below still sounding scores only 0.7–0.8 at its own
+  /// period (0.85 blanked bass D over a ringing A, and guitar A over E).
+  /// White and brown noise stay well under it.
+  static const clarity = 0.65;
+
+  /// The first peak at least this share of the highest is the period. Two
+  /// strings ringing together repeat at a common, lower period that scores
+  /// near 1 (G3 with B3 repeat at 49 Hz); the louder string's own period
+  /// scores ~0.75–0.9 and must win. A single note's octave-up peak (half
+  /// the period) stays far lower, even with a weak fundamental.
+  static const _keyThreshold = 0.7;
 
   final int sampleRate;
 
-  /// Samples per frame: ~85 ms, a power of two (4096 at 48 kHz), so even
-  /// the low E has several periods in it.
+  /// Samples per frame: ~85 ms, a power of two (4096 at 48 kHz): 2.6
+  /// periods of B0, and short enough that a new note shows within ~0.1 s.
   final int frameSize;
   final int _minLag;
   final int _maxLag;

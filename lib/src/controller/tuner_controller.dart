@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import '../audio/mic_input.dart';
+import '../audio/mic_filter.dart';
 import '../audio/pitch_detector.dart';
 import '../model/tuner_note.dart';
 
@@ -39,8 +40,10 @@ class TunerController extends ChangeNotifier {
   bool _listening = false;
   StreamSubscription<Float32List>? _subscription;
   PitchDetector? _detector;
+  MicFilter? _filter;
   Float32List _buffer = Float32List(0);
   int _filled = 0;
+  int _warmup = 0;
   int _rate = 48000;
   int _samplesHeard = 0;
   int _sinceDetect = 0;
@@ -119,8 +122,11 @@ class TunerController extends ChangeNotifier {
       if (rate == null || !_listening) return;
       _rate = rate;
       _detector = PitchDetector(rate);
+      _filter = MicFilter(rate);
       _buffer = Float32List(_detector!.frameSize);
       _filled = 0;
+      // The hum notches take ~0.1 s to settle; until then hum leaks through.
+      _warmup = rate ~/ 10;
       _sinceDetect = 0;
       _subscription = _mic.samples.listen(_take);
     } else {
@@ -134,10 +140,15 @@ class TunerController extends ChangeNotifier {
     }
   }
 
-  /// Keeps the last frame of samples; detects every quarter frame.
-  void _take(Float32List chunk) {
+  /// Keeps the last frame of filtered samples; detects every quarter frame.
+  void _take(Float32List raw) {
     final detector = _detector;
     if (detector == null) return;
+    final chunk = _filter!.process(raw);
+    if (_warmup > 0) {
+      _warmup -= chunk.length;
+      return;
+    }
     final size = _buffer.length;
     if (chunk.length >= size) {
       _buffer.setRange(0, size, chunk, chunk.length - size);

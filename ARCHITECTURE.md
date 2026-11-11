@@ -44,7 +44,7 @@ Timing never comes from Dart timers: the scheduler hands every click to the engi
 | Stage mode | `ui/stage_screen.dart`, `controller/keep_awake.dart` | Shown instead of the main screen while `LibraryController.stageMode`; taps settle into one restart. |
 | Parts page | `ui/parts_page.dart` (`PartsPage`, `SongPartsRow`) | The song editor: strip, cards, edits through `MetronomeController.setParts`; the Rhythm panel via `RhythmTarget`. |
 | Song map | `ui/song_map.dart` | The ruler's slot for a song with parts; follows `MetronomeController.playheadAt`, goes with `jumpToPart`. |
-| Tuner | `ui/tuner_page.dart`, `controller/tuner_controller.dart`, `audio/pitch_detector.dart` (MPM, pure Dart), `audio/mic_input.dart` (`MicInput`; `MicBridge.kt`), `model/tuner_note.dart` | Opened from the top row's tuning fork; stops the click. The microphone runs only while the page is visible; time is counted in samples heard. Tests: `test/audio/fake_mic_input.dart`. |
+| Tuner | `ui/tuner_page.dart`, `controller/tuner_controller.dart`, `audio/pitch_detector.dart` (MPM, pure Dart), `audio/mic_filter.dart` (25 Hz high-pass, 50/60 Hz notches, 3 kHz low-pass, run on the stream before detection), `audio/mic_input.dart` (`MicInput`; `MicBridge.kt`), `model/tuner_note.dart` | Opened from the top row's tuning fork; stops the click. The microphone runs only while the page is visible; time is counted in samples heard. Tests: `test/audio/fake_mic_input.dart`. |
 | Settings, About | `ui/settings_screen.dart`, `ui/about.dart` (also Open-source licenses; extra license texts in `assets/licenses/`), `model/whats_new.dart` (`assets/whats_new.md`) | |
 | Android | `android/app/src/main/kotlin/.../MainActivity.kt`, `PlaybackTile.kt`, `res/xml/` (backup rules) | |
 
