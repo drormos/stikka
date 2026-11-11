@@ -205,6 +205,9 @@ class ClickScheduler {
   /// The song bar whose line ended the run (from 0), once decided.
   int? get endBar => _endAt == null ? null : _endBar;
 
+  /// When a run ends: the bar line [endBar] starts at (it stays silent).
+  Duration? get endAt => _endAt;
+
   /// When the song's beat 1 plays in this run, or null before it's known.
   Duration? get runStart => _runStart;
 

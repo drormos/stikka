@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:stikka/src/model/click_sound.dart';
+import 'package:stikka/src/model/click_track.dart';
 import 'package:stikka/src/model/click_volumes.dart';
 import 'package:stikka/src/model/library.dart';
 import 'package:stikka/src/model/metronome_pattern.dart';
@@ -95,6 +96,7 @@ final sampleLibrary = Library(
   clickSound: ClickSound.bell,
   themeMode: ThemeMode.light,
   accentColor: AccentColor.blue,
+  exportFormat: ExportFormat.mp3,
   vibrate: false,
   partChangeSound: true,
   keepScreenOn: KeepScreenOn.whilePlaying,

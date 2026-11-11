@@ -10,6 +10,7 @@ import '../model/library.dart';
 import '../model/share_export.dart';
 import '../model/share_text.dart';
 import '../platform/android_bridge.dart';
+import 'click_export_sheet.dart';
 import 'editor_scaffold.dart';
 import 'free_play_guard.dart';
 import 'haptics.dart';
@@ -379,6 +380,7 @@ class QuickPick extends StatefulWidget {
 
   /// The Songs list's pick mode bar.
   static const exportPickText = 'Tap the song to export';
+  static const clickPickText = 'Tap the song for a click track';
 
   /// Hands the share text to the phone's share menu; tests replace it.
   static Future<void> Function(String text) share = AndroidBridge.shareText;
@@ -451,8 +453,9 @@ class _QuickPickState extends State<QuickPick>
   // ticked songs in tick order, its search and list, and where Back goes.
   String? _pickFor;
 
-  // "Export a song…": the Songs list picks the song to export.
-  bool _exportPick = false;
+  // "Export a song…" / "Export click track…": the Songs list picks the
+  // song to export, or to make a click track of.
+  _Pick? _exportPick;
   bool _pickReturnsToSets = false;
   final _picked = <String>[];
   final _pickSearch = TextEditingController();
@@ -636,15 +639,15 @@ class _QuickPickState extends State<QuickPick>
   bool get _backStaysOpen =>
       _renaming != null ||
       _pickFor != null ||
-      _exportPick ||
+      _exportPick != null ||
       (_kind == QuickPickKind.sets && _library.activeSetlist != null);
 
   void _back() => setState(() {
     if (_renaming != null) {
       _renaming = null;
       _renameKind = null;
-    } else if (_exportPick) {
-      _exportPick = false;
+    } else if (_exportPick != null) {
+      _exportPick = null;
     } else if (_pickFor != null) {
       _pickFor = null; // nothing added
     } else {
@@ -694,7 +697,7 @@ class _QuickPickState extends State<QuickPick>
     ];
     final current = _library.currentSong?.id;
     return _Panel(
-      top: _exportPick
+      top: _exportPick != null
           ? _exportPickBar(colors)
           : all.length > QuickPick.searchAbove
           ? Padding(
@@ -758,11 +761,8 @@ class _QuickPickState extends State<QuickPick>
                               song,
                               key: ValueKey('quick-song-${song.id}'),
                               current: song.id == current,
-                              onTap: _exportPick
-                                  ? () {
-                                      setState(() => _exportPick = false);
-                                      QuickPick.share(exportSongText(song));
-                                    }
+                              onTap: _exportPick != null
+                                  ? () => _exported(song)
                                   : () => _choose(
                                       () => _library.playSingleSong(
                                         song,
@@ -780,7 +780,7 @@ class _QuickPickState extends State<QuickPick>
       // "+ New song" · "Share", the set panel's bottom row style; hidden
       // while picking the song to export.
       actions: [
-        if (!_exportPick)
+        if (_exportPick == null)
           Padding(
             padding: const EdgeInsets.all(8),
             child: IntrinsicHeight(
@@ -1383,14 +1383,41 @@ class _QuickPickState extends State<QuickPick>
         name: 'Export a song…',
         line: 'Pick one, for another Stikka user to import',
       ),
+      (
+        value: 'click',
+        name: 'Export click track…',
+        line: 'Pick one: WAV, MIDI or MP3, for recording software',
+      ),
       (value: 'import', name: 'Import a song', line: ShareMenus.forImport),
     ]);
     if (!mounted) return;
     switch (choice) {
       case 'export':
-        setState(() => _exportPick = true);
+        setState(() => _exportPick = _Pick.song);
+      case 'click':
+        setState(() => _exportPick = _Pick.clickTrack);
       case 'import':
         await _import();
+    }
+  }
+
+  /// The song picked in pick mode: its Stikka export, or its click track
+  /// sheet.
+  void _exported(Song song) {
+    final pick = _exportPick;
+    setState(() => _exportPick = null);
+    if (pick == _Pick.song) {
+      QuickPick.share(exportSongText(song));
+    } else {
+      showClickExportSheet(
+        context,
+        name: song.name,
+        parts: song.parts,
+        end: song.end,
+        onStart: song.onStart,
+        library: _library,
+        metronome: widget.metronome,
+      );
     }
   }
 
@@ -1406,10 +1433,12 @@ class _QuickPickState extends State<QuickPick>
     padding: const EdgeInsets.fromLTRB(14, 4, 4, 4),
     child: Row(
       children: [
-        const Expanded(
+        Expanded(
           child: Text(
-            QuickPick.exportPickText,
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+            _exportPick == _Pick.clickTrack
+                ? QuickPick.clickPickText
+                : QuickPick.exportPickText,
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
           ),
         ),
         TextButton(
@@ -1418,7 +1447,7 @@ class _QuickPickState extends State<QuickPick>
             foregroundColor: colors.muted,
             minimumSize: const Size(48, 48),
           ),
-          onPressed: () => setState(() => _exportPick = false),
+          onPressed: () => setState(() => _exportPick = null),
           child: const Text(
             'Cancel',
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
@@ -1767,40 +1796,44 @@ class _QuickPickState extends State<QuickPick>
       _startRename(_newSongId, _library.newSongName(), _Rename.newSong);
 
   /// The row being renamed: a field with the name selected, and "Done".
-  Widget _renameRow(StikkaColors colors, {required Widget leading}) => Container(
-    constraints: const BoxConstraints(minHeight: _rowHeight),
-    color: colors.selectedRow,
-    padding: const EdgeInsets.only(left: 14, right: 4),
-    child: Row(
-      children: [
-        SizedBox(width: 16, child: Center(child: leading)),
-        const SizedBox(width: 12),
-        Expanded(
-          child: TextField(
-            key: QuickPick.renameFieldKey,
-            controller: _rename,
-            autofocus: true,
-            textInputAction: TextInputAction.done,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            decoration: const InputDecoration.collapsed(hintText: ''),
-            onSubmitted: (_) => _finishRename(),
-            onTapOutside: (_) => _cancelRename(),
-          ),
-        ),
-        // Inside the field's tap region: tapping Done isn't "outside".
-        TextFieldTapRegion(
-          child: TextButton(
-            key: QuickPick.renameDoneKey,
-            onPressed: _finishRename,
-            child: const Text(
-              'Done',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+  Widget _renameRow(StikkaColors colors, {required Widget leading}) =>
+      Container(
+        constraints: const BoxConstraints(minHeight: _rowHeight),
+        color: colors.selectedRow,
+        padding: const EdgeInsets.only(left: 14, right: 4),
+        child: Row(
+          children: [
+            SizedBox(width: 16, child: Center(child: leading)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: TextField(
+                key: QuickPick.renameFieldKey,
+                controller: _rename,
+                autofocus: true,
+                textInputAction: TextInputAction.done,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+                decoration: const InputDecoration.collapsed(hintText: ''),
+                onSubmitted: (_) => _finishRename(),
+                onTapOutside: (_) => _cancelRename(),
+              ),
             ),
-          ),
+            // Inside the field's tap region: tapping Done isn't "outside".
+            TextFieldTapRegion(
+              child: TextButton(
+                key: QuickPick.renameDoneKey,
+                onPressed: _finishRename,
+                child: const Text(
+                  'Done',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 
   /// After a removal or deletion: what happened, and "Undo".
   Widget? _undoBar(StikkaColors colors) {
@@ -1903,35 +1936,38 @@ class _QuickPickState extends State<QuickPick>
 
   /// Tap = load at song 1 (long-press renames: see its [SwipeRow]). The loaded set is
   /// marked like the current song.
-  Widget _setRow(StikkaColors colors, Setlist setlist, {required bool loaded}) =>
-      _row(
-        colors,
-        key: ValueKey('quick-set-${setlist.id}'),
-        selected: loaded,
-        onTap: () =>
-            _choose(() => _library.loadSetlist(setlist.id, widget.metronome)),
-        children: [
-          loaded
-              ? const SizedBox(width: 16, child: PlayMarker(current: true))
-              : SetlistIcon(size: 16, color: colors.muted),
-          const SizedBox(width: 12),
-          Expanded(
-            child: SearchName(
-              setlist.name,
-              query: _setSearch.text,
-              matchColor: colors.text,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Text(
-            setlist.songIds.length == 1
-                ? '1 song'
-                : '${setlist.songIds.length} songs',
-            style: TextStyle(fontSize: 13, color: colors.muted),
-          ),
-        ],
-      );
+  Widget _setRow(
+    StikkaColors colors,
+    Setlist setlist, {
+    required bool loaded,
+  }) => _row(
+    colors,
+    key: ValueKey('quick-set-${setlist.id}'),
+    selected: loaded,
+    onTap: () =>
+        _choose(() => _library.loadSetlist(setlist.id, widget.metronome)),
+    children: [
+      loaded
+          ? const SizedBox(width: 16, child: PlayMarker(current: true))
+          : SetlistIcon(size: 16, color: colors.muted),
+      const SizedBox(width: 12),
+      Expanded(
+        child: SearchName(
+          setlist.name,
+          query: _setSearch.text,
+          matchColor: colors.text,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
+      ),
+      const SizedBox(width: 12),
+      Text(
+        setlist.songIds.length == 1
+            ? '1 song'
+            : '${setlist.songIds.length} songs',
+        style: TextStyle(fontSize: 13, color: colors.muted),
+      ),
+    ],
+  );
 
   Widget _row(
     StikkaColors colors, {
@@ -1972,6 +2008,8 @@ class _QuickPickState extends State<QuickPick>
 
 /// Pinned [top], the scrolling [list], then the pinned [actions] under a
 /// 2px line, with 1px lines between them, so they never read as rows.
+enum _Pick { song, clickTrack }
+
 class _Panel extends StatelessWidget {
   const _Panel({
     this.top,

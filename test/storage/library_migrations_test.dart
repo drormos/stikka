@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stikka/src/model/click_sound.dart';
+import 'package:stikka/src/model/click_track.dart';
 import 'package:stikka/src/model/library.dart';
 import 'package:stikka/src/model/library_migrations.dart';
 import 'package:stikka/src/model/metronome_pattern.dart';
@@ -320,6 +321,23 @@ void main() {
     );
   });
 
+  test(
+    'an upgrade exports WAV first; version 12 keeps the last format',
+    () async {
+      for (final f in ['library.json', 'settings.json']) {
+        File('test/fixtures/library_v11/$f').copySync('${dir.path}/$f');
+      }
+      expect((await store.load()).exportFormat, ExportFormat.wav);
+      for (final f in ['library.json', 'settings.json']) {
+        File('test/fixtures/library_v12/$f').copySync('${dir.path}/$f');
+      }
+      expect(
+        (await LibraryStore(store.file).load()).exportFormat,
+        ExportFormat.mp3,
+      );
+    },
+  );
+
   test('every step runs in order up to the latest; unknown versions throw', () {
     final latest = migrate({'version': 1, 'songs': [], 'setlists': []});
     expect(latest['version'], Library.version);
@@ -330,6 +348,7 @@ void main() {
     expect(latest['lastEnd'], 'loopLastPart');
     expect(latest['referenceA4'], 440, reason: 'version 10: the tuner');
     expect(latest['accentColor'], 'red', reason: 'version 11: Color');
+    expect(latest['exportFormat'], 'wav', reason: 'version 12: export');
     expect(() => migrate({'version': 0}), throwsFormatException);
     expect(latestVersion, Library.version);
   });

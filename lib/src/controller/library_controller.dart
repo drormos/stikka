@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart'
     show ChangeNotifier, ThemeMode, debugPrint;
 
+import '../model/click_track.dart';
 import '../model/library.dart';
 import '../model/share_export.dart';
 import '../model/library_migrations.dart';
@@ -100,6 +101,14 @@ class LibraryController extends ChangeNotifier {
 
   void setAccentColor(AccentColor color) {
     if (color != accentColor) _update(_library.copyWith(accentColor: color));
+  }
+
+  /// The click track export's last format (WAV the first time).
+  ExportFormat get exportFormat => _library.exportFormat;
+
+  void setExportFormat(ExportFormat format) {
+    if (format == exportFormat) return;
+    _update(_library.copyWith(exportFormat: format));
   }
 
   /// "Vibrate on touch" (default on).

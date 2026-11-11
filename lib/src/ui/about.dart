@@ -265,6 +265,8 @@ const bundledLicenses = [
   ('libvorbis', 'assets/licenses/libvorbis.txt'),
   ('Opus', 'assets/licenses/opus.txt'),
   ('libFLAC', 'assets/licenses/libflac.txt'),
+  // MP3 export (android/app/src/main/cpp/lame), LGPL.
+  ('LAME', 'assets/licenses/lame.txt'),
   ('Saira', 'assets/fonts/OFL-Saira.txt'),
   ('Saira Extra Condensed', 'assets/fonts/OFL-SairaExtraCondensed.txt'),
 ];

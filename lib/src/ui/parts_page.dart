@@ -13,6 +13,7 @@ import '../model/metronome_pattern.dart';
 import '../model/on_start.dart';
 import '../model/share_export.dart';
 import 'beat_indicator.dart' show MutedLine;
+import 'click_export_sheet.dart';
 import 'count_in.dart';
 import 'dashed_outline.dart';
 import 'editor_scaffold.dart' show confirmDelete;
@@ -21,6 +22,7 @@ import 'haptics.dart';
 import 'motion.dart';
 import 'quick_pick.dart' show QuickPick;
 import 'save_as_new_dialog.dart';
+import 'share_menu.dart' show showShareMenu;
 import 'subdivision_icon.dart';
 import 'swipe_row.dart';
 import 'theme.dart';
@@ -1472,26 +1474,19 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
         if (song != null)
           Padding(
             padding: const EdgeInsets.only(top: 8),
-            child: OutlinedButton.icon(
-              key: PartsPage.shareSongKey,
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size.fromHeight(44),
-                side: BorderSide(color: colors.border, width: 2),
-              ),
-              onPressed: () => QuickPick.share(
-                exportSongText(
-                  Song.withParts(
-                    id: song.id,
-                    name: song.name,
-                    parts: parts,
-                    end: _metronome.songEnd,
-                  ),
+            child: Builder(
+              builder: (button) => OutlinedButton.icon(
+                key: PartsPage.shareSongKey,
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(44),
+                  side: BorderSide(color: colors.border, width: 2),
                 ),
-              ),
-              icon: const Icon(Icons.share_outlined, size: 18),
-              label: const Text(
-                'Share this song',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                onPressed: () => _share(button, song, parts),
+                icon: const Icon(Icons.share_outlined, size: 18),
+                label: const Text(
+                  'Share this song',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                ),
               ),
             ),
           ),
@@ -1604,6 +1599,51 @@ class _PartsPageState extends State<PartsPage> with TickerProviderStateMixin {
           ),
         ),
       );
+
+  /// "Share this song": a Stikka export of the song as it is here, or
+  /// its click track.
+  Future<void> _share(
+    BuildContext button,
+    Song song,
+    List<SongPart> parts,
+  ) async {
+    final choice = await showShareMenu(button, [
+      (
+        value: 'export',
+        name: 'Send to a Stikka user',
+        line: 'The song with its parts, for them to import',
+      ),
+      (
+        value: 'click',
+        name: 'Export click track',
+        line: 'WAV, MIDI or MP3, for recording software',
+      ),
+    ]);
+    if (!mounted) return;
+    switch (choice) {
+      case 'export':
+        await QuickPick.share(
+          exportSongText(
+            Song.withParts(
+              id: song.id,
+              name: song.name,
+              parts: parts,
+              end: _metronome.songEnd,
+            ),
+          ),
+        );
+      case 'click':
+        await showClickExportSheet(
+          context,
+          name: song.name,
+          parts: parts,
+          end: _metronome.songEnd,
+          onStart: _metronome.onStart,
+          library: _library,
+          metronome: _metronome,
+        );
+    }
+  }
 
   Future<void> _rename(BuildContext context, Song song) async {
     final name = await _askName(

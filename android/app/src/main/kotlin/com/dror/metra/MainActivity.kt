@@ -3,7 +3,10 @@ package com.dror.metra // Old name, kept on purpose: see ui-spec.md › Name.
 import android.content.Intent
 import android.content.res.Resources
 import android.media.AudioManager
+import android.net.Uri
 import android.view.accessibility.AccessibilityManager
+import androidx.core.content.FileProvider
+import java.io.File
 import android.os.Build
 import android.os.Bundle
 import com.ryanheise.audioservice.AudioServiceActivity
@@ -62,12 +65,78 @@ class MainActivity : AudioServiceActivity() {
                     startActivity(Intent.createChooser(send, null))
                     result.success(null)
                 }
+                // A click track export: Android's own "Save to" screen, then
+                // the file is copied there. True when saved, false when the
+                // user backed out.
+                "saveFile" -> {
+                    val args = call.arguments as Map<*, *>
+                    pendingSave?.success(false)
+                    pendingSave = result
+                    pendingSavePath = args["path"] as String
+                    val create = Intent(Intent.ACTION_CREATE_DOCUMENT)
+                        .addCategory(Intent.CATEGORY_OPENABLE)
+                        .setType(args["mime"] as String)
+                        .putExtra(Intent.EXTRA_TITLE, args["name"] as String)
+                    startActivityForResult(create, SAVE_REQUEST)
+                }
+                // A click track export to the phone's share menu.
+                "shareFile" -> {
+                    val args = call.arguments as Map<*, *>
+                    val uri = FileProvider.getUriForFile(
+                        this,
+                        "$packageName.exports",
+                        File(args["path"] as String),
+                    )
+                    val send = Intent(Intent.ACTION_SEND)
+                        .setType(args["mime"] as String)
+                        .putExtra(Intent.EXTRA_STREAM, uri)
+                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    send.clipData = android.content.ClipData.newRawUri(null, uri)
+                    startActivity(Intent.createChooser(send, null))
+                    result.success(null)
+                }
                 else -> result.notImplemented()
             }
         }
     }
 
     private var channel: MethodChannel? = null
+    private var pendingSave: MethodChannel.Result? = null
+    private var pendingSavePath: String? = null
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != SAVE_REQUEST) return
+        val result = pendingSave ?: return
+        val path = pendingSavePath
+        pendingSave = null
+        val uri: Uri? = data?.data
+        if (resultCode != RESULT_OK || uri == null || path == null) {
+            result.success(false)
+            return
+        }
+        // Off the main thread: a big WAV takes a moment.
+        Thread {
+            try {
+                contentResolver.openOutputStream(uri, "wt").use { out ->
+                    File(path).inputStream().use { it.copyTo(out!!) }
+                }
+                runOnUiThread { result.success(true) }
+            } catch (e: Exception) {
+                // Don't leave a broken file in the folder they picked.
+                try {
+                    android.provider.DocumentsContract.deleteDocument(contentResolver, uri)
+                } catch (_: Exception) {
+                }
+                runOnUiThread { result.error("save", e.toString(), null) }
+            }
+        }.start()
+    }
+
+    private companion object {
+        const val SAVE_REQUEST = 4711
+    }
 
     // Every return to the front asks Flutter for a frame. A screen rebuilt
     // over the running engine (a system display setting changed while the

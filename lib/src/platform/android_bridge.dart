@@ -125,6 +125,23 @@ abstract final class AndroidBridge {
   static Future<void> shareText(String text) =>
       _call(android, 'shareText', text);
 
+  /// Android's "Save to" screen for the file at [path], suggesting
+  /// [name]: true once saved, false when backed out of. Throws when the
+  /// copy failed.
+  static Future<bool> saveFile(String path, String name, String mime) async {
+    final saved = await android.invokeMethod<bool>('saveFile', {
+      'path': path,
+      'name': name,
+      'mime': mime,
+    });
+    return saved ?? false;
+  }
+
+  /// Opens the phone's share menu with the file at [path] (in the cache's
+  /// `exports/`, which the FileProvider serves).
+  static Future<void> shareFile(String path, String mime) =>
+      android.invokeMethod<void>('shareFile', {'path': path, 'mime': mime});
+
   static Future<Object?> _call(
     MethodChannel channel,
     String method, [

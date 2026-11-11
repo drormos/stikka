@@ -54,6 +54,13 @@ android {
         }
     }
 
+    // LAME for the click track's MP3 export (src/main/cpp/CMakeLists.txt).
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+        }
+    }
+
     buildTypes {
         // Development builds install next to the real app, never over it
         // (a different key would force an uninstall and lose the library).

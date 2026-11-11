@@ -10,6 +10,7 @@ import 'package:stikka/src/model/metronome_pattern.dart';
 import 'package:stikka/src/model/share_export.dart';
 import 'package:stikka/src/platform/android_bridge.dart';
 import 'package:stikka/src/storage/library_store.dart';
+import 'package:stikka/src/ui/click_export_sheet.dart';
 import 'package:stikka/src/ui/metronome_screen.dart';
 import 'package:stikka/src/ui/parts_page.dart';
 import 'package:stikka/src/ui/quick_pick.dart';
@@ -193,6 +194,29 @@ void main() {
     expect(library.currentSong!.name, 'One', reason: 'nothing loaded');
   });
 
+  testWidgets('Songs list: Export click track… picks a song ("Tap the song '
+      'for a click track"), and its export sheet opens', (tester) async {
+    await pump(tester);
+    await openSongs(tester);
+    await tap(tester, find.byKey(QuickPick.songsShareKey));
+    expect(
+      find.text('Pick one: WAV, MIDI or MP3, for recording software'),
+      findsOneWidget,
+    );
+    await tap(tester, find.text('Export click track…'));
+    expect(find.text(QuickPick.clickPickText), findsOneWidget);
+    expect(find.byKey(QuickPick.songsShareKey), findsNothing);
+    await tap(
+      tester,
+      find.descendant(of: find.byType(QuickPick), matching: find.text('Two')),
+    );
+    expect(find.text(QuickPick.clickPickText), findsNothing);
+    expect(find.text(ClickExportSheet.title), findsOneWidget);
+    expect(find.text('110 bpm · 4/4 · loops until you stop'), findsOneWidget);
+    expect(shared, isEmpty);
+    expect(library.currentSong!.name, 'One', reason: 'nothing loaded');
+  });
+
   testWidgets('Paste shared: the check ("1 song you already have, 1 new"), '
       'then Add set loads it at song 1 and closes the panel', (tester) async {
     await pump(tester);
@@ -279,8 +303,18 @@ void main() {
       100,
       scrollable: find.byType(Scrollable).last,
     );
+    // A small menu: the Stikka export, or the click track.
     await tap(tester, find.byKey(PartsPage.shareSongKey));
+    expect(find.text('Export click track'), findsOneWidget);
+    await tap(tester, find.text('Send to a Stikka user'));
     expect(parseShared(shared.single)!.songs.single.name, 'One');
+    await tap(tester, find.byKey(PartsPage.shareSongKey));
+    await tap(tester, find.text('Export click track'));
+    expect(find.text(ClickExportSheet.title), findsOneWidget);
+    expect(find.text('One.wav'), findsOneWidget);
+    await tester.tapAt(const Offset(200, 20)); // outside: closes
+    await tester.pumpAndSettle();
+    expect(find.text(ClickExportSheet.title), findsNothing);
     await tester.pageBack();
     await tester.pumpAndSettle();
 

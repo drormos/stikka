@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' show ThemeMode, immutable;
 
 import 'click_sound.dart';
+import 'click_track.dart';
 import 'click_volumes.dart';
 import 'library_migrations.dart';
 import 'metronome_pattern.dart';
@@ -213,6 +214,7 @@ class Library {
     this.clickSound = ClickSound.woodblock,
     this.themeMode = ThemeMode.system,
     this.accentColor = AccentColor.red,
+    this.exportFormat = ExportFormat.wav,
     this.vibrate = true,
     this.partChangeSound = false,
     this.keepScreenOn = KeepScreenOn.whileOpen,
@@ -259,6 +261,10 @@ class Library {
   /// Settings › Color: the app's accent (ui-spec.md "Color").
   final AccentColor accentColor;
 
+  /// The click track export's last format (ui-spec.md "Click track
+  /// export"; WAV the first time).
+  final ExportFormat exportFormat;
+
   /// "Vibrate on touch": can only turn haptics off; the phone's own
   /// vibration setting still applies.
   final bool vibrate;
@@ -303,6 +309,7 @@ class Library {
     ClickSound? clickSound,
     ThemeMode? themeMode,
     AccentColor? accentColor,
+    ExportFormat? exportFormat,
     bool? vibrate,
     bool? partChangeSound,
     KeepScreenOn? keepScreenOn,
@@ -322,6 +329,7 @@ class Library {
     clickSound: clickSound ?? this.clickSound,
     themeMode: themeMode ?? this.themeMode,
     accentColor: accentColor ?? this.accentColor,
+    exportFormat: exportFormat ?? this.exportFormat,
     vibrate: vibrate ?? this.vibrate,
     partChangeSound: partChangeSound ?? this.partChangeSound,
     keepScreenOn: keepScreenOn ?? this.keepScreenOn,
@@ -352,6 +360,7 @@ class Library {
     clickSound: clickSound,
     themeMode: themeMode,
     accentColor: accentColor,
+    exportFormat: exportFormat,
     vibrate: vibrate,
     partChangeSound: partChangeSound,
     keepScreenOn: keepScreenOn,
@@ -375,6 +384,7 @@ class Library {
     'clickSound': clickSound.name,
     'themeMode': themeMode.name,
     'accentColor': accentColor.name,
+    'exportFormat': exportFormat.name,
     'vibrate': vibrate,
     'partChangeSound': partChangeSound,
     'keepScreenOn': keepScreenOn.name,
@@ -432,6 +442,9 @@ class Library {
       accentColor:
           AccentColor.values.asNameMap()[latest['accentColor']] ??
           AccentColor.red,
+      exportFormat:
+          ExportFormat.values.asNameMap()[latest['exportFormat']] ??
+          ExportFormat.wav,
       vibrate: read('vibrate', true),
       partChangeSound: read('partChangeSound', false),
       keepScreenOn:
@@ -511,6 +524,7 @@ class Library {
       clickSound: clickSound,
       themeMode: themeMode,
       accentColor: accentColor,
+      exportFormat: exportFormat,
       vibrate: vibrate,
       partChangeSound: partChangeSound,
       keepScreenOn: keepScreenOn,

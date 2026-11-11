@@ -666,8 +666,9 @@ Bandmates send each other whole sets and songs, parts and all, through any chat 
     - Each name starts with the verb (Send / Export / Import), so the first word says what it does.
   - **In the Songs list** (the "Share" button in the bottom row):
     - **"Export a song…"** · "Pick one, for another Stikka user to import". It puts the list in **pick mode**: a bar at the top of the list, "Tap the song to export" with a "Cancel" text button; the share and search stay hidden meanwhile. Tapping a row exports that song (opens the share menu) and leaves pick mode; Cancel, Back or closing the panel also leave it. No song has to be loaded first.
+    - **"Export click track…"** · "Pick one: WAV, MIDI or MP3, for recording software" (Nov 2026; see "Click track export").
     - **"Import a song"** · "From a Stikka export someone sent you (copy their message first)".
-  - **On the parts page:** a quiet outlined "Share this song" button (share icon, 44px, full width) under "At the end": it exports this song (same as picking it in "Export a song…"). In Free play it's not shown until saved.
+  - **On the parts page:** a quiet outlined "Share this song" button (share icon, 44px, full width) under "At the end". Since Nov 2026 it opens a small menu: "Send to a Stikka user" (exports this song, same as picking it in "Export a song…") or "Export click track" (see "Click track export"). In Free play it's not shown until saved.
   - The sets view also keeps a **"Paste shared"** button next to "+ New setlist" (sets or songs).
 - **What's sent (a Stikka export):** the readable part first (the set's song list, or one song line), then one help line, "To import into Stikka: copy this whole message, then in Stikka tap Share › Import.", then one data line starting "metra1:" (compressed, URL-safe text). Works in WhatsApp, email, notes; nothing else is needed.
 - **The data is version-safe:** it carries a format version. Each song holds its name and its music: parts (name, length, tempos incl. Gradual, time signature, subdivision, accents, polyrhythm) and "At the end". **When I press Start is not exported** (Count-in, Speed up, Practice speed, Stop after): those are personal (the singer may want a count-in, the drummer not), so an imported new song gets them all off. A newer Stikka reads older data fully. An older Stikka adds what it understands, ignores unknown details, and skips a song it can't read at all, saying so plainly in the check ("1 song needs a newer Stikka").
@@ -677,6 +678,33 @@ Bandmates send each other whole sets and songs, parts and all, through any chat 
   - **Same name and same music = the same song, consolidated.** If you already have a song with the same name (or an earlier "Glass Harbor (shared)") whose music is identical, Stikka uses yours: the imported set simply points at your existing songs, nothing is copied, and your own When I press Start settings stay. So this week's set and next week's set, made of the same songs, give the singer two sets over one library, never duplicates. "Music" is everything listed above; personal settings are never compared. The check dialog says so plainly: "10 songs you already have, 2 new".
   - A same-name song with different content is added as "Glass Harbor (shared)", then "(shared 2)", and so on. Yours is never changed.
   - Sets the same way: an identical set you already have opens instead ("You already have this set"); a different one with the same name becomes "Fri · The Blue Room (shared)".
+
+## Click track export
+
+A song as an audio or MIDI file, for recording software (Reaper, Logic, Ableton…) or to send and listen to (Nov 2026, a tester asked for it). Board "Detail · Click track export" (reference `click-export.reference.html`).
+
+- **Way in (two places, next to the song exports that exist):**
+  - **Songs list › Share:** a new middle item **"Export click track…"** · "Pick one: WAV, MIDI or MP3, for recording software", between "Export a song…" and "Import a song". It uses the same pick mode, with the bar text "Tap the song for a click track" and "Cancel". Tapping a song opens its export sheet.
+  - **Parts page › "Share this song":** now opens a small menu (same look and motion as the other share menus, growing from the button): **"Send to a Stikka user"** · "The song with its parts, for them to import" (today's export, unchanged) and **"Export click track"** · "WAV, MIDI or MP3, for recording software".
+  - Not in Free play until the song is saved (like the song export). Not in a set's share menu (one song at a time; a whole set can come later).
+- **The sheet** (opens from the bottom, like the "When I press Start" sheet): title "Export click track"; the song name and a muted line ("4 parts · 21 bars · 0:42"); one muted line saying what will be in it ("The song once, as written. Chorus plays once instead of looping. No count-in or practice speed."); then **Format**: three stacked rows, one selected (the quiet chip style: selected = #2A2A2A fill, 2px white border), each with its name, a muted line and the file size on the right:
+  - **WAV** · "For recording software. Exact timing."
+  - **MIDI** · "For recording software. Tempo, time signatures and part names; no sound."
+  - **MP3** · "For listening and sending. Not exact enough for recording."
+  - WAV is selected the first time; after that the last format used (saved for the app).
+  - Under the rows, muted, the file name ("Glass Harbor.wav"). Then two buttons side by side, 52px: **Save to phone** (outlined) and **Share** (filled white, share icon).
+- **Save to phone** opens Android's own "Save to" screen (any folder, or Drive); after saving, the sheet closes and a short note says "Saved Glass Harbor.wav". **Share** hands the file to Android's share menu (Drive, WhatsApp, email…); the sheet closes.
+- **What's in it:** the song exactly as written: every part's tempo (Gradual included), time signature, subdivision, accents, silent beats and polyrhythm, with the current click sound and volumes from Settings. **Never** the count-in, Speed up, Practice speed or Stop after (personal practice settings, like the song export), so the song's bar 1 is the file's bar 1.
+- **How long:**
+  - At the end **Stop** → every part once. **Loop song** → the whole song once. **Loop last part** → the last part once (the producer copies or loops it in their software).
+  - **A one-part song that loops** (a plain song) would be one bar, so for these only the sheet adds the **Count by (Bars · Time)** and **Length** controls, the same as Stop after's. The length starts at the song's Stop after length if that's on, else 4:00; Time always rounds up to whole bars, and the line under it says so ("98 bars, rounded to whole bars").
+- **Timing (the point of it):** WAV and MP3 have the first click at the very first sample (no silence before it) and end exactly at the end of the last bar, so they snap to the grid. WAV: 48 kHz, 16-bit, mono. MP3: 48 kHz mono, 160 kbps CBR, with the encoder-delay tag written (it's still labeled "not exact" because not every program reads that tag). The file must match what the app plays exactly, also in x/8 time signatures and Gradual parts.
+- **MIDI:** type 1, 960 ticks per quarter note. A tempo track: the tempo at every part (a Gradual part gets a tempo point on every beat), time signature changes, and each part's name as a marker. One note track on channel 10 (drums): one note per click, a different note for accent, beat, subdivision and polyrhythm (so each can get its own sound), velocity from the volume; silent steps have no note.
+- **Preparing:** made faster than real time. If it takes more than ~0.4 s, the button that was pressed becomes the progress bar ("Preparing · 62%", filling with #2A2A2A like the parts cards while playing) and the other button becomes **Cancel**; the rest of the sheet dims and can't be changed. Nothing moves: the sheet keeps its size. Cancel, Back, or leaving the app stops it and deletes the half-made file.
+- **Failure** (no space, the save was refused): one line in the danger color above the buttons, "Couldn't make the file. Try again."; the sheet stays as it was.
+- **File name:** the song name, with characters that file systems refuse removed; ".wav", ".mid" or ".mp3".
+- **Large text:** at 115% the rows grow and wrap (never cut). If the sheet doesn't fit, only its middle scrolls; the title and the buttons stay.
+- **Privacy:** made on the phone, sent only where the user chooses; no new permission (Android's save screen needs none).
 
 ## Parked ideas
 

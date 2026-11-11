@@ -168,7 +168,7 @@ class OnStartSheet extends StatelessWidget {
                       onSelected: (v) => set(on.copyWith(stopBy: v)),
                     ),
                     const SizedBox(height: 4),
-                    _length(on, set),
+                    lengthStepper(on, set),
                     const SizedBox(height: 4),
                     Text(stopAfterHint, style: hint),
                   ],
@@ -476,7 +476,9 @@ class OnStartSheet extends StatelessWidget {
     ];
   }
 
-  Widget _length(OnStart on, void Function(OnStart) set) {
+  /// Stop after's Length: bars or a time, by [on]'s Count by (also the
+  /// click track export's length).
+  static Widget lengthStepper(OnStart on, void Function(OnStart) set) {
     if (on.stopBy == StopBy.bars) {
       final bars = on.stopBars;
       return ValueStepper(

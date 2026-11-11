@@ -30,10 +30,12 @@
 ///   instead of misreading 2.5).
 /// - 10 (build 105 on): settings gain the tuner's `referenceA4` (440 Hz).
 /// - 11 (build 111 on): settings gain `accentColor` (`red`).
+/// - 12 (build 112 on): settings gain the click track export's last
+///   format, `exportFormat` (`wav`).
 library;
 
 /// The latest format, and the two files' shapes in it.
-const latestVersion = 11;
+const latestVersion = 12;
 
 typedef Json = Map<String, Object?>;
 
@@ -67,6 +69,7 @@ final List<Json Function(Json)> _steps = [
   _v8ToV9,
   _v9ToV10,
   _v10ToV11,
+  _v11ToV12,
 ];
 
 /// Version 1, in all the shapes it shipped in, to version 2:
@@ -276,6 +279,8 @@ Json _v8ToV9(Json v8) => {...v8, 'version': 9};
 Json _v9ToV10(Json v9) => {...v9, 'version': 10, 'referenceA4': 440};
 
 Json _v10ToV11(Json v10) => {...v10, 'version': 11, 'accentColor': 'red'};
+
+Json _v11ToV12(Json v11) => {...v11, 'version': 12, 'exportFormat': 'wav'};
 
 /// The one-time hints' names in `tipsSeen` (version 1 had a flag each).
 const swipeHintTip = 'set-swipe-hint';
