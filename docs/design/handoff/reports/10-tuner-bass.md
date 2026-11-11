@@ -29,11 +29,15 @@ Late in a note, once the new string had died down to the level of the one still 
 - every string over the last one ringing, both up and down, for 2 s, never shows another note;
 - an open bass E right after its 12th-fret harmonic (an octave up) still shows E1 within 0.25 s.
 
+## Phone check (OnePlus CPH2747, debug build, after the follow fix)
+- Audio source: **UNPROCESSED** at 48 kHz (`adb logcat -s Stikka`). The tester's phone may differ; the same command shows it there.
+- Tones from the MacBook speakers, the phone ~beside them. A MacBook can't play 41 Hz, so each tone carried its overtones and a weak fundamental, which is close to what a phone mic hears from a bass anyway.
+- Single notes: B0, E1, A1, D2, G2, B3 and E4 each showed the right note and octave, "In tune".
+- E1 played 15 cents flat read "−15 cents · 40.8 Hz", exactly right.
+- Two notes at once: A1 over a ringing E1, D2 over a ringing A1 and G3 over a ringing D3 each showed the newer note, and G3 still showed at 3.3 s.
+- B0 faded to "–" at ~3.5 s as the tone died away.
+- Lock time can't be measured from screenshots (each takes ~0.5 s), but the note was always up in the first shot. The ≤ 0.25 s check is in the tests.
+
 ## Not done / Dror should check
-- **No phone was connected**, so the bass-through-a-speaker check didn't run, and I can't say which audio source the tester's phone uses. On the phone:
-  - Play E1, A1, D2, G2 from a tone generator through a speaker that can reproduce them (phone and laptop speakers can't play 41 Hz; a bass amp or a sub can).
-  - Check that each shows within ~¼ s.
-  - Run `adb logcat -s Stikka` while the tuner opens to see the source.
 - Best real-world check: a bass played unplugged and through an amp, string by string, letting each ring. Also the tester's electric through the amp sim, high B and E.
-- No screenshots: nothing on screen changed.
 - No build-number bump: this isn't installed anywhere yet. It goes into the next release.
