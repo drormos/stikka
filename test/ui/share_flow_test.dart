@@ -364,6 +364,46 @@ void main() {
       expect(find.byKey(QuickPick.songsShareKey).hitTestable(), findsOne);
     });
 
+    testWidgets('a tap outside steps back to the list like Cancel (both '
+        'modes); a second one closes; dragging down closes from pick mode', (
+      tester,
+    ) async {
+      await pump(tester, more: 9);
+      await openSongs(tester);
+      for (final item in ['Export a song…', 'Export click track…']) {
+        await openMenu(tester);
+        await tap(tester, find.text(item));
+        await tester.tapAt(const Offset(200, 60)); // outside the panel
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 16));
+        expect(
+          find.byKey(QuickPick.pickFlightKey),
+          findsOneWidget,
+          reason: 'the header shrinks back into Share',
+        );
+        await tester.pumpAndSettle();
+        expect(find.byType(QuickPick), findsOneWidget, reason: 'still open');
+        expect(find.byType(PickHeader), findsNothing);
+        expect(inList(find.byType(PlayMarker)), findsWidgets);
+        expect(find.byKey(QuickPick.songsShareKey).hitTestable(), findsOne);
+      }
+      await tester.tapAt(const Offset(200, 60));
+      await tester.pumpAndSettle();
+      expect(find.byType(QuickPick), findsNothing, reason: 'closes as usual');
+
+      await openSongs(tester);
+      await openMenu(tester);
+      await tap(tester, find.text('Export a song…'));
+      await tester.timedDrag(
+        find.byKey(QuickPick.handleKey),
+        const Offset(0, QuickPick.closeDrag + 40),
+        const Duration(milliseconds: 800),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(QuickPick), findsNothing, reason: 'closes fully');
+      expect(shared, isEmpty);
+    });
+
     testWidgets('Remove animations: all of it at once', (tester) async {
       tester.platformDispatcher.accessibilityFeaturesTestValue =
           const FakeAccessibilityFeatures(disableAnimations: true);

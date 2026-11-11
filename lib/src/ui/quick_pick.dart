@@ -51,6 +51,7 @@ Future<void> showQuickPick(
 }) {
   final box = context.findRenderObject()! as RenderBox;
   final anchor = box.localToGlobal(Offset.zero) & box.size;
+  final list = GlobalKey<_QuickPickState>();
   return Navigator.push(
     context,
     PageRouteBuilder<void>(
@@ -63,8 +64,10 @@ Future<void> showQuickPick(
       pageBuilder: (_, _, _) => _QuickPickLayer(
         anchor: anchor,
         inset: inset,
+        stepBack: () => list.currentState?._outsideTap() ?? false,
         // Lists follow the system font size fully (rows grow).
         child: QuickPick(
+          key: list,
           kind: kind,
           library: library,
           metronome: metronome,
@@ -82,12 +85,16 @@ class _QuickPickLayer extends StatefulWidget {
   const _QuickPickLayer({
     required this.anchor,
     required this.inset,
+    required this.stepBack,
     required this.child,
   });
 
   final Rect anchor;
   final double inset;
   final Widget child;
+
+  /// A touch outside, before it closes ([CloseOnTouch.stepBack]).
+  final bool Function() stepBack;
 
   @override
   State<_QuickPickLayer> createState() => _QuickPickLayerState();
@@ -222,6 +229,7 @@ class _QuickPickLayerState extends State<_QuickPickLayer>
           Positioned.fill(
             child: CloseOnTouch(
               key: QuickPick.outsideKey,
+              stepBack: widget.stepBack,
               child: CustomPaint(
                 painter: _Dim(
                   colors.dim.withValues(alpha: colors.dim.a * motion.dim),
@@ -1483,7 +1491,15 @@ class _QuickPickState extends State<QuickPick> with TickerProviderStateMixin {
     _pickMotion.forward(from: 0);
   }
 
-  /// Cancel, Back or a pick: the header shrinks back into Share and the ▷
+  /// A touch outside the panel while picking steps back to the list, like
+  /// Cancel (ui-spec.md "Leaving it"); otherwise the panel closes.
+  bool _outsideTap() {
+    if (_exportPick == null) return false;
+    _leavePick();
+    return true;
+  }
+
+  /// Cancel, Back, a touch outside or a pick: the header shrinks back into Share and the ▷
   /// icons return. Taps play again at once.
   void _leavePick() {
     if (_exportPick == null) return;

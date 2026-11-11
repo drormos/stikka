@@ -26,3 +26,9 @@ The still screens make the mode clear: the header with its badge and Cancel, and
 - **The motion, with animations on.** Your phone has Remove animations on, so I only checked it in widget tests (frame checks). Please judge it yourself with animations on: the menu row flying into the header, and back into Share.
 - The hidden bottom row leaves an empty strip under the list in pick mode (it keeps its space so nothing jumps). Say if the designer wants something else there.
 - No phone settings were changed. The debug app is now in Songs mode (I tapped the Songs tab to open the list).
+
+## Follow-up: tapping outside in pick mode (asked by Dror, spec "Leaving it")
+- In both pick modes, a tap outside the panel now does what Cancel does: the header shrinks back into Share and the normal Songs list returns. A second tap outside closes the panel as usual. Dragging the panel down still closes it completely. The sets view and the song picker still close on a tap outside.
+- How: the list's outside area (`CloseOnTouch`) now asks the panel first (`stepBack`); only the Songs list in pick mode takes the touch.
+- Test: "a tap outside steps back to the list like Cancel (both modes); a second one closes; dragging down closes from pick mode" in `test/ui/share_flow_test.dart`. `flutter analyze` and `flutter test` (1781) pass.
+- Phone: build 114 debug is installed but **not checked**. The notification shade came up while I was tapping, so I stopped. Some taps landed in the app in Free play (it opened "When I press Start"); I can't rule out that one landed in the shade. Please check: Songs ⌄ › Share › Export a song…, then tap the dim area above the list. It should go back to the Songs list, and a second tap should close it.

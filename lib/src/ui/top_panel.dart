@@ -276,18 +276,22 @@ class _TopPanelPage extends StatelessWidget {
 /// like Back. It absorbs those touches: nothing reaches the screen below
 /// (no ruler drags, no button taps). Read as "Close" by screen readers.
 class CloseOnTouch extends StatelessWidget {
-  const CloseOnTouch({super.key, required this.child});
+  const CloseOnTouch({super.key, required this.child, this.stepBack});
 
   final Widget child;
+
+  /// Asked first: true when the panel took the touch as a step back
+  /// (pick mode leaving), so nothing closes.
+  final bool Function()? stepBack;
 
   @override
   Widget build(BuildContext context) => Semantics(
     button: true,
     label: 'Close',
-    onTap: () => _close(context),
+    onTap: () => _touched(context),
     child: Listener(
       behavior: HitTestBehavior.opaque,
-      onPointerUp: (_) => _close(context),
+      onPointerUp: (_) => _touched(context),
       // Claims the gesture, so no recognizer elsewhere takes it.
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -298,6 +302,11 @@ class CloseOnTouch extends StatelessWidget {
       ),
     ),
   );
+
+  void _touched(BuildContext context) {
+    if (stepBack?.call() ?? false) return;
+    _close(context);
+  }
 
   /// Once: a second finger lifting while the panel leaves pops nothing.
   static void _close(BuildContext context) {
