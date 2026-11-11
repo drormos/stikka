@@ -90,7 +90,12 @@
   - `click-export-songs-menu-115.png`, `click-export-pick-115.png`, `click-export-parts-menu-115.png`
   - `click-export-sheet-115.png` (Glass Harbor test), `click-export-sheet-plain-115.png`, `click-export-sheet-mp3-115.png`
   - `click-export-preparing-115.png`, `click-export-saved-115.png`
-- No DAW on this Mac. Instead of the bar 1 / last bar check in a DAW, the tests check that MIDI and WAV agree, and ffmpeg confirmed the MP3.
+- **GarageBand (Dror, on the Mac):** the Glass Harbor test MIDI and WAV were imported into an empty project. GarageBand asked whether to import the MIDI's tempo; Dror said yes. The tempo map came in as written:
+  - 12 bars at 120 (Intro and Verse);
+  - the 2/4 Break at 128;
+  - 4 bars at 70 (the 7/8 Bridge's 140 eighths, counted in quarter notes);
+  - 8 bars ramping from 128 to 140 (the Chorus).
+  - Dror judged the WAV's clicks to line up exactly with the MIDI notes, from bar 1 to the end.
 
 ## Dror should check
 - Share a file to WhatsApp or Drive once (I don't drive the Android share menu).
