@@ -163,7 +163,7 @@ class TunerController extends ChangeNotifier {
     _samplesHeard += chunk.length;
     if (_filled < size || _sinceDetect < size ~/ 4) return;
     _sinceDetect = 0;
-    _heard(detector.detect(_buffer));
+    _heard(detector.detect(_buffer, follow: _note?.hz));
   }
 
   void _heard(double? hz) {

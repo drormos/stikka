@@ -24,8 +24,10 @@
 - `tuner_guitar_test.dart`: at 2 s, when the string has faded almost into the noise, the allowed error went from 3 to 4 cents. E4 now reads ~3.1 cents off there instead of blank, a side effect of the lower cut-off.
 - `flutter test` (1744) and `flutter analyze` pass; the debug APK builds.
 
-## Known limit
-Late in a note, once the new string has died down to the level of the one still ringing, the pair can read as their shared lower period, e.g. G3 over D3 shows G1 after ~1.5 s. I tried blanking such frames, but a single plucked G3 scores almost the same as these mixes, so that rule would have blanked real notes. A guitarist mutes the other strings or plucks again, which fixes it at once.
+## Late wrong note (fixed after review)
+Late in a note, once the new string had died down to the level of the one still ringing, the pair read as their shared lower period (G3 over D3 showed G1 after ~1.5 s; D3 over A2 showed D2). Now the tuner follows the note it shows: if that note's period is still clearly there (score ≥ 0.5), it wins over the lower shared one. Tested:
+- every string over the last one ringing, both up and down, for 2 s, never shows another note;
+- an open bass E right after its 12th-fret harmonic (an octave up) still shows E1 within 0.25 s.
 
 ## Not done / Dror should check
 - **No phone was connected**, so the bass-through-a-speaker check didn't run, and I can't say which audio source the tester's phone uses. On the phone:

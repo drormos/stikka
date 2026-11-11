@@ -41,6 +41,14 @@ class PitchDetector {
   /// the period) stays far lower, even with a weak fundamental.
   static const _keyThreshold = 0.7;
 
+  /// How strong the period of the note on screen must be to keep it. As
+  /// the new string dies down to the level of the one still ringing, its
+  /// own period falls to ~0.55–0.7 while their common, lower period
+  /// (G3 with D3: G1) scores near 1; following the shown note keeps G3.
+  /// An open string after its octave harmonic scores ~0.2 at the octave,
+  /// so the open string still shows.
+  static const _follow = 0.5;
+
   final int sampleRate;
 
   /// Samples per frame: ~85 ms, a power of two (4096 at 48 kHz): 2.6
@@ -53,8 +61,10 @@ class PitchDetector {
   late final Float64List _im;
 
   /// The frequency in Hz, or null for silence or no clear pitch. [frame]
-  /// holds [frameSize] samples in −1…1.
-  double? detect(Float32List frame) {
+  /// holds [frameSize] samples in −1…1. [follow] is the note on screen, in
+  /// Hz: a strong enough period within a semitone of it wins over the
+  /// usual pick (see [_follow]).
+  double? detect(Float32List frame, {double? follow}) {
     final n = frameSize;
     assert(frame.length == n);
     var mean = 0.0;
@@ -113,7 +123,15 @@ class PitchDetector {
     if (peaks.isEmpty) return null;
     final highest = peaks.map((p) => nsdf[p]).reduce(math.max);
     if (highest < clarity) return null;
-    final peak = peaks.firstWhere((p) => nsdf[p] >= _keyThreshold * highest);
+    var peak = peaks.firstWhere((p) => nsdf[p] >= _keyThreshold * highest);
+    if (follow != null) {
+      final near = peaks.where(
+        (p) =>
+            nsdf[p] >= _follow &&
+            (12 * math.log(sampleRate / p / follow) / math.ln2).abs() < 1,
+      );
+      if (near.isNotEmpty) peak = near.first;
+    }
     final (a, b, c) = (nsdf[peak - 1], nsdf[peak], nsdf[peak + 1]);
     final denominator = a - 2 * b + c;
     final shift = denominator == 0 ? 0.0 : 0.5 * (a - c) / denominator;
