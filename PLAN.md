@@ -3,9 +3,9 @@
 ## Overview
 A sample-accurate metronome for Android (and macOS / iOS), built with Flutter and `flutter_soloud`. Click timing comes from the C++ engine clock, so playback doesn't drift. Map of the code: [ARCHITECTURE.md](ARCHITECTURE.md). How it was built, phase by phase, with every decision: [docs/history.md](docs/history.md).
 
-## Status (2026-11-09)
-- Release ready: 1.11.0 (build 111): Settings › Color (handoffs 08, 09; saved format 11). No drift run (no scheduler, click output or store change since 1.10.0); long fuzz runs passed (5000 scheduler sessions, 4000 damaged files). The debug app on the phone upgraded from format 10 and kept Red.
-- Next: upload 1.11.0 (build 111). 1.10.0 (build 110) and the Play listing rename, if not done yet. Tagged v1.9.0 (2bfe443) and v1.8.0 (46f1473).
+## Status (2026-11-12)
+- Release ready: 1.12.0 (build 117): click track export (WAV, MIDI, MP3; handoffs 10, 11), bass tuner, clearer pick mode (12, 13); saved format 12 (`exportFormat`, starts at WAV). Analyze, 1782 tests and long fuzz runs (5000 scheduler sessions, 4000 damaged files) passed. Drift NOT run: SoLoud couldn't init on the Mac (default output was the HyperX wireless headset, likely off), so re-run `tool/drift_parallel.sh` with a working output before upload. Emulator upgrade check failed in the system server again (as in 06); the v11/v12 migration tests cover it. No phone checks yet.
+- Next: drift run, phone checks (handoff 14 report), then upload 1.12.0 (build 117). 1.11.0 (build 111) if not uploaded yet. Tagged v1.9.0 (2bfe443) and v1.8.0 (46f1473).
 
 ## Working rules
 - One step per commit; stage specific paths (never `git add -A`: the designer edits `docs/design/` in parallel and those drafts aren't ours to commit).
