@@ -6,7 +6,7 @@ App name (30): **Stikka**
 
 A precise metronome with tempo changes, setlists and a stage mode. No ads.
 
-## Full description (3035 / 4000)
+## Full description (3126 / 4000)
 
 Stikka is a metronome for every hour you play: practice, rehearsal and the stage. The click stays exactly on time, the screen reads at a glance, and a whole song, tempo changes and all, plays from one tap.
 
@@ -29,6 +29,7 @@ SETLISTS AND STAGE MODE
 • Stage mode: a large, simple screen with only what you need on stage: big Previous, Next and Start, and a hold to leave, so a stray touch never takes you out.
 • Change anything on the main screen while it plays, then Save, Revert, or Save as a new song.
 • Share a setlist as text: send the running order, with tempos and time signatures, to your band in any app.
+• Export a song as a click track: WAV or MIDI for your recording software, or MP3 to send.
 
 PRACTICE
 • Count-in of 1 or 2 bars, shown on screen as it counts.
@@ -56,12 +57,13 @@ No ads, no account, no tracking. Stikka has no internet access: your songs stay 
 
 Made by a drummer who wanted a metronome that just works, in the practice room and on stage.
 
-## Release notes (123 / 500)
+## Release notes (229 / 500)
 
 The What's new lines of the release (`assets/whats_new.md`), as printed by `tool/release.sh`:
 
-- Metra is now called Stikka. Same app, and all your songs are here.
-- Settings › About now lists the open-source licenses.
+- Export a song as a click track: WAV or MIDI for recording software, MP3 to send.
+- The tuner now tunes bass, down to a 5-string's low B, and locks on faster.
+- Choosing a song to export now looks clearly different from the song list.
 
 ## Graphics
 - App icon (512×512): `store/icon-512.png` (from `tool/icon/app-icon.png`)

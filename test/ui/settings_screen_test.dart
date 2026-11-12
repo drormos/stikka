@@ -275,7 +275,7 @@ void main() {
       );
       await tester.pump();
     }
-    for (final name in ['SoLoud', 'libogg', 'Opus', 'Saira']) {
+    for (final name in ['SoLoud', 'libogg', 'Opus', 'LAME', 'Saira']) {
       await tester.scrollUntilVisible(find.text(name), 200);
       expect(find.text(name), findsOneWidget, reason: name);
     }

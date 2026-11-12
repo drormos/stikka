@@ -2,6 +2,11 @@
 
 Newest first. The top version's lines are also the Play Store release notes.
 
+## 1.12.0 · Nov 2026
+- Export a song as a click track: WAV or MIDI for recording software, MP3 to send.
+- The tuner now tunes bass, down to a 5-string's low B, and locks on faster.
+- Choosing a song to export now looks clearly different from the song list.
+
 ## 1.11.0 · Nov 2026
 - New: pick your color in Settings › Color: red, orange, yellow, green, blue or purple.
 - Your color shows in the beat lights, the tempo needle, the lock-screen card and, in the dark theme, the Start button.
